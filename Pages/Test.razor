@@ -1,0 +1,17 @@
+@page "/test"
+@using PokeBreedr.Components
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Test My first component</h1>
+
+<MyFirstComponent/>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
