@@ -1,7 +1,6 @@
 @page "/test"
 @using PokeBreedr.Components
 @using PokeBreedr.Components.Cards
-@using PokeBreedr.Model
 
 <PageTitle>Counter</PageTitle>
 
@@ -18,17 +17,4 @@
         currentCount++;
     }
 
-}
-
-@code {
-    List<CardModel> cards = new()
-    {
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-    };
 }

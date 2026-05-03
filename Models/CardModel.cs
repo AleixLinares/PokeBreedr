@@ -1,4 +1,4 @@
-﻿namespace PokeBreedr.Model
+﻿namespace PokeBreedr.Models
 {
     public class CardModel
     {
