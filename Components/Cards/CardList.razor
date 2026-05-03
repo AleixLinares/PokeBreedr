@@ -1,0 +1,11 @@
+﻿@using PokeBreedr.Model
+<div class="card-list">
+    @foreach (var item in Items)
+    {
+        <Card/>
+    }
+</div>
+
+@code {
+    [Parameter] public List<CardModel> Items { get; set; } = new();
+}

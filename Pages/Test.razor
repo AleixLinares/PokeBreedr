@@ -1,11 +1,14 @@
 @page "/test"
 @using PokeBreedr.Components
+@using PokeBreedr.Components.Cards
+@using PokeBreedr.Model
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Test My first component</h1>
 
 <MyFirstComponent/>
+<CardList Items=cards/>
 
 @code {
     private int currentCount = 0;
@@ -14,4 +17,18 @@
     {
         currentCount++;
     }
+
+}
+
+@code {
+    List<CardModel> cards = new()
+    {
+        new CardModel(),
+        new CardModel(),
+        new CardModel(),
+        new CardModel(),
+        new CardModel(),
+        new CardModel(),
+        new CardModel(),
+    };
 }
