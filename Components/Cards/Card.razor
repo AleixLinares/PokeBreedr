@@ -1,8 +1,101 @@
+@using Microsoft.AspNetCore.Components.Rendering
+@using PokeBreedr.Components.Utils
+@using PokeBreedr.Enums
+@using PokeBreedr.Models
+
 <div class="card-container">
+
     <div class="card-header">
-        test
+        Pokemon Info
     </div>
+
     <div class="card-body">
-        ChildContent
+
+        <!-- Pokemon -->
+        <div class="field">
+            <label>Pokemon</label>
+
+            <DropdownSearch Options="PokemonOptions"
+                      @bind-Value="Model.Pokemon" />
+        </div>
+
+        <!-- Gender -->
+        <div class="field">
+            <label>Gender</label>
+
+            <select @bind="Model.Gender">
+
+                @foreach (var gender in Enum.GetValues<PokemonGenderEnum>())
+                {
+                    <option value="@gender">
+                        @gender
+                    </option>
+                }
+
+            </select>
+        </div>
+
+        <!-- Nature -->
+        <div class="field">
+            <label>Nature</label>
+
+            <select @bind="Model.Nature">
+
+                @foreach (var nature in Enum.GetValues<PokemonNatureEnum>())
+                {
+                    <option value="@nature">
+                        @nature
+                    </option>
+                }
+
+            </select>
+        </div>
+
+        <!-- Egg Group -->
+        <div class="field">
+            <label>Egg Group</label>
+
+            <input value="@Model.EggGroup" disabled />
+        </div>
     </div>
+
 </div>
+
+@code {
+
+    private PokemonInfo Model = new()
+    {
+        Pokemon = "bulbasaur",
+        EggGroup = PokemonEggGroupEnum.Monster,
+        Gender = PokemonGenderEnum.Male,
+        Nature = PokemonNatureEnum.Adamant,
+        HpIv = 31,
+        AttackIv = 31,
+        DefenseIv = 31,
+        SpAttackIv = 31,
+        SpDefenseIv = 31,
+        SpeedIv = 31
+    };
+
+    private List<DropdownOption> PokemonOptions = new()
+    {
+        new() { Value = "bulbasaur", Label = "Bulbasaur" },
+        new() { Value = "charmander", Label = "Charmander" },
+        new() { Value = "squirtle", Label = "Squirtle" },
+        new() { Value = "pikachu", Label = "Pikachu" },
+    };
+
+    private void BuildButton(
+        RenderTreeBuilder builder,
+        ref int i,
+        string text,
+        Action action)
+    {
+        builder.OpenElement(i++, "button");
+        builder.AddAttribute(i++, "type", "button");
+        builder.AddAttribute(i++, "class", "iv-button");
+        builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create(this, action));
+        builder.AddContent(i++, text);
+        builder.CloseElement();
+    }
+}

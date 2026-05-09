@@ -1,0 +1,95 @@
+﻿@using PokeBreedr.Models
+
+<div class="dropdown-search">
+
+    <input class="dropdown-input"
+           type="text"
+           placeholder="Buscar..."
+           value="@SearchText"
+           @oninput="OnInput"
+           @onfocus="OpenDropdown" />
+
+    @if (IsOpen)
+    {
+        <div class="dropdown-options">
+
+            @if (FilteredOptions.Any())
+            {
+                @foreach (var option in FilteredOptions)
+                {
+                    <div class="dropdown-option"
+                         @onclick="() => SelectOption(option)">
+
+                        @option.Label
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="dropdown-empty">
+                    Sin resultados
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<DropdownOption> Options { get; set; } = new();
+
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    private bool IsOpen = false;
+
+    private string SearchText = "";
+
+    protected override void OnParametersSet()
+    {
+        var selected = Options.FirstOrDefault(x => x.Value == Value);
+
+        if (selected is not null)
+        {
+            SearchText = selected.Label;
+        }
+    }
+
+    private List<DropdownOption> FilteredOptions =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? Options
+            : Options.Where(x =>
+                    x.Label.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
+                    x.Value.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+    private void OpenDropdown()
+    {
+        IsOpen = true;
+    }
+
+    private async Task SelectOption(DropdownOption option)
+    {
+        SearchText = option.Label;
+
+        IsOpen = false;
+
+        Value = option.Value;
+
+        await ValueChanged.InvokeAsync(option.Value);
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        SearchText = e.Value?.ToString() ?? "";
+
+        IsOpen = true;
+    }
+}

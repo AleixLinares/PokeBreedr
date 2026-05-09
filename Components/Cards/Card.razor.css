@@ -30,3 +30,57 @@
     font-size: 0.85rem;
     color: #777;
 }
+
+.card-container {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 500px;
+}
+
+.card-header {
+    padding: 12px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+}
+
+.card-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .field select,
+    .field input {
+        padding: 8px;
+    }
+
+.ivs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.iv-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+    .iv-row span {
+        width: 80px;
+        font-weight: bold;
+    }
+
+.iv-button {
+    padding: 4px 8px;
+    cursor: pointer;
+}
