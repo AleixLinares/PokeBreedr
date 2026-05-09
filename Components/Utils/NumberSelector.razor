@@ -6,7 +6,7 @@
     <button @onclick="() => Change(-StepSmall)">-@StepSmall</button>
 
     <input type="number"
-           value="@CurrentValue"
+           @bind="@CurrentValue"
            min="@MinValue"
            max="@MaxValue"
            @oninput="OnInput"
@@ -32,18 +32,15 @@
 
     private int CurrentValue
     {
-        get
-        {
-            var clamped = Math.Clamp(Value, MinValue, MaxValue);
-            return clamped;
-        }
+        get => Math.Clamp(Value, MinValue, MaxValue);
+
         set
         {
             var clamped = Math.Clamp(value, MinValue, MaxValue);
+
             if (Value != clamped)
             {
                 Value = clamped;
-                CurrentValue = clamped;
                 ValueChanged.InvokeAsync(Value);
             }
         }
@@ -62,8 +59,7 @@
     {
         if (int.TryParse(e.Value?.ToString(), out var v))
         {
-            var clamped = Math.Clamp(v, MinValue, MaxValue);
-            CurrentValue = clamped;
+            CurrentValue = v;
         }
     }
 }
