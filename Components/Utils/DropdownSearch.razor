@@ -1,6 +1,9 @@
-﻿@using PokeBreedr.Models
+﻿@using Microsoft.JSInterop
+@using PokeBreedr.Models
+@implements IDisposable
+@inject IJSRuntime JS
 
-<div class="dropdown-search">
+<div class="dropdown-search" @ref="DropdownRef">
 
     <input class="dropdown-input"
            type="text"
@@ -39,6 +42,9 @@
 
 @code {
 
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+
     [Parameter]
     public List<DropdownOption> Options { get; set; } = new();
 
@@ -52,6 +58,10 @@
 
     private string SearchText = "";
 
+    private ElementReference DropdownRef;
+
+    private DotNetObjectReference<DropdownSearch>? ObjRef;
+
     protected override void OnParametersSet()
     {
         var selected = Options.FirstOrDefault(x => x.Value == Value);
@@ -59,6 +69,19 @@
         if (selected is not null)
         {
             SearchText = selected.Label;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ObjRef = DotNetObjectReference.Create(this);
+
+            await JSRuntime.InvokeVoidAsync(
+                "dropdownInterop.registerOutsideClick",
+                DropdownRef,
+                ObjRef);
         }
     }
 
@@ -73,6 +96,14 @@
     private void OpenDropdown()
     {
         IsOpen = true;
+    }
+
+    [JSInvokable]
+    public void CloseDropdown()
+    {
+        IsOpen = false;
+
+        StateHasChanged();
     }
 
     private async Task SelectOption(DropdownOption option)
@@ -91,5 +122,10 @@
         SearchText = e.Value?.ToString() ?? "";
 
         IsOpen = true;
+    }
+
+    public void Dispose()
+    {
+        ObjRef?.Dispose();
     }
 }

@@ -23,32 +23,18 @@
         <div class="field">
             <label>Gender</label>
 
-            <select @bind="Model.Gender">
-
-                @foreach (var gender in Enum.GetValues<PokemonGenderEnum>())
-                {
-                    <option value="@gender">
-                        @gender
-                    </option>
-                }
-
-            </select>
+            <Dropdown TValue="PokemonGenderEnum"
+                Options="GenderOptions"
+                @bind-Value="Model.Gender" />
         </div>
 
         <!-- Nature -->
         <div class="field">
             <label>Nature</label>
 
-            <select @bind="Model.Nature">
-
-                @foreach (var nature in Enum.GetValues<PokemonNatureEnum>())
-                {
-                    <option value="@nature">
-                        @nature
-                    </option>
-                }
-
-            </select>
+            <Dropdown TValue="PokemonNatureEnum"
+                      Options="NatureOptions"
+                      @bind-Value="Model.Nature" />
         </div>
 
         <!-- Egg Group -->
@@ -57,6 +43,14 @@
 
             <input value="@Model.EggGroup" disabled />
         </div>
+
+        <NumberSelector 
+            Value="@Model.DefenseIv"
+            MinValue="0"
+            MaxValue="31"
+            StepSmall="1"
+            StepLarge="10" />
+
     </div>
 
 </div>
@@ -65,13 +59,13 @@
 
     private PokemonInfo Model = new()
     {
-        Pokemon = "bulbasaur",
+        Pokemon = "pikachu",
         EggGroup = PokemonEggGroupEnum.Monster,
         Gender = PokemonGenderEnum.Male,
         Nature = PokemonNatureEnum.Adamant,
         HpIv = 31,
         AttackIv = 31,
-        DefenseIv = 31,
+        DefenseIv = 17,
         SpAttackIv = 31,
         SpDefenseIv = 31,
         SpeedIv = 31
@@ -85,17 +79,19 @@
         new() { Value = "pikachu", Label = "Pikachu" },
     };
 
-    private void BuildButton(
-        RenderTreeBuilder builder,
-        ref int i,
-        string text,
-        Action action)
+    private List<DropdownOption> GenderOptions = new()
     {
-        builder.OpenElement(i++, "button");
-        builder.AddAttribute(i++, "type", "button");
-        builder.AddAttribute(i++, "class", "iv-button");
-        builder.AddAttribute(i++, "onclick", EventCallback.Factory.Create(this, action));
-        builder.AddContent(i++, text);
-        builder.CloseElement();
-    }
+        new() { Value = PokemonGenderEnum.Male.ToString(), Label = "Male" },
+        new() { Value = PokemonGenderEnum.Female.ToString(), Label = "Female" },
+        new() { Value = PokemonGenderEnum.Genderless.ToString(), Label = "Genderless" },
+        new() { Value = PokemonGenderEnum.Ditto.ToString(), Label = "Ditto" },
+    };
+
+    private List<DropdownOption> NatureOptions = new()
+    {
+        new() { Value = PokemonNatureEnum.Adamant.ToString(), Label = "Adamant" },
+        new() { Value = PokemonNatureEnum.Bashful.ToString(), Label = "Bashful" },
+        new() { Value = PokemonNatureEnum.Bold.ToString(), Label = "Bold" },
+        new() { Value = PokemonNatureEnum.Brave.ToString(), Label = "Brave" },
+    };
 }

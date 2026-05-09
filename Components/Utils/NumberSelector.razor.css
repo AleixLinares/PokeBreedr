@@ -1,0 +1,10 @@
+﻿.number-selector {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.value-input {
+    width: 100px;
+    text-align: center;
+}
