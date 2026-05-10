@@ -1,11 +1,54 @@
 ﻿@using PokeBreedr.Models
+
 <div class="card-list">
+
+    <button class="add-btn" @onclick="AddCard">
+        + Añadir Card
+    </button>
+
     @foreach (var item in Items)
     {
-        <Card/>
+        <Card Model="item"
+              OnSave="SaveCard"
+              OnCancel="CancelCard"
+              OnDelete="DeleteCard" />
     }
+
 </div>
 
 @code {
-    [Parameter] public List<CardModel> Items { get; set; } = new();
+
+    [Parameter]
+    public List<PokemonInfo> Items { get; set; } = new();
+
+    private void AddCard()
+    {
+        Items.Insert(0, new PokemonInfo
+        {
+            IsSaved = false
+        });
+
+        Console.WriteLine("Nueva card añadida");
+    }
+
+    private void SaveCard(PokemonInfo model)
+    {
+        model.IsSaved = true;
+
+        Console.WriteLine("Card guardada");
+    }
+
+    private void CancelCard(PokemonInfo model)
+    {
+        Items.Remove(model);
+
+        Console.WriteLine("Card cancelada");
+    }
+
+    private void DeleteCard(PokemonInfo model)
+    {
+        Items.Remove(model);
+
+        Console.WriteLine("Card eliminada");
+    }
 }

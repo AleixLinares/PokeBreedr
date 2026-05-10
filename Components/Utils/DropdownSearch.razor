@@ -1,6 +1,6 @@
 ﻿@using Microsoft.JSInterop
 @using PokeBreedr.Models
-@implements IDisposable
+@implements IAsyncDisposable
 @inject IJSRuntime JS
 
 <div class="dropdown-search" @ref="DropdownRef">
@@ -42,9 +42,6 @@
 
 @code {
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
-
     [Parameter]
     public List<DropdownOption> Options { get; set; } = new();
 
@@ -62,6 +59,8 @@
 
     private DotNetObjectReference<DropdownSearch>? ObjRef;
 
+    private string ListenerId = Guid.NewGuid().ToString();
+
     protected override void OnParametersSet()
     {
         var selected = Options.FirstOrDefault(x => x.Value == Value);
@@ -78,8 +77,9 @@
         {
             ObjRef = DotNetObjectReference.Create(this);
 
-            await JSRuntime.InvokeVoidAsync(
+            await JS.InvokeVoidAsync(
                 "dropdownInterop.registerOutsideClick",
+                ListenerId,
                 DropdownRef,
                 ObjRef);
         }
@@ -124,8 +124,19 @@
         IsOpen = true;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
+        try
+        {
+            await JS.InvokeVoidAsync(
+                "dropdownInterop.unregisterOutsideClick",
+                ListenerId);
+        }
+        catch
+        {
+            // ignorar si el componente ya murió
+        }
+
         ObjRef?.Dispose();
     }
 }

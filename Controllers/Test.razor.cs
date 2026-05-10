@@ -3,15 +3,12 @@ namespace PokeBreedr.Pages
 {
     public partial class Test
     {
-        List<CardModel> cards = new()
+        private List<PokemonInfo> cards = new()
     {
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
-        new CardModel(),
+        new() { IsSaved = true },
+        new() { IsSaved = true },
+        new() { IsSaved = true },
+        new() { IsSaved = true },
     };
     }
 }

@@ -12,6 +12,8 @@ namespace PokeBreedr.Models
 
         public PokemonNatureEnum Nature;
 
+        public bool IsSaved { get; set; }
+
         private byte _hpIv = 0;
         private byte _attackIv = 0;
         private byte _defenseIv = 0;

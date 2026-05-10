@@ -53,23 +53,42 @@
 
     </div>
 
+    <div class="card-actions">
+
+        @if (!Model.IsSaved)
+        {
+            <button @onclick="Save">
+                Guardar
+            </button>
+
+            <button @onclick="Cancel">
+                Cancelar
+            </button>
+        }
+        else
+        {
+            <button @onclick="Delete">
+                Eliminar
+            </button>
+        }
+
+    </div>
+
 </div>
 
 @code {
 
-    private PokemonInfo Model = new()
-    {
-        Pokemon = "pikachu",
-        EggGroup = PokemonEggGroupEnum.Monster,
-        Gender = PokemonGenderEnum.Male,
-        Nature = PokemonNatureEnum.Adamant,
-        HpIv = 31,
-        AttackIv = 31,
-        DefenseIv = 17,
-        SpAttackIv = 31,
-        SpDefenseIv = 31,
-        SpeedIv = 31
-    };
+    [Parameter]
+    public PokemonInfo Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnDelete { get; set; }
 
     private List<DropdownOption> PokemonOptions = new()
     {
@@ -94,4 +113,20 @@
         new() { Value = PokemonNatureEnum.Bold.ToString(), Label = "Bold" },
         new() { Value = PokemonNatureEnum.Brave.ToString(), Label = "Brave" },
     };
+
+    private async Task Save()
+    {
+        await OnSave.InvokeAsync(Model);
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync(Model);
+    }
+
+    private async Task Delete()
+    {
+        await OnDelete.InvokeAsync(Model);
+    }
+
 }
