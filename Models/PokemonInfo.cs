@@ -4,6 +4,8 @@ namespace PokeBreedr.Models
 {
     public class PokemonInfo
     {
+        public Guid Guid { get; set; } = Guid.NewGuid();
+
         public string Pokemon = string.Empty;
 
         public PokemonEggGroupEnum EggGroup;
