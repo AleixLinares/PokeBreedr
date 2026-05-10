@@ -1,10 +1,26 @@
 ﻿<div class="number-selector">
 
-    <button @onclick="SetMin">Min</button>
+    <lable class="title-header"> @Title </lable>
 
-    <button @onclick="() => Change(-StepLarge)">-@StepLarge</button>
-    <button @onclick="() => Change(-StepSmall)">-@StepSmall</button>
+    <!-- MAX -->
+    <button class="vertical-button max-button"
+            @onclick="SetMax">
+        Max
+    </button>
 
+    <!-- STEP LARGE UP -->
+    <button class="vertical-button"
+            @onclick="() => Change(StepLarge)">
+        <div class="rotate-content"> &gt;&gt;</div>       
+    </button>
+
+    <!-- STEP SMALL UP -->
+    <button class="vertical-button"
+            @onclick="() => Change(StepSmall)">
+        <div class="rotate-content"> &gt;</div>
+    </button>
+
+    <!-- INPUT -->
     <input type="number"
            @bind="@CurrentValue"
            min="@MinValue"
@@ -12,15 +28,29 @@
            @oninput="OnInput"
            class="value-input" />
 
-    <button @onclick="() => Change(StepSmall)">+@StepSmall</button>
-    <button @onclick="() => Change(StepLarge)">+@StepLarge</button>
+    <!-- STEP SMALL DOWN -->
+    <button class="vertical-button"
+            @onclick="() => Change(-StepSmall)">
+        <div class="rotate-content"> &lt;</div>
+    </button>
 
-    <button @onclick="SetMax">Max</button>
+    <!-- STEP LARGE DOWN -->
+    <button class="vertical-button"
+            @onclick="() => Change(-StepLarge)">
+        <div class="rotate-content"> &lt;&lt;</div>
+    </button>
+
+    <!-- MIN -->
+    <button class="vertical-button min-button"
+            @onclick="SetMin">
+        Min
+    </button>
 
 </div>
 
 @code {
 
+    [Parameter] public string Title { get; set; }
     [Parameter] public int Value { get; set; }
     [Parameter] public EventCallback<int> ValueChanged { get; set; }
 

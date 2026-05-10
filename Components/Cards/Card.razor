@@ -4,52 +4,111 @@
 @using PokeBreedr.Models
 
 <div class="card-container">
+    <div class="card-body-grid">
 
-    <div class="card-header">
-        Pokemon Info
-    </div>
+        <!-- Columna izquierda -->
+        <div class="left-column">
 
-    <div class="card-body">
+            <!-- Pokemon -->
+            <div class="field">
+                <label>Pokemon</label>
 
-        <!-- Pokemon -->
-        <div class="field">
-            <label>Pokemon</label>
+                <DropdownSearch Options="PokemonOptions"
+                                @bind-Value="Model.Pokemon" />
+            </div>
 
-            <DropdownSearch Options="PokemonOptions"
-                      @bind-Value="Model.Pokemon" />
+            <!-- Imagen -->
+            <div class="pokemon-image-container">
+                <img src="assets/defaultAvatar.png"
+                     alt="Pokemon Avatar"
+                     class="pokemon-image" />
+            </div>
+
         </div>
 
-        <!-- Gender -->
-        <div class="field">
-            <label>Gender</label>
+        <!-- Columna central -->
+        <div class="middle-column">
 
-            <Dropdown TValue="PokemonGenderEnum"
-                Options="GenderOptions"
-                @bind-Value="Model.Gender" />
+            <!-- Egg Group -->
+            <div class="field">
+                <label>
+                    Egg Group: @Model.EggGroup1
+                    @(Model.EggGroup2 == null
+                        ? ""
+                        : $" / {Model.EggGroup2}")
+                </label>
+            </div>
+
+            <!-- Gender -->
+            <div class="field">
+                <label>Gender</label>
+
+                <Dropdown TValue="PokemonGenderEnum?"
+                          Options="GenderOptions"
+                          @bind-Value="Model.Gender" />
+            </div>
+
+            <!-- Nature -->
+            <div class="field">
+                <label>Nature</label>
+
+                <Dropdown TValue="PokemonNatureEnum?"
+                          Options="NatureOptions"
+                          @bind-Value="Model.Nature" />
+            </div>
+
         </div>
 
-        <!-- Nature -->
-        <div class="field">
-            <label>Nature</label>
+        <!-- Columna derecha -->
+        <div class="right-column">
 
-            <Dropdown TValue="PokemonNatureEnum"
-                      Options="NatureOptions"
-                      @bind-Value="Model.Nature" />
+            <div class="ivs-grid-body">
+
+                <NumberSelector Title="Hp"
+                                Value="@Model.HpIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+                <NumberSelector Title="Attack"
+                                Value="@Model.AttackIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+                <NumberSelector Title="Defense"
+                                Value="@Model.DefenseIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+                <NumberSelector Title="Sp. Attack"
+                                Value="@Model.SpAttackIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+                <NumberSelector Title="Sp. Defense"
+                                Value="@Model.SpDefenseIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+                <NumberSelector Title="Speed"
+                                Value="@Model.SpeedIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10" />
+
+            </div>
+
         </div>
-
-        <!-- Egg Group -->
-        <div class="field">
-            <label>Egg Group</label>
-
-            <input value="@Model.EggGroup" disabled />
-        </div>
-
-        <NumberSelector 
-            Value="@Model.DefenseIv"
-            MinValue="0"
-            MaxValue="31"
-            StepSmall="1"
-            StepLarge="10" />
 
     </div>
 
@@ -67,7 +126,7 @@
         }
         else
         {
-            <button @onclick="Delete">
+            <button class="button" @onclick="Delete">
                 Eliminar
             </button>
         }

@@ -8,11 +8,13 @@ namespace PokeBreedr.Models
 
         public string Pokemon = string.Empty;
 
-        public PokemonEggGroupEnum EggGroup;
-        
-        public PokemonGenderEnum Gender;
+        public PokemonEggGroupEnum? EggGroup1;
 
-        public PokemonNatureEnum Nature;
+        public PokemonEggGroupEnum? EggGroup2;
+
+        public PokemonGenderEnum? Gender;
+
+        public PokemonNatureEnum? Nature;
 
         public bool IsSaved { get; set; }
 
