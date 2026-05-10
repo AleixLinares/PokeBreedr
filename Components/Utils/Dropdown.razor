@@ -2,7 +2,8 @@
 @typeparam TValue
 
 <select class="dropdown"
-        @bind="CurrentValue">
+        @bind="CurrentValue"
+        disabled=@isDisabled>
 
     @if (AllowEmpty)
     {
@@ -30,6 +31,8 @@
 
     [Parameter]
     public bool AllowEmpty { get; set; } = true;
+
+    [Parameter] public bool isDisabled { get; set; } = false;
 
     private TValue? CurrentValue
     {

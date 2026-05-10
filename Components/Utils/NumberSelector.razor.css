@@ -33,10 +33,16 @@
     transition: 0.15s ease;
 }
 
-    .vertical-button:hover {
-        background: #f3f3f3;
-        transform: translateY(-1px);
-    }
+.vertical-button:hover {
+    background: #f3f3f3;
+    transform: translateY(-1px);
+}
+
+.vertical-button:disabled {
+    background: #eee;
+    cursor: default;
+    opacity: 0.6;
+}
 
 .max-button {
     color: #1d7a1d;
@@ -55,6 +61,12 @@
 
 .value-input[type=number] {
     -moz-appearance: textfield;
+}
+
+.value-input:disabled {
+    background: #eee;
+    cursor: default;
+    opacity: 0.6;
 }
 
 .title-header {

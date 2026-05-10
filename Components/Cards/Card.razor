@@ -45,7 +45,8 @@
 
                 <Dropdown TValue="PokemonGenderEnum?"
                           Options="GenderOptions"
-                          @bind-Value="Model.Gender" />
+                          @bind-Value="Model.Gender"
+                          isDisabled=@isLocked />
             </div>
 
             <!-- Nature -->
@@ -54,7 +55,8 @@
 
                 <Dropdown TValue="PokemonNatureEnum?"
                           Options="NatureOptions"
-                          @bind-Value="Model.Nature" />
+                          @bind-Value="Model.Nature"
+                          isDisabled=@isLocked />
             </div>
 
         </div>
@@ -69,42 +71,49 @@
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10"
+                                isDisabled=@isLocked/>
 
                 <NumberSelector Title="Attack"
                                 Value="@Model.AttackIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10"
+                                isDisabled=@isLocked />
 
                 <NumberSelector Title="Defense"
                                 Value="@Model.DefenseIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10"
+                                isDisabled=@isLocked />
 
                 <NumberSelector Title="Sp. Attack"
                                 Value="@Model.SpAttackIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10" 
+                                isDisabled=@isLocked />
 
                 <NumberSelector Title="Sp. Defense"
                                 Value="@Model.SpDefenseIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10"
+                                isDisabled=@isLocked />
 
                 <NumberSelector Title="Speed"
                                 Value="@Model.SpeedIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
-                                StepLarge="10" />
+                                StepLarge="10" 
+                                isDisabled=@isLocked />
+
 
             </div>
 
@@ -148,6 +157,8 @@
 
     [Parameter]
     public EventCallback<PokemonInfo> OnDelete { get; set; }
+
+    private bool isLocked => string.IsNullOrWhiteSpace(Model.Pokemon);
 
     private List<DropdownOption> PokemonOptions = new()
     {

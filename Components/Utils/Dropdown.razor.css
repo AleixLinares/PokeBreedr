@@ -18,3 +18,9 @@
 .dropdown:hover {
     border-color: #999;
 }
+
+.dropdown:disabled {
+    background: #eee;
+    cursor: default;
+    opacity: 0.6;
+}
