@@ -5,16 +5,12 @@
 <PageTitle>Counter</PageTitle>
 
 <h1>Test My first component</h1>
-
-<MyFirstComponent/>
-<CardList Items=cards/>
-
-@code {
-    private int currentCount = 0;
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-
+@if(isLoading)
+{
+	<p>Loading...</p>
+}
+else 
+{
+	<MyFirstComponent />
+	<CardList Items=cards />
 }

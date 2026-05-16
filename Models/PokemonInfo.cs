@@ -1,9 +1,32 @@
 ﻿using PokeBreedr.Enums;
+using PokeBreedr.Dto;
 
 namespace PokeBreedr.Models
 {
     public class PokemonInfo
     {
+        public PokemonInfo() 
+        {
+
+        }
+
+        public PokemonInfo(PokemonInfoDto dto)
+        {
+            this.Guid = dto.Guid;
+            this.Pokemon = dto.Pokemon;
+            this.EggGroup1 = dto.EggGroup1;
+            this.EggGroup2 = dto.EggGroup2;
+            this.Gender = dto.Gender;
+            this.Nature = dto.Nature;
+            this.HpIv = dto.HpIv;
+            this.AttackIv = dto.AttackIv;
+            this.DefenseIv = dto.DefenseIv;
+            this.SpAttackIv = dto.SpAttackIv;
+            this.SpDefenseIv = dto.SpDefenseIv;
+            this.SpeedIv = dto.SpeedIv;
+            this.IsSaved = true;
+        }
+
         public Guid Guid { get; set; } = Guid.NewGuid();
 
         public string Pokemon = string.Empty;

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using PokeBreedr.Dto;
 using PokeBreedr.Interfaces;
 using PokeBreedr.Models;
 using System.Text.Json;
 
 namespace PokeBreedr.Services
 {
-    public class PokemonLocalStorageService : IPokemonPersistanceInterface
+    public class PokemonLocalStorageService : IPokemonPersistenceService
     {
         private readonly IJSRuntime JSRuntime;
         private IJSObjectReference? localStorageModule;
@@ -33,7 +34,7 @@ namespace PokeBreedr.Services
         /// </summary>
         /// <param name="pokemonInfo"></param>
         /// <returns></returns>
-        public async Task Save(PokemonInfo pokemonInfo)
+        public async Task Save(PokemonInfoDto pokemonInfo)
         {
             var pokemons = await GetAll();
 
@@ -68,7 +69,7 @@ namespace PokeBreedr.Services
         /// Obtain the pokemon with the pokemonInfoID provided.
         /// </summary>
         /// <param name="pokemonInfoID"></param>
-        public async Task<PokemonInfo?> Obtain(Guid pokemonInfoID)
+        public async Task<PokemonInfoDto?> Obtain(Guid pokemonInfoID)
         {
             var pokemons = await GetAll();
 
@@ -79,7 +80,7 @@ namespace PokeBreedr.Services
         /// <summary>
         /// Get all Pokemons. The list returned is never null.
         /// </summary>
-        public async Task<List<PokemonInfo>> GetAll()
+        public async Task<List<PokemonInfoDto>> GetAll()
         {
 
             var module = await GetModule();
@@ -88,13 +89,22 @@ namespace PokeBreedr.Services
                 "getItem",
                 STORAGE_KEY
             );
+            try
+            {
+                var deserialized = string.IsNullOrEmpty(json)
+                    ? new List<PokemonInfoDto>()
+                    : JsonSerializer.Deserialize<List<PokemonInfoDto>>(json)!;
 
-            return string.IsNullOrEmpty(json)
-                ? new List<PokemonInfo>()
-                : JsonSerializer.Deserialize<List<PokemonInfo>>(json)!;
+                return deserialized;
+            }
+            catch(Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+            }
+            return new List<PokemonInfoDto>();
         }
 
-        private async Task SaveAll(List<PokemonInfo> pokemons)
+        private async Task SaveAll(List<PokemonInfoDto> pokemons)
         {
             var module = await GetModule();
 

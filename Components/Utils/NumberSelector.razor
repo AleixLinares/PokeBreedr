@@ -59,8 +59,8 @@
 @code {
 
     [Parameter] public string? Title { get; set; }
-    [Parameter] public int Value { get; set; }
-    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+    [Parameter] public byte Value { get; set; }
+    [Parameter] public EventCallback<byte> ValueChanged { get; set; }
 
     [Parameter] public int MinValue { get; set; } = 0;
     [Parameter] public int MaxValue { get; set; } = 100;
@@ -80,7 +80,7 @@
 
             if (Value != clamped)
             {
-                Value = clamped;
+                Value = (byte)clamped;
                 ValueChanged.InvokeAsync(Value);
             }
         }

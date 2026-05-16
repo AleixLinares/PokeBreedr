@@ -67,7 +67,7 @@
             <div class="ivs-grid-body">
 
                 <NumberSelector Title="Hp"
-                                Value="@Model.HpIv"
+                                @bind-Value="@Model.HpIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
@@ -75,7 +75,7 @@
                                 isDisabled=@isLocked/>
 
                 <NumberSelector Title="Attack"
-                                Value="@Model.AttackIv"
+                                @bind-Value="@Model.AttackIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
@@ -83,7 +83,7 @@
                                 isDisabled=@isLocked />
 
                 <NumberSelector Title="Defense"
-                                Value="@Model.DefenseIv"
+                                @bind-Value="@Model.DefenseIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
@@ -91,7 +91,7 @@
                                 isDisabled=@isLocked />
 
                 <NumberSelector Title="Sp. Attack"
-                                Value="@Model.SpAttackIv"
+                                @bind-Value="@Model.SpAttackIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
@@ -99,7 +99,7 @@
                                 isDisabled=@isLocked />
 
                 <NumberSelector Title="Sp. Defense"
-                                Value="@Model.SpDefenseIv"
+                                @bind-Value="@Model.SpDefenseIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"
@@ -107,7 +107,7 @@
                                 isDisabled=@isLocked />
 
                 <NumberSelector Title="Speed"
-                                Value="@Model.SpeedIv"
+                                @bind-Value="@Model.SpeedIv"
                                 MinValue="0"
                                 MaxValue="31"
                                 StepSmall="1"

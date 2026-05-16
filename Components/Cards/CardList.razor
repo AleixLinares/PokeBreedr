@@ -1,4 +1,6 @@
 ﻿@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Interfaces
 
 <div class="card-list">
 
@@ -21,6 +23,9 @@
     [Parameter]
     public List<PokemonInfo> Items { get; set; } = new();
 
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
     private void AddCard()
     {
         Items.Insert(0, new PokemonInfo
@@ -33,6 +38,10 @@
 
     private void SaveCard(PokemonInfo model)
     {
+        PokemonInfoDto pokemonDto = new PokemonInfoDto(model);
+
+        this.PokemonPersistanceService.Save(pokemonDto);
+
         model.IsSaved = true;
 
         Console.WriteLine("Card guardada");
@@ -47,6 +56,8 @@
 
     private void DeleteCard(PokemonInfo model)
     {
+        this.PokemonPersistanceService.Delete(model.Guid);
+
         Items.Remove(model);
 
         Console.WriteLine("Card eliminada");
