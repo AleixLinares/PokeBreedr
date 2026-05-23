@@ -5,7 +5,7 @@ using PokeBreedr.Dto;
 
 namespace PokeBreedr.Pages
 {
-    public partial class Test
+    public partial class Home
     {
         [Inject]
         private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
