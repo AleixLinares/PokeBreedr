@@ -7,10 +7,14 @@
     <button class="add-btn" @onclick="AddCard">
         + Añadir Card
     </button>
+    <button class="add-btn" @onclick="SaveAll">
+        Guardar todo
+    </button>
 
     @foreach (var item in Items)
     {
-        <Card Model="item"
+        <Card @key="item.Guid"
+              Model="item"
               OnSave="SaveCard"
               OnCancel="CancelCard"
               OnDelete="DeleteCard" />
@@ -32,26 +36,20 @@
         {
             IsSaved = false
         });
-
-        Console.WriteLine("Nueva card añadida");
     }
 
-    private void SaveCard(PokemonInfo model)
+    private async Task SaveCard(PokemonInfo model)
     {
-        PokemonInfoDto pokemonDto = new PokemonInfoDto(model);
+        var dto = new PokemonInfoDto(model);
 
-        this.PokemonPersistanceService.Save(pokemonDto);
+        await PokemonPersistanceService.Save(dto);
 
         model.IsSaved = true;
-
-        Console.WriteLine("Card guardada");
     }
 
     private void CancelCard(PokemonInfo model)
     {
         Items.Remove(model);
-
-        Console.WriteLine("Card cancelada");
     }
 
     private void DeleteCard(PokemonInfo model)
@@ -59,7 +57,15 @@
         this.PokemonPersistanceService.Delete(model.Guid);
 
         Items.Remove(model);
+    }
 
-        Console.WriteLine("Card eliminada");
+    private async Task SaveAll()
+    {
+        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty).ToList();
+
+        foreach (var item in pendingItems)
+        {
+            await SaveCard(item);
+        }
     }
 }

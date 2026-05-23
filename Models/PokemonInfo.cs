@@ -31,9 +31,9 @@ namespace PokeBreedr.Models
 
         public string Pokemon = string.Empty;
 
-        public PokemonEggGroupEnum? EggGroup1;
+        public string? EggGroup1;
 
-        public PokemonEggGroupEnum? EggGroup2;
+        public string? EggGroup2;
 
         public PokemonGenderEnum? Gender;
 

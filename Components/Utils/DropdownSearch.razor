@@ -63,12 +63,12 @@
 
     protected override void OnParametersSet()
     {
+        if (Options == null || Options.Count == 0)
+            return;
+
         var selected = Options.FirstOrDefault(x => x.Value == Value);
 
-        if (selected is not null)
-        {
-            SearchText = selected.Label;
-        }
+        SearchText = selected?.Label ?? Value ?? "";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -109,12 +109,13 @@
     private async Task SelectOption(DropdownOption option)
     {
         SearchText = option.Label;
-
         IsOpen = false;
 
         Value = option.Value;
 
         await ValueChanged.InvokeAsync(option.Value);
+
+        StateHasChanged();
     }
 
     private void OnInput(ChangeEventArgs e)

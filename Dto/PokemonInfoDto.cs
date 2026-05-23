@@ -30,9 +30,9 @@ namespace PokeBreedr.Dto
 
         public string Pokemon { get; set; } = string.Empty;
 
-        public PokemonEggGroupEnum? EggGroup1 { get; set; }
+        public string? EggGroup1 { get; set; }
 
-        public PokemonEggGroupEnum? EggGroup2 { get; set; }
+        public string? EggGroup2 { get; set; }
 
         public PokemonGenderEnum? Gender { get; set; }
 

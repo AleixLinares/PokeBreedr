@@ -2,6 +2,7 @@
 {
     public class PokemonCSVData
     {
+        public int Number { get; set; }
         public string Name { get; set; } = "";
         public string EggGroup1 { get; set; } = "";
         public string EggGroup2 { get; set; } = "";
