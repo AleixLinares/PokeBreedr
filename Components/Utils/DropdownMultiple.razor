@@ -1,0 +1,104 @@
+﻿@using PokeBreedr.Models
+@typeparam TValue
+
+<div class="multi-select-container">
+
+    <div class="selected-tags">
+
+        @foreach (var selected in SelectedOptions)
+        {
+            <div class="tag">
+
+                <span>@selected.Label</span>
+
+                <button type="button"
+                        class="remove-btn"
+                        @onclick="() => Remove(selected)">
+                    ✕
+                </button>
+
+            </div>
+        }
+
+    </div>
+
+    <select class="dropdown"
+            @bind="TempValue"
+            @bind:after="OnSelected"
+            disabled="@isDisabled">
+
+        <option value="">
+            -- Select one or more options --
+        </option>
+
+        @foreach (var option in AvailableOptions)
+        {
+            <option value="@option.Value">
+                @option.Label
+            </option>
+        }
+
+    </select>
+
+</div>
+
+@code {
+
+    private string TempValue = "";
+
+    [Parameter]
+    public List<DropdownOption> Options { get; set; } = new();
+
+    [Parameter]
+    public List<TValue> Values { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<List<TValue>> ValuesChanged { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; }
+
+    private List<DropdownOption> AvailableOptions =>
+        Options
+            .Where(o => !Values.Any(v => v?.ToString() == o.Value?.ToString()))
+            .ToList();
+
+    private List<DropdownOption> SelectedOptions =>
+        Options
+            .Where(o => Values.Any(v => v?.ToString() == o.Value?.ToString()))
+            .ToList();
+
+    private async Task OnSelected()
+    {
+        if (string.IsNullOrWhiteSpace(TempValue))
+            return;
+
+        var converted =
+            (TValue)Convert.ChangeType(TempValue, typeof(TValue));
+
+        if (Values.Any(v => v?.ToString() == converted?.ToString()))
+        {
+            TempValue = "";
+            return;
+        }
+
+        Values.Add(converted);
+
+        await ValuesChanged.InvokeAsync(Values);
+
+        TempValue = "";
+    }
+
+    private async Task Remove(DropdownOption option)
+    {
+        var existing = Values.FirstOrDefault(v =>
+            v?.ToString() == option.Value?.ToString());
+
+        if (existing is not null)
+        {
+            Values.Remove(existing);
+
+            await ValuesChanged.InvokeAsync(Values);
+        }
+    }
+}

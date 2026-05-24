@@ -1,0 +1,66 @@
+﻿@page "/breeder"
+@using PokeBreedr.Components.Utils
+@using PokeBreedr.Enums
+@using PokeBreedr.Models
+
+<PageTitle>Breeder</PageTitle>
+
+<h3>Breeder</h3>
+
+<DropdownMultiple 
+    TValue="string"
+    Options="NatureOptions"
+    Values="SelectedNatures"
+    ValuesChanged="OnValuesChanged" />
+
+@code {
+
+    private List<string> SelectedNatures = new();
+
+    private List<DropdownOption> NatureOptions = new()
+    {
+        new() { Value = PokemonNatureEnum.Hardy.ToString(), Label = "Hardy" },
+        new() { Value = PokemonNatureEnum.Lonely.ToString(), Label = "Lonely" },
+        new() { Value = PokemonNatureEnum.Brave.ToString(), Label = "Brave" },
+        new() { Value = PokemonNatureEnum.Adamant.ToString(), Label = "Adamant" },
+        new() { Value = PokemonNatureEnum.Naughty.ToString(), Label = "Naughty" },
+
+        new() { Value = PokemonNatureEnum.Bold.ToString(), Label = "Bold" },
+        new() { Value = PokemonNatureEnum.Docile.ToString(), Label = "Docile" },
+        new() { Value = PokemonNatureEnum.Relaxed.ToString(), Label = "Relaxed" },
+        new() { Value = PokemonNatureEnum.Impish.ToString(), Label = "Impish" },
+        new() { Value = PokemonNatureEnum.Lax.ToString(), Label = "Lax" },
+
+        new() { Value = PokemonNatureEnum.Timid.ToString(), Label = "Timid" },
+        new() { Value = PokemonNatureEnum.Hasty.ToString(), Label = "Hasty" },
+        new() { Value = PokemonNatureEnum.Serious.ToString(), Label = "Serious" },
+        new() { Value = PokemonNatureEnum.Jolly.ToString(), Label = "Jolly" },
+        new() { Value = PokemonNatureEnum.Naive.ToString(), Label = "Naive" },
+
+        new() { Value = PokemonNatureEnum.Modest.ToString(), Label = "Modest" },
+        new() { Value = PokemonNatureEnum.Mild.ToString(), Label = "Mild" },
+        new() { Value = PokemonNatureEnum.Quiet.ToString(), Label = "Quiet" },
+        new() { Value = PokemonNatureEnum.Bashful.ToString(), Label = "Bashful" },
+        new() { Value = PokemonNatureEnum.Rash.ToString(), Label = "Rash" },
+
+        new() { Value = PokemonNatureEnum.Calm.ToString(), Label = "Calm" },
+        new() { Value = PokemonNatureEnum.Gentle.ToString(), Label = "Gentle" },
+        new() { Value = PokemonNatureEnum.Sassy.ToString(), Label = "Sassy" },
+        new() { Value = PokemonNatureEnum.Careful.ToString(), Label = "Careful" },
+        new() { Value = PokemonNatureEnum.Quirky.ToString(), Label = "Quirky" },
+    };
+
+    private Task OnValuesChanged(List<string> values)
+    {
+        SelectedNatures = values;
+
+        Console.WriteLine(string.Join(",", SelectedNatures));
+
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
+    }
+}

@@ -4,12 +4,15 @@
 
 <div class="card-list">
 
-    <button class="add-btn" @onclick="AddCard">
-        + Añadir Card
-    </button>
-    <button class="add-btn" @onclick="SaveAll">
-        Guardar todo
-    </button>
+    <div class="actions">
+        <button class="add-btn" @onclick="AddCard">
+            + Añadir Card
+        </button>
+
+        <button class="add-btn" @onclick="SaveAll">
+            Guardar todo
+        </button>
+    </div>
 
     @foreach (var item in Items)
     {
