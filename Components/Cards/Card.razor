@@ -44,6 +44,16 @@
                 </label>
             </div>
 
+            <div class="field">
+                <label>
+                    Alfa
+                     <input type="checkbox"
+                         class="card-checkbox"
+                           @bind="Model.IsAlfa" 
+                           />
+                </label>
+            </div>
+
             <!-- Gender -->
             <div class="field">
                 <label>Gender</label>
@@ -169,7 +179,7 @@
 
     private List<DropdownOption> PokemonOptions = new();
 
-    private string PokemonImage = null;
+    private string? PokemonImage = null;
 
     protected override async Task OnInitializedAsync()
     {
