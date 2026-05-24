@@ -128,20 +128,20 @@
 
     <div class="card-actions">
 
-        <button @onclick="Save"
+        <button class="card-button" @onclick="Save"
                 disabled="@string.IsNullOrWhiteSpace(Model.Pokemon)">
             @(Model.IsSaved ? "Actualizar" : "Guardar")
         </button>
 
         @if (Model.IsSaved)
         {
-            <button @onclick="Delete">
+            <button class="card-button" @onclick="Delete">
                 Eliminar
             </button>
         }
         else
         {
-            <button @onclick="Cancel">
+            <button class="card-button" @onclick="Cancel">
                 Cancelar
             </button>
         }
@@ -173,6 +173,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
+
         var pokemonNames = await PokemonService.GetAllPokemonsNames();
 
         PokemonOptions = pokemonNames
