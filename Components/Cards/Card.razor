@@ -29,6 +29,13 @@
                                              : $"data:image/png;base64,{PokemonImage}")"
                      alt="Pokemon Avatar"
                      class="pokemon-image" />
+                @if(Model.IsAlfa) 
+                {
+                    <img src = "assets/alphaIcon.webp"
+                            class="pokemon-alpha-icon" 
+                            alt="Alpha icon">
+                }
+                
             </div>
 
         </div>
@@ -41,6 +48,16 @@
                 <label>
                     Egg Group:
                     @Model.EggGroup1@(Model.EggGroup2 == "" ? "" : $" / {Model.EggGroup2}")
+                </label>
+            </div>
+
+            <div class="field">
+                <label>
+                    Alfa
+                     <input type="checkbox"
+                         class="card-checkbox"
+                           @bind="Model.IsAlfa" 
+                           />
                 </label>
             </div>
 
@@ -169,7 +186,7 @@
 
     private List<DropdownOption> PokemonOptions = new();
 
-    private string PokemonImage = null;
+    private string? PokemonImage = null;
 
     protected override async Task OnInitializedAsync()
     {

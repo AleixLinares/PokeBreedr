@@ -16,6 +16,7 @@ namespace PokeBreedr.Dto
             this.Pokemon = pokemonInfo.Pokemon;
             this.EggGroup1 = pokemonInfo.EggGroup1;
             this.EggGroup2 = pokemonInfo.EggGroup2;
+            this.IsAlfa = pokemonInfo.IsAlfa;
             this.Gender = pokemonInfo.Gender;
             this.Nature = pokemonInfo.Nature;
             this.HpIv = pokemonInfo.HpIv;
@@ -33,6 +34,8 @@ namespace PokeBreedr.Dto
         public string? EggGroup1 { get; set; }
 
         public string? EggGroup2 { get; set; }
+
+        public bool IsAlfa { get; set; }
 
         public PokemonGenderEnum? Gender { get; set; }
 
