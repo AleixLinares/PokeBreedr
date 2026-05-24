@@ -1,7 +1,14 @@
-﻿@page "/"
+@page "/"
+@using PokeBreedr.Components
+@using PokeBreedr.Components.Cards
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+@if(isLoading)
+{
+	<p>Loading...</p>
+}
+else 
+{
+	<CardList Items=cards />
+}

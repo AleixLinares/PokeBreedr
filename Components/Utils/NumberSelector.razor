@@ -1,0 +1,105 @@
+﻿<div class="number-selector">
+
+    <lable class="title-header"> @Title </lable>
+
+    <!-- MAX -->
+    <button class="vertical-button max-button"
+            @onclick="SetMax"
+            disabled=@isDisabled>
+        Max
+    </button>
+
+    <!-- STEP LARGE UP -->
+    <button class="vertical-button"
+            @onclick="() => Change(StepLarge)"
+            disabled=@isDisabled>
+        <div class="rotate-content"> &gt;&gt;</div>       
+    </button>
+
+    <!-- STEP SMALL UP -->
+    <button class="vertical-button"
+            @onclick="() => Change(StepSmall)"
+            disabled=@isDisabled>
+
+        <div class="rotate-content"> &gt;</div>
+    </button>
+
+    <!-- INPUT -->
+    <input type="number"
+            @bind="@CurrentValue"
+            min="@MinValue"
+            max="@MaxValue"
+            @oninput="OnInput"
+            class="value-input"
+            disabled=@isDisabled/>
+
+    <!-- STEP SMALL DOWN -->
+    <button class="vertical-button"
+            @onclick="() => Change(-StepSmall)"
+            disabled=@isDisabled>
+        <div class="rotate-content"> &lt;</div>
+    </button>
+
+    <!-- STEP LARGE DOWN -->
+    <button class="vertical-button"
+            @onclick="() => Change(-StepLarge)"
+            disabled=@isDisabled>
+
+        <div class="rotate-content"> &lt;&lt;</div>
+    </button>
+
+    <!-- MIN -->
+    <button class="vertical-button min-button"
+            @onclick="SetMin"
+            disabled=@isDisabled>
+        Min
+    </button>
+
+</div>
+@code {
+
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public byte Value { get; set; }
+    [Parameter] public EventCallback<byte> ValueChanged { get; set; }
+
+    [Parameter] public int MinValue { get; set; } = 0;
+    [Parameter] public int MaxValue { get; set; } = 100;
+
+    [Parameter] public int StepSmall { get; set; } = 1;
+    [Parameter] public int StepLarge { get; set; } = 10;
+
+    [Parameter] public bool isDisabled { get; set; } = false;
+
+    private int CurrentValue
+    {
+        get => Math.Clamp(Value, MinValue, MaxValue);
+
+        set
+        {
+            var clamped = Math.Clamp(value, MinValue, MaxValue);
+
+            if (Value != clamped)
+            {
+                Value = (byte)clamped;
+                ValueChanged.InvokeAsync(Value);
+            }
+        }
+    }
+
+    private void Change(int delta)
+        => CurrentValue += delta;
+
+    private void SetMin()
+        => CurrentValue = MinValue;
+
+    private void SetMax()
+        => CurrentValue = MaxValue;
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var v))
+        {
+            CurrentValue = v;
+        }
+    }
+}

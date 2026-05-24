@@ -1,0 +1,42 @@
+@using PokeBreedr.Models
+@typeparam TValue
+
+<select class="dropdown"
+        @bind="CurrentValue"
+        disabled=@isDisabled>
+
+    @if (AllowEmpty)
+    {
+        <option value="">-- Select an option --</option>
+    }
+
+    @foreach (var option in Options)
+    {
+        <option value="@option.Value">
+            @option.Label
+        </option>
+    }
+</select>
+
+@code {
+
+    [Parameter]
+    public List<DropdownOption> Options { get; set; } = new();
+
+    [Parameter]
+    public TValue? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<TValue?> ValueChanged { get; set; }
+
+    [Parameter]
+    public bool AllowEmpty { get; set; } = true;
+
+    [Parameter] public bool isDisabled { get; set; } = false;
+
+    private TValue? CurrentValue
+    {
+        get => Value;
+        set => ValueChanged.InvokeAsync(value);
+    }
+}

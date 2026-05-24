@@ -1,11 +1,71 @@
 ﻿@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Interfaces
+
 <div class="card-list">
+
+    <button class="add-btn" @onclick="AddCard">
+        + Añadir Card
+    </button>
+    <button class="add-btn" @onclick="SaveAll">
+        Guardar todo
+    </button>
+
     @foreach (var item in Items)
     {
-        <Card/>
+        <Card @key="item.Guid"
+              Model="item"
+              OnSave="SaveCard"
+              OnCancel="CancelCard"
+              OnDelete="DeleteCard" />
     }
+
 </div>
 
 @code {
-    [Parameter] public List<CardModel> Items { get; set; } = new();
+
+    [Parameter]
+    public List<PokemonInfo> Items { get; set; } = new();
+
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    private void AddCard()
+    {
+        Items.Insert(0, new PokemonInfo
+        {
+            IsSaved = false
+        });
+    }
+
+    private async Task SaveCard(PokemonInfo model)
+    {
+        var dto = new PokemonInfoDto(model);
+
+        await PokemonPersistanceService.Save(dto);
+
+        model.IsSaved = true;
+    }
+
+    private void CancelCard(PokemonInfo model)
+    {
+        Items.Remove(model);
+    }
+
+    private void DeleteCard(PokemonInfo model)
+    {
+        this.PokemonPersistanceService.Delete(model.Guid);
+
+        Items.Remove(model);
+    }
+
+    private async Task SaveAll()
+    {
+        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty).ToList();
+
+        foreach (var item in pendingItems)
+        {
+            await SaveCard(item);
+        }
+    }
 }

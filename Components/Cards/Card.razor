@@ -1,8 +1,296 @@
+@using Microsoft.AspNetCore.Components.Rendering
+@using PokeBreedr.Components.Utils
+@using PokeBreedr.Enums
+@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Services
+
+@inject PokemonInitialLoad PokemonService
+
 <div class="card-container">
-    <div class="card-header">
-        test
+    <div class="card-body-grid">
+
+        <!-- Columna izquierda -->
+        <div class="left-column">
+
+            <!-- Pokemon -->
+            <div class="field">
+                <label>Pokemon</label>
+
+                <DropdownSearch Options="PokemonOptions"
+                                Value="@Model.Pokemon"
+                                ValueChanged="OnPokemonChanged" />
+            </div>
+
+            <!-- Imagen -->
+            <div class="pokemon-image-container">
+                <img src="@(string.IsNullOrWhiteSpace(PokemonImage)
+                                             ? "assets/defaultAvatar.png"
+                                             : $"data:image/png;base64,{PokemonImage}")"
+                     alt="Pokemon Avatar"
+                     class="pokemon-image" />
+            </div>
+
+        </div>
+
+        <!-- Columna central -->
+        <div class="middle-column">
+
+            <!-- Egg Group -->
+            <div class="field">
+                <label>
+                    Egg Group:
+                    @Model.EggGroup1@(Model.EggGroup2 == "" ? "" : $" / {Model.EggGroup2}")
+                </label>
+            </div>
+
+            <!-- Gender -->
+            <div class="field">
+                <label>Gender</label>
+
+                <Dropdown TValue="PokemonGenderEnum?"
+                          Options="GenderOptions"
+                          @key="GenderOptions"
+                          @bind-Value="Model.Gender"
+                          isDisabled="@(isLocked || isGenderLocked)" />
+            </div>
+
+            <!-- Nature -->
+            <div class="field">
+                <label>Nature</label>
+
+                <Dropdown TValue="PokemonNatureEnum?"
+                          Options="NatureOptions"
+                          @bind-Value="Model.Nature"
+                          isDisabled="@isLocked" />
+            </div>
+
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="right-column">
+
+            <div class="ivs-grid-body">
+
+                <NumberSelector Title="Hp"
+                                @bind-Value="@Model.HpIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+                <NumberSelector Title="Attack"
+                                @bind-Value="@Model.AttackIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+                <NumberSelector Title="Defense"
+                                @bind-Value="@Model.DefenseIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+                <NumberSelector Title="Sp. Attack"
+                                @bind-Value="@Model.SpAttackIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+                <NumberSelector Title="Sp. Defense"
+                                @bind-Value="@Model.SpDefenseIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+                <NumberSelector Title="Speed"
+                                @bind-Value="@Model.SpeedIv"
+                                MinValue="0"
+                                MaxValue="31"
+                                StepSmall="1"
+                                StepLarge="10"
+                                isDisabled="@isLocked" />
+
+            </div>
+
+        </div>
+
     </div>
-    <div class="card-body">
-        ChildContent
+
+    <div class="card-actions">
+
+        <button @onclick="Save"
+                disabled="@string.IsNullOrWhiteSpace(Model.Pokemon)">
+            @(Model.IsSaved ? "Actualizar" : "Guardar")
+        </button>
+
+        @if (Model.IsSaved)
+        {
+            <button @onclick="Delete">
+                Eliminar
+            </button>
+        }
+        else
+        {
+            <button @onclick="Cancel">
+                Cancelar
+            </button>
+        }
+
     </div>
+
 </div>
+
+@code {
+
+    [Parameter]
+    public PokemonInfo Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback<PokemonInfo> OnDelete { get; set; }
+
+    private bool isLocked => string.IsNullOrWhiteSpace(Model.Pokemon);
+    private bool isGenderLocked = false;
+
+    private List<DropdownOption> PokemonOptions = new();
+
+    private string PokemonImage = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var pokemonNames = await PokemonService.GetAllPokemonsNames();
+
+        PokemonOptions = pokemonNames
+            .Select(name => new DropdownOption
+            {
+                Value = name,
+                Label = name
+            })
+            .ToList();
+
+        // Si ya viene un pokemon seleccionado
+        if (!string.IsNullOrWhiteSpace(Model.Pokemon))
+        {
+            await LoadPokemonInfo(Model.Pokemon);
+        }
+    }
+
+    private async Task OnPokemonChanged(string pokemonName)
+    {
+        if (Model.Pokemon == pokemonName)
+            return;
+
+        Model.Pokemon = pokemonName;
+
+        await LoadPokemonInfo(pokemonName);
+    }
+
+    private async Task LoadPokemonInfo(string pokemonName)
+    {
+        var pokemonInfo = await PokemonService.GetPokemonInfo(pokemonName);
+
+        Model.EggGroup1 = pokemonInfo.EggGroup1;
+        Model.EggGroup2 = pokemonInfo.EggGroup2;
+
+        PokemonImage = pokemonInfo.ImageBase64;
+
+        if(Model.EggGroup1 == "Ditto")
+        {
+            GenderOptions = new()
+            {
+                new() { Value = PokemonGenderEnum.Ditto.ToString(), Label = "Ditto" }
+            };
+
+            Model.Gender = PokemonGenderEnum.Ditto;
+            isGenderLocked = true;
+        }
+        else if (Model.EggGroup1 == "Genderless")
+        {
+            GenderOptions = new()
+            {
+                new() { Value = PokemonGenderEnum.Genderless.ToString(), Label = "Genderless" }
+            };
+
+            Model.Gender = PokemonGenderEnum.Genderless;
+            isGenderLocked = true;
+        }
+        else
+        {
+            GenderOptions = new()
+            {
+                new() { Value = PokemonGenderEnum.Male.ToString(), Label = "Male" },
+                new() { Value = PokemonGenderEnum.Female.ToString(), Label = "Female" }
+            };
+
+            isGenderLocked = false;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private List<DropdownOption> GenderOptions = new();
+
+    private List<DropdownOption> NatureOptions = new()
+    {
+        new() { Value = PokemonNatureEnum.Hardy.ToString(), Label = "Hardy" },
+        new() { Value = PokemonNatureEnum.Lonely.ToString(), Label = "Lonely" },
+        new() { Value = PokemonNatureEnum.Brave.ToString(), Label = "Brave" },
+        new() { Value = PokemonNatureEnum.Adamant.ToString(), Label = "Adamant" },
+        new() { Value = PokemonNatureEnum.Naughty.ToString(), Label = "Naughty" },
+
+        new() { Value = PokemonNatureEnum.Bold.ToString(), Label = "Bold" },
+        new() { Value = PokemonNatureEnum.Docile.ToString(), Label = "Docile" },
+        new() { Value = PokemonNatureEnum.Relaxed.ToString(), Label = "Relaxed" },
+        new() { Value = PokemonNatureEnum.Impish.ToString(), Label = "Impish" },
+        new() { Value = PokemonNatureEnum.Lax.ToString(), Label = "Lax" },
+
+        new() { Value = PokemonNatureEnum.Timid.ToString(), Label = "Timid" },
+        new() { Value = PokemonNatureEnum.Hasty.ToString(), Label = "Hasty" },
+        new() { Value = PokemonNatureEnum.Serious.ToString(), Label = "Serious" },
+        new() { Value = PokemonNatureEnum.Jolly.ToString(), Label = "Jolly" },
+        new() { Value = PokemonNatureEnum.Naive.ToString(), Label = "Naive" },
+
+        new() { Value = PokemonNatureEnum.Modest.ToString(), Label = "Modest" },
+        new() { Value = PokemonNatureEnum.Mild.ToString(), Label = "Mild" },
+        new() { Value = PokemonNatureEnum.Quiet.ToString(), Label = "Quiet" },
+        new() { Value = PokemonNatureEnum.Bashful.ToString(), Label = "Bashful" },
+        new() { Value = PokemonNatureEnum.Rash.ToString(), Label = "Rash" },
+
+        new() { Value = PokemonNatureEnum.Calm.ToString(), Label = "Calm" },
+        new() { Value = PokemonNatureEnum.Gentle.ToString(), Label = "Gentle" },
+        new() { Value = PokemonNatureEnum.Sassy.ToString(), Label = "Sassy" },
+        new() { Value = PokemonNatureEnum.Careful.ToString(), Label = "Careful" },
+        new() { Value = PokemonNatureEnum.Quirky.ToString(), Label = "Quirky" },
+    };
+
+    private async Task Save()
+    {
+        await OnSave.InvokeAsync(Model);
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancel.InvokeAsync(Model);
+    }
+
+    private async Task Delete()
+    {
+        await OnDelete.InvokeAsync(Model);
+    }
+
+}
