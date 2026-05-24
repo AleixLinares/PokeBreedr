@@ -29,6 +29,13 @@
                                              : $"data:image/png;base64,{PokemonImage}")"
                      alt="Pokemon Avatar"
                      class="pokemon-image" />
+                @if(Model.IsAlfa) 
+                {
+                    <img src = "assets/alphaIcon.webp"
+                            class="pokemon-alpha-icon" 
+                            alt="Alpha icon">
+                }
+                
             </div>
 
         </div>
