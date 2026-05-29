@@ -1,0 +1,144 @@
+﻿.config-card-container {
+    background-color: #ffffff;
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+/* =========================
+   HEADER
+========================= */
+.config-card-header {
+    padding: 20px;
+    border-bottom: 1px solid #ececec;
+}
+
+.config-name-field {
+    width: 40%;
+}
+
+/* =========================
+   BODY LAYOUT
+========================= */
+.config-card-body {
+    padding: 20px;
+}
+
+.config-main-grid {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* columnas */
+.config-left,
+.config-right {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* asegurar misma altura visual */
+.config-section {
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fcfcfc;
+    flex: 1;
+}
+
+/* =========================
+   TITLES
+========================= */
+.section-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #333;
+}
+
+/* =========================
+   FIELDS
+========================= */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* =========================
+   IV ROWS (ALIGNED)
+========================= */
+.iv-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.iv-row {
+    display: grid;
+    grid-template-columns: 110px 70px 20px 70px;
+    align-items: center;
+    gap: 10px;
+}
+
+    /* label fijo para evitar desplazamientos */
+    .iv-row span:first-child {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    /* inputs uniformes */
+    .iv-row input {
+        width: 70px;
+        height: 34px;
+        padding: 0 8px;
+        border: 1px solid #cfcfcf;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    /* separador */
+    .iv-row span:nth-child(3) {
+        text-align: center;
+        color: #666;
+    }
+
+/* =========================
+   CHECKBOX
+========================= */
+.config-checkbox {
+    width: 17px;
+    height: 17px;
+    margin-left: 6px;
+}
+
+/* =========================
+   ACTIONS
+========================= */
+.config-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 18px 20px;
+    border-top: 1px solid #ececec;
+    background-color: #fafafa;
+}
+
+.config-card-button {
+    padding: 10px 14px;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+    .config-card-button:hover {
+        border-color: #999;
+    }

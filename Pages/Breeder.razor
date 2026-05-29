@@ -1,4 +1,6 @@
 ﻿@page "/breeder"
+
+@using PokeBreedr.Components.Cards
 @using PokeBreedr.Components.Utils
 @using PokeBreedr.Enums
 @using PokeBreedr.Models
@@ -13,8 +15,83 @@
     Values="SelectedNatures"
     ValuesChanged="OnValuesChanged" />
 
+<!-- CONFIG VACÍA -->
+<ConfigCard Model="EmptyConfig"
+            OnSave="OnSave"
+            OnCancel="OnCancel"
+            OnDelete="OnDelete" />
+
+<!-- CONFIG CON DATOS -->
+<ConfigCard Model="FilledConfig"
+            OnSave="OnSave"
+            OnCancel="OnCancel"
+            OnDelete="OnDelete" />
+
 @code {
 
+    private ConfigCardInfo EmptyConfig = new()
+    {
+    };
+
+    private ConfigCardInfo FilledConfig = new()
+    {
+        ConfigName = "Perfect Physical Breeders",
+
+        OnlyEggGroup1 = "Monster",
+        OnlyEggGroup2 = "Dragon",
+
+        OnlyAlfa = true,
+
+        SelectedNatures = new()
+        {
+            "Adamant",
+             "Jolly",
+            "Brave"
+        },
+
+        MinHpIv = 25,
+        MaxHpIv = 31,
+
+        MinAttackIv = 31,
+        MaxAttackIv = 31,
+
+        MinDefenseIv = 20,
+        MaxDefenseIv = 31,
+
+        MinSpAttackIv = 0,
+        MaxSpAttackIv = 10,
+
+        MinSpDefenseIv = 20,
+        MaxSpDefenseIv = 31,
+
+        MinSpeedIv = 25,
+        MaxSpeedIv = 31,
+
+        IsSaved = true
+    };
+
+    private async Task OnSave(ConfigCardInfo config)
+    {
+        Console.WriteLine($"SAVE -> {config.ConfigName}");
+
+        await Task.CompletedTask;
+    }
+
+    private async Task OnCancel(ConfigCardInfo config)
+    {
+        Console.WriteLine($"CANCEL -> {config.ConfigName}");
+
+        await Task.CompletedTask;
+    }
+
+    private async Task OnDelete(ConfigCardInfo config)
+    {
+        Console.WriteLine($"DELETE -> {config.ConfigName}");
+
+        await Task.CompletedTask;
+    }
+
+    
     private List<string> SelectedNatures = new();
 
     private List<DropdownOption> NatureOptions = new()
@@ -63,4 +140,5 @@
     {
         NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
     }
+
 }
