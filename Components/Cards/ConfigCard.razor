@@ -33,6 +33,7 @@
                     <div class="field">
                         <label>
                             <input type="checkbox"
+                                    class="card-checkbox"
                                    @bind="Model.OnlyAlfa" />
                             Only Alfa
                         </label>
@@ -124,13 +125,13 @@
     </div>
 
     <!-- ACTIONS -->
-    <div class="config-card-actions">
+    <div>
 
-        <button class="config-card-button" @onclick="Save">
+        <button class="card-button" @onclick="Save">
             @(Model.IsSaved ? "Update" : "Save")
         </button>
 
-        <button class="config-card-button" @onclick="Cancel">
+        <button class="card-button" @onclick="Cancel">
             Cancel
         </button>
 

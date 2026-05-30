@@ -106,39 +106,3 @@
         text-align: center;
         color: #666;
     }
-
-/* =========================
-   CHECKBOX
-========================= */
-.config-checkbox {
-    width: 17px;
-    height: 17px;
-    margin-left: 6px;
-}
-
-/* =========================
-   ACTIONS
-========================= */
-.config-card-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 18px 20px;
-    border-top: 1px solid #ececec;
-    background-color: #fafafa;
-}
-
-.config-card-button {
-    padding: 10px 14px;
-    border: 1px solid #cfcfcf;
-    border-radius: 6px;
-    background-color: white;
-    color: #222;
-    font-size: 14px;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-}
-
-    .config-card-button:hover {
-        border-color: #999;
-    }

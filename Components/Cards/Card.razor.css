@@ -96,22 +96,3 @@
     flex-direction: column;
     gap: 6px;
 }
-
-.card-button {
-    padding: 10px 12px;
-    border: 1px solid #cfcfcf;
-    border-radius: 6px;
-    background-color: white;
-    color: #222;
-    font-size: 14px;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-    margin: 5px;
-}
-
-.card-checkbox {
-    width: 17px;
-    height: 17px;
-}
-
