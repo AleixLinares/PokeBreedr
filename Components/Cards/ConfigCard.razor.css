@@ -5,6 +5,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     margin-bottom: 24px;
+    display: inline-block;
 }
 
 /* =========================
@@ -15,8 +16,15 @@
     border-bottom: 1px solid #ececec;
 }
 
-.config-name-field {
-    width: 40%;
+.config-text-input {
+    padding: 10px 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-size: 14px;
+    outline: none;
+    width: 50%;
 }
 
 /* =========================
@@ -80,7 +88,7 @@
 
 .iv-row {
     display: grid;
-    grid-template-columns: 110px 70px 20px 70px;
+    grid-template-columns: 110px 140px 40px 140px;
     align-items: center;
     gap: 10px;
 }
@@ -91,18 +99,28 @@
         white-space: nowrap;
     }
 
-    /* inputs uniformes */
-    .iv-row input {
-        width: 70px;
-        height: 34px;
-        padding: 0 8px;
-        border: 1px solid #cfcfcf;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
     /* separador */
     .iv-row span:nth-child(3) {
         text-align: center;
         color: #666;
     }
+
+    .iv-input {
+        padding: 10px 12px;
+        border: 1px solid #cfcfcf;
+        border-radius: 6px;
+        background-color: white;
+        color: #222;
+        font-size: 14px;
+        outline: none;
+    }
+
+/* =========================
+   CHECKBOX
+========================= */
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* separación entre texto y checkbox */
+}
