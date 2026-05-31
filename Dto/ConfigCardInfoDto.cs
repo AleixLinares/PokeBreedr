@@ -12,7 +12,15 @@ namespace PokeBreedr.Dto
 
         public ConfigCardInfoDto(ConfigCardInfo cardInfo)
         {
-            this.Guid = cardInfo.Guid;
+            if (!cardInfo.Guid.HasValue)
+            {
+                this.Guid = Guid.NewGuid();
+            }
+            else
+            {
+                this.Guid = cardInfo.Guid.Value;
+            }
+
             this.ConfigName = cardInfo.ConfigName;
             this.OnlyEggGroup1 = cardInfo.OnlyEggGroup1;
             this.OnlyEggGroup2 = cardInfo.OnlyEggGroup2;
@@ -48,7 +56,7 @@ namespace PokeBreedr.Dto
 
         public bool OnlyAlfa { get; set; }
 
-        public List<string?> SelectedNatures = new List<string?>();
+        public List<string?> SelectedNatures { get; set; } = new ();
 
         public byte MinHpIv { get; set; }
         public byte MaxHpIv { get; set; }

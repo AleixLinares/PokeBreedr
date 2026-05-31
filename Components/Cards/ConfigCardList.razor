@@ -1,0 +1,95 @@
+﻿@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Interfaces
+@using System.Text.Json;
+
+<div class="card-list">
+
+    <div class="actions">
+        <button class="add-btn" @onclick="AddCard">
+            + Añadir Card
+        </button>
+
+        <button class="add-btn" @onclick="SaveAll">
+            Guardar todo
+        </button>
+    </div>
+
+    @foreach (var item in Items)
+    {
+        <ConfigCard @key="item.Guid"
+              Model="item"
+              OnSave="SaveCard"
+              OnCancel="CancelCard"
+              OnDelete="DeleteCard" />
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<ConfigCardInfo> Items { get; set; } = new();
+
+    [Inject]
+    private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
+
+    private void AddCard()
+    {
+        Items.Insert(0, new ConfigCardInfo
+        {
+            IsSaved = false
+        });
+    }
+
+    private async Task SaveCard(ConfigCardInfo model)
+    {
+
+        Console.WriteLine("===== MODEL =====");
+        Console.WriteLine(
+            JsonSerializer.Serialize(
+                model,
+                new JsonSerializerOptions { WriteIndented = true }
+            )
+        );
+
+        var dto = new ConfigCardInfoDto(model);
+
+        Console.WriteLine("===== DTO =====");
+        Console.WriteLine(
+            JsonSerializer.Serialize(
+                dto,
+                new JsonSerializerOptions { WriteIndented = true }
+            )
+        );
+
+        await BreedConfigPersistenceService.Save(dto);
+
+        model.IsSaved = true;
+    }
+
+    private void CancelCard(ConfigCardInfo model)
+    {
+        Items.Remove(model);
+    }
+
+    private void DeleteCard(ConfigCardInfo model)
+    {
+        if (model.Guid.HasValue)
+        {
+            this.BreedConfigPersistenceService.Delete(model.Guid.Value);
+        }        
+
+        Items.Remove(model);
+    }
+
+    private async Task SaveAll()
+    {
+        var pendingItems = Items.Where(x => !x.Guid.HasValue).ToList();
+
+        foreach (var item in pendingItems)
+        {
+            await SaveCard(item);
+        }
+    }
+}

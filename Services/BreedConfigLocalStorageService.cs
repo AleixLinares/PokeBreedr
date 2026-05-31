@@ -95,7 +95,7 @@ namespace PokeBreedr.Services
                     ? new List<ConfigCardInfoDto>()
                     : JsonSerializer.Deserialize<List<ConfigCardInfoDto>>(json)!;
 
-                return deserialized;
+                return deserialized.OrderBy(i => i.ConfigName).ToList();
             }
             catch (Exception e)
             {

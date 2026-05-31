@@ -40,7 +40,7 @@ namespace PokeBreedr.Models
             this.IsSaved = true;
         }
 
-        public Guid Guid { get; set; } = Guid.NewGuid();
+        public Guid? Guid { get; set; }
 
         public string? ConfigName { get; set; }
 
@@ -50,7 +50,7 @@ namespace PokeBreedr.Models
 
         public bool OnlyAlfa;
 
-        public List<string?> SelectedNatures = new List<string?>();
+        public List<string?> SelectedNatures { get; set; } = new();
 
         public bool IsSaved { get; set; }
 
@@ -77,8 +77,8 @@ namespace PokeBreedr.Models
             get => _minHpIv;
             set
             {
-                ValidateRange(value, MaxHpIv, nameof(MinHpIv), nameof(MaxHpIv));
-                _minHpIv = value;
+                var correctValue = ValidateRange(value, MaxHpIv, nameof(MinHpIv), nameof(MaxHpIv), value);
+                _minHpIv = correctValue;
             }
         }
 
@@ -87,8 +87,8 @@ namespace PokeBreedr.Models
             get => _maxHpIv;
             set
             {
-                ValidateRange(MinHpIv, value, nameof(MinHpIv), nameof(MaxHpIv));
-                _maxHpIv = value;
+                var correctValue = ValidateRange(MinHpIv, value, nameof(MinHpIv), nameof(MaxHpIv), value);
+                _maxHpIv = correctValue;
             }
         }
 
@@ -97,8 +97,8 @@ namespace PokeBreedr.Models
             get => _minAttackIv;
             set
             {
-                ValidateRange(value, MaxAttackIv, nameof(MinAttackIv), nameof(MaxAttackIv));
-                _minAttackIv = value;
+                var correctValue = ValidateRange(value, MaxAttackIv, nameof(MinAttackIv), nameof(MaxAttackIv), value);
+                _minAttackIv = correctValue;
             }
         }
 
@@ -107,8 +107,8 @@ namespace PokeBreedr.Models
             get => _maxAttackIv;
             set
             {
-                ValidateRange(MinAttackIv, value, nameof(MinAttackIv), nameof(MaxAttackIv));
-                _maxAttackIv = value;
+                var correctValue = ValidateRange(MinAttackIv, value, nameof(MinAttackIv), nameof(MaxAttackIv), value);
+                _maxAttackIv = correctValue;
             }
         }
 
@@ -117,8 +117,8 @@ namespace PokeBreedr.Models
             get => _minDefenseIv;
             set
             {
-                ValidateRange(value, MaxDefenseIv, nameof(MinDefenseIv), nameof(MaxDefenseIv));
-                _minDefenseIv = value;
+                var correctValue = ValidateRange(value, MaxDefenseIv, nameof(MinDefenseIv), nameof(MaxDefenseIv), value);
+                _minDefenseIv = correctValue;
             }
         }
 
@@ -127,8 +127,8 @@ namespace PokeBreedr.Models
             get => _maxDefenseIv;
             set
             {
-                ValidateRange(MinDefenseIv, value, nameof(MinDefenseIv), nameof(MaxDefenseIv));
-                _maxDefenseIv = value;
+                var correctValue = ValidateRange(MinDefenseIv, value, nameof(MinDefenseIv), nameof(MaxDefenseIv), value);
+                _maxDefenseIv = correctValue;
             }
         }
 
@@ -137,8 +137,8 @@ namespace PokeBreedr.Models
             get => _minSpAttackIv;
             set
             {
-                ValidateRange(value, MaxSpAttackIv, nameof(MinSpAttackIv), nameof(MaxSpAttackIv));
-                _minSpAttackIv = value;
+                var correctValue = ValidateRange(value, MaxSpAttackIv, nameof(MinSpAttackIv), nameof(MaxSpAttackIv), value);
+                _minSpAttackIv = correctValue;
             }
         }
 
@@ -147,8 +147,8 @@ namespace PokeBreedr.Models
             get => _maxSpAttackIv;
             set
             {
-                ValidateRange(MinSpAttackIv, value, nameof(MinSpAttackIv), nameof(MaxSpAttackIv));
-                _maxSpAttackIv = value;
+                var correctValue = ValidateRange(MinSpAttackIv, value, nameof(MinSpAttackIv), nameof(MaxSpAttackIv), value);
+                _maxSpAttackIv = correctValue;
             }
         }
 
@@ -158,8 +158,8 @@ namespace PokeBreedr.Models
             get => _minSpDefenseIv;
             set
             {
-                ValidateRange(value, MaxSpDefenseIv, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv));
-                _minSpDefenseIv = value;
+                var correctValue = ValidateRange(value, MaxSpDefenseIv, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv), value);
+                _minSpDefenseIv = correctValue;
             }
         }
 
@@ -168,8 +168,8 @@ namespace PokeBreedr.Models
             get => _maxSpDefenseIv;
             set
             {
-                ValidateRange(MinSpDefenseIv, value, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv));
-                _maxSpDefenseIv = value;
+                var correctValue = ValidateRange(MinSpDefenseIv, value, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv), value);
+                _maxSpDefenseIv = correctValue;
             }
         }
 
@@ -178,8 +178,8 @@ namespace PokeBreedr.Models
             get => _minSpeedIv;
             set
             {
-                ValidateRange(value, MaxSpeedIv, nameof(MinSpeedIv), nameof(MaxSpeedIv));
-                _minSpeedIv = value;
+                var correctValue = ValidateRange(value, MaxSpeedIv, nameof(MinSpeedIv), nameof(MaxSpeedIv), value);
+                _minSpeedIv = correctValue;
             }
         }
 
@@ -188,21 +188,35 @@ namespace PokeBreedr.Models
             get => _maxSpeedIv;
             set
             {
-                ValidateRange(MinSpeedIv, value, nameof(MinSpeedIv), nameof(MaxSpeedIv));
-                _maxSpeedIv = value;
+                var correctValue = ValidateRange(MinSpeedIv, value, nameof(MinSpeedIv), nameof(MaxSpeedIv), value);
+                _maxSpeedIv = correctValue;
             }
         }
 
-        private static void ValidateRange(int min, int max, string minName, string maxName)
+        private static int ValidateRange(int min, int max, string minName, string maxName, int desiredValue)
         {
             if (min < 0 || min > 31)
-                throw new ArgumentOutOfRangeException(minName, $"{minName} debe estar entre 0 y 31.");
+            {
+                if (min < 0)
+                {
+                    return 0;
+                }
+                return 31;
+            }
 
             if (max < 0 || max > 31)
-                throw new ArgumentOutOfRangeException(maxName, $"{maxName} debe estar entre 0 y 31.");
+            {
+                if (max < 0)
+                {
+                    return 0;
+                }
+                return 31;
+            }
 
             if (min > max)
-                throw new ArgumentException($"{minName} no puede ser mayor que {maxName}.");
+                return min;
+
+            return desiredValue;
         }
     }
 }

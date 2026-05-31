@@ -58,8 +58,7 @@
 
                         <DropdownMultiple TValue="string"
                                           Options="NatureOptions"
-                                          Values="Model.SelectedNatures"
-                                          ValuesChanged="OnNaturesChanged" />
+                                          @bind-Values="Model.SelectedNatures"/>
                     </div>
                 </div>
 
@@ -168,13 +167,6 @@
         await OnDelete.InvokeAsync(Model);
     }
 
-    private async Task OnNaturesChanged(List<string?> values)
-    {
-        Model.SelectedNatures = values;
-
-        await InvokeAsync(StateHasChanged);
-    }
-
     protected override async Task OnInitializedAsync()
     {
         NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
@@ -193,9 +185,9 @@
         new() { Value = "Field", Label = "Field" },
         new() { Value = "Fairy", Label = "Fairy" },
         new() { Value = "Grass", Label = "Grass" },
-        new() { Value = "Human-Like", Label = "Human-Like" },
+        new() { Value = "Humanoid", Label = "Human-Like" },
         new() { Value = "Mineral", Label = "Mineral" },
-        new() { Value = "Amorphous", Label = "Amorphous" },
+        new() { Value = "Chaos", Label = "Amorphous" },
         new() { Value = "Ditto", Label = "Ditto" },
         new() { Value = "Genderless", Label = "Genderless" }
     };
