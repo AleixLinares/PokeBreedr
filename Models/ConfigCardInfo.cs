@@ -77,8 +77,7 @@ namespace PokeBreedr.Models
             get => _minHpIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxHpIv, nameof(MinHpIv), nameof(MaxHpIv), value);
-                _minHpIv = correctValue;
+                _minHpIv = ValidateMinInRange(value, MaxHpIv);
             }
         }
 
@@ -87,8 +86,7 @@ namespace PokeBreedr.Models
             get => _maxHpIv;
             set
             {
-                var correctValue = ValidateRange(MinHpIv, value, nameof(MinHpIv), nameof(MaxHpIv), value);
-                _maxHpIv = correctValue;
+                _maxHpIv = ValidateMaxInRange(value, MinHpIv);
             }
         }
 
@@ -97,8 +95,7 @@ namespace PokeBreedr.Models
             get => _minAttackIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxAttackIv, nameof(MinAttackIv), nameof(MaxAttackIv), value);
-                _minAttackIv = correctValue;
+                _minAttackIv = ValidateMinInRange(value, MaxAttackIv);
             }
         }
 
@@ -107,8 +104,7 @@ namespace PokeBreedr.Models
             get => _maxAttackIv;
             set
             {
-                var correctValue = ValidateRange(MinAttackIv, value, nameof(MinAttackIv), nameof(MaxAttackIv), value);
-                _maxAttackIv = correctValue;
+                _maxAttackIv = ValidateMinInRange(value, MinAttackIv);
             }
         }
 
@@ -117,8 +113,7 @@ namespace PokeBreedr.Models
             get => _minDefenseIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxDefenseIv, nameof(MinDefenseIv), nameof(MaxDefenseIv), value);
-                _minDefenseIv = correctValue;
+                _minDefenseIv = ValidateMinInRange(value, MaxDefenseIv);
             }
         }
 
@@ -127,8 +122,7 @@ namespace PokeBreedr.Models
             get => _maxDefenseIv;
             set
             {
-                var correctValue = ValidateRange(MinDefenseIv, value, nameof(MinDefenseIv), nameof(MaxDefenseIv), value);
-                _maxDefenseIv = correctValue;
+                _maxDefenseIv = ValidateMaxInRange(value, MinDefenseIv);
             }
         }
 
@@ -137,8 +131,7 @@ namespace PokeBreedr.Models
             get => _minSpAttackIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxSpAttackIv, nameof(MinSpAttackIv), nameof(MaxSpAttackIv), value);
-                _minSpAttackIv = correctValue;
+                _minSpAttackIv = ValidateMinInRange(value, MaxSpAttackIv);
             }
         }
 
@@ -147,8 +140,7 @@ namespace PokeBreedr.Models
             get => _maxSpAttackIv;
             set
             {
-                var correctValue = ValidateRange(MinSpAttackIv, value, nameof(MinSpAttackIv), nameof(MaxSpAttackIv), value);
-                _maxSpAttackIv = correctValue;
+                _maxSpAttackIv = ValidateMaxInRange(value, MinSpAttackIv);
             }
         }
 
@@ -158,8 +150,7 @@ namespace PokeBreedr.Models
             get => _minSpDefenseIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxSpDefenseIv, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv), value);
-                _minSpDefenseIv = correctValue;
+                _minSpDefenseIv = ValidateMinInRange(value, MaxSpDefenseIv);
             }
         }
 
@@ -168,8 +159,7 @@ namespace PokeBreedr.Models
             get => _maxSpDefenseIv;
             set
             {
-                var correctValue = ValidateRange(MinSpDefenseIv, value, nameof(MinSpDefenseIv), nameof(MaxSpDefenseIv), value);
-                _maxSpDefenseIv = correctValue;
+                _maxSpDefenseIv = ValidateMaxInRange(value, MinSpDefenseIv);
             }
         }
 
@@ -178,8 +168,7 @@ namespace PokeBreedr.Models
             get => _minSpeedIv;
             set
             {
-                var correctValue = ValidateRange(value, MaxSpeedIv, nameof(MinSpeedIv), nameof(MaxSpeedIv), value);
-                _minSpeedIv = correctValue;
+                _minSpeedIv = ValidateMinInRange(value, MaxSpeedIv);
             }
         }
 
@@ -188,35 +177,44 @@ namespace PokeBreedr.Models
             get => _maxSpeedIv;
             set
             {
-                var correctValue = ValidateRange(MinSpeedIv, value, nameof(MinSpeedIv), nameof(MaxSpeedIv), value);
-                _maxSpeedIv = correctValue;
+                _maxSpeedIv = ValidateMaxInRange(value, MinSpeedIv);
             }
         }
 
-        private static int ValidateRange(int min, int max, string minName, string maxName, int desiredValue)
+
+        private static int ValidateMinInRange(int value, int max)
         {
-            if (min < 0 || min > 31)
+            if (value > max)
             {
-                if (min < 0)
-                {
-                    return 0;
-                }
+                return max;
+            }
+            if(value < 0)
+            {
+                return 0;
+            }
+            if (value > 31)
+            {
                 return 31;
             }
+            return value;
+        }
 
-            if (max < 0 || max > 31)
+
+        private static int ValidateMaxInRange(int value, int min)
+        {
+            if (value < min)
             {
-                if (max < 0)
-                {
-                    return 0;
-                }
-                return 31;
-            }
-
-            if (min > max)
                 return min;
-
-            return desiredValue;
+            }
+            if (value < 0)
+            {
+                return 0;
+            }
+            if (value > 31)
+            {
+                return 31;
+            }
+            return value;
         }
     }
 }
