@@ -34,7 +34,7 @@
         opacity: 0.7;
     }
 
-.dropdown {
+.dropdown-mul {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #cfcfcf;
@@ -47,15 +47,15 @@
     transition: border-color 0.2s ease;
 }
 
-    .dropdown:focus {
+    .dropdown-mul:focus {
         border-color: #4a90e2;
     }
 
-    .dropdown:hover {
+    .dropdown-mul:hover {
         border-color: #999;
     }
 
-    .dropdown:disabled {
+    .dropdown-mul:disabled {
         background: #eee;
         cursor: default;
         opacity: 0.6;

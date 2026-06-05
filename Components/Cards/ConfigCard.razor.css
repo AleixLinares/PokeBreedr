@@ -1,0 +1,126 @@
+﻿.config-card-container {
+    background-color: #ffffff;
+    border: 1px solid #d8d8d8;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+    display: inline-block;
+}
+
+/* =========================
+   HEADER
+========================= */
+.config-card-header {
+    padding: 20px;
+    border-bottom: 1px solid #ececec;
+}
+
+.config-text-input {
+    padding: 10px 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-size: 14px;
+    outline: none;
+    width: 50%;
+}
+
+/* =========================
+   BODY LAYOUT
+========================= */
+.config-card-body {
+    padding: 20px;
+}
+
+.config-main-grid {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* columnas */
+.config-left,
+.config-right {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* asegurar misma altura visual */
+.config-section {
+    border: 1px solid #ececec;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fcfcfc;
+    flex: 1;
+}
+
+/* =========================
+   TITLES
+========================= */
+.section-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #333;
+}
+
+/* =========================
+   FIELDS
+========================= */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* =========================
+   IV ROWS (ALIGNED)
+========================= */
+.iv-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.iv-row {
+    display: grid;
+    grid-template-columns: 110px 140px 40px 140px;
+    align-items: center;
+    gap: 10px;
+}
+
+    /* label fijo para evitar desplazamientos */
+    .iv-row span:first-child {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    /* separador */
+    .iv-row span:nth-child(3) {
+        text-align: center;
+        color: #666;
+    }
+
+    .iv-input {
+        padding: 10px 12px;
+        border: 1px solid #cfcfcf;
+        border-radius: 6px;
+        background-color: white;
+        color: #222;
+        font-size: 14px;
+        outline: none;
+    }
+
+/* =========================
+   CHECKBOX
+========================= */
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* separación entre texto y checkbox */
+}
