@@ -31,12 +31,23 @@
                     <div class="section-title">Filters</div>
 
                     <div class="field">
-                        <label class="checkbox-label">
-                            <span>Only Alfa:</span>
-                            <input type="checkbox"
-                                   class="card-checkbox"
-                                   @bind="Model.OnlyAlfa" />
-                        </label>
+                        <label>Alfa filter</label>
+                        <InputRadioGroup @bind-Value="Model.AlfaFilter">
+                            <label>
+                                <InputRadio Value="AlphaFilterEnum.All" />
+                                All
+                            </label>
+
+                            <label>
+                                <InputRadio Value="AlphaFilterEnum.AlphasOnly" />
+                                Alphas only
+                            </label>
+
+                            <label>
+                                <InputRadio Value="AlphaFilterEnum.NonAlphasOnly" />
+                                Non-Alphas only
+                            </label>
+                        </InputRadioGroup>
                     </div>
 
                     <div class="field">

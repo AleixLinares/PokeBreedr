@@ -16,7 +16,7 @@ namespace PokeBreedr.Models
             this.ConfigName = dto.ConfigName;
             this.OnlyEggGroup1 = dto.OnlyEggGroup1;
             this.OnlyEggGroup2 = dto.OnlyEggGroup2;
-            this.OnlyAlfa = dto.OnlyAlfa;
+            this.AlfaFilter = dto.AlfaFilter;
             this.SelectedNatures = dto.SelectedNatures;
 
             this.MinHpIv = dto.MinHpIv;
@@ -48,7 +48,7 @@ namespace PokeBreedr.Models
 
         public string? OnlyEggGroup2;
 
-        public bool OnlyAlfa;
+        public AlphaFilterEnum AlfaFilter;
 
         public List<string?> SelectedNatures { get; set; } = new();
 

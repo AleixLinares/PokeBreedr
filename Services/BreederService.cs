@@ -1,4 +1,5 @@
-﻿using PokeBreedr.Models;
+﻿using PokeBreedr.Enums;
+using PokeBreedr.Models;
 
 namespace PokeBreedr.Services
 {
@@ -9,15 +10,19 @@ namespace PokeBreedr.Services
         public List<PokemonInfo> BreedPokemons(List<PokemonInfo> pokemons, ConfigCardInfo configuration)
         {
             pokemons = this.FilterInvalidPokemons(pokemons, configuration);
-            
 
+            return pokemons;
         }
 
         public List<PokemonInfo> FilterInvalidPokemons(List<PokemonInfo> pokemons, ConfigCardInfo configuration)
         {
-            if (configuration.OnlyAlfa)
+            if (configuration.AlfaFilter == AlphaFilterEnum.AlphasOnly)
             {
                 pokemons = pokemons.Where(i => i.IsAlfa).ToList();
+            }
+            else if (configuration.AlfaFilter == AlphaFilterEnum.NonAlphasOnly)
+            {
+                pokemons = pokemons.Where(i => !i.IsAlfa).ToList();
             }
 
             if (configuration.SelectedNatures != null && configuration.SelectedNatures.Count == 0)
