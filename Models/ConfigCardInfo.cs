@@ -104,7 +104,7 @@ namespace PokeBreedr.Models
             get => _maxAttackIv;
             set
             {
-                _maxAttackIv = ValidateMinInRange(value, MinAttackIv);
+                _maxAttackIv = ValidateMaxInRange(value, MinAttackIv);
             }
         }
 
