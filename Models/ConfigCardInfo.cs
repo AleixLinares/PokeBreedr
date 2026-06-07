@@ -50,6 +50,9 @@ namespace PokeBreedr.Models
 
         public AlphaFilterEnum AlfaFilter;
 
+        // Fer llista si poden haber varis errors
+        public string? ValidationError;
+
         public List<string?> SelectedNatures { get; set; } = new();
 
         public bool IsSaved { get; set; }

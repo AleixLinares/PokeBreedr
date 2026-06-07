@@ -78,6 +78,19 @@ namespace PokeBreedr.Services
         }
 
         /// <summary>
+        /// Checks if the name provided is empty or already exists
+        /// </summary>
+        /// <param name="cardInfoID"></param>
+        public async Task<bool> CheckIfNameUniqueAndNotEmpty(string? name, Guid? itemGuid)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return false;
+            var configCards = await GetAll();
+
+            name = name.Trim();
+            return !configCards.Any(p => p.ConfigName == name && p.Guid != itemGuid);
+        }
+
+        /// <summary>
         /// Get all config cards. The list returned is never null.
         /// </summary>
         public async Task<List<ConfigCardInfoDto>> GetAll()

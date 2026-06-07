@@ -11,10 +11,17 @@
         <div>
             <label>Configuration Name</label>
 
-            <input class="config-text-input"
+            <input class="text-input config-text-input"
                    maxlength="200"
-                   @bind="Model.ConfigName"
+                   @bind-value="Model.ConfigName"
                    placeholder="Write configuration name..." />
+
+            @if (!string.IsNullOrEmpty(Model.ValidationError))
+            {
+                <div>
+                    @Model.ValidationError
+                </div>
+            }
         </div>
 
     </div>
@@ -137,13 +144,22 @@
     <!-- ACTIONS -->
     <div>
 
-        <button class="card-button" @onclick="Save">
+        <button disabled="@canSave" class="card-button" @onclick="Save">
             @(Model.IsSaved ? "Update" : "Save")
         </button>
 
-        <button class="card-button" @onclick="Cancel">
-            Cancel
-        </button>
+        @if (Model.IsSaved)
+        {
+            <button class="card-button" @onclick="Delete">
+                Eliminar
+            </button>
+        }
+        else
+        {
+            <button class="card-button" @onclick="Cancel">
+                Cancelar
+            </button>
+        }
 
     </div>
 
@@ -163,9 +179,13 @@
     [Parameter]
     public EventCallback<ConfigCardInfo> OnDelete { get; set; }
 
+    private bool canSave => string.IsNullOrWhiteSpace(Model.ConfigName);
+
     private async Task Save()
     {
+        Console.WriteLine("calling save");
         await OnSave.InvokeAsync(Model);
+        Console.WriteLine(" save called");
     }
 
     private async Task Cancel()

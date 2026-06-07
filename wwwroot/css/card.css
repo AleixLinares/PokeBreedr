@@ -15,7 +15,23 @@
     border-color: #999;
 }
 
+.card-button:disabled {
+    background: #eee;
+    cursor: default;
+    opacity: 0.6;
+}
+
 .card-checkbox {
     width: 17px;
     height: 17px;
+}
+
+.text-input {
+    padding: 10px 12px;
+    border: 1px solid #cfcfcf;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-size: 14px;
+    outline: none;
 }

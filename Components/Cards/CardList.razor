@@ -72,7 +72,7 @@
 
     private async Task SaveAll()
     {
-        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty).ToList();
+        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty && x.Gender != null).ToList();
 
         foreach (var item in pendingItems)
         {

@@ -15,6 +15,13 @@
         </button>
     </div>
 
+    @if (errorOnSave)
+    {
+        <div>
+            One or more configurations could not be saved.
+        </div>
+    }
+
     @foreach (var item in Items)
     {
         <ConfigCard @key="item.Guid"
@@ -31,6 +38,8 @@
     [Parameter]
     public List<ConfigCardInfo> Items { get; set; } = new();
 
+    private bool errorOnSave;
+
     [Inject]
     private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
 
@@ -42,30 +51,32 @@
         });
     }
 
-    private async Task SaveCard(ConfigCardInfo model)
+    // wrapper para que OnSave="SaveCard" funcione
+    // Podria ser OnSave="@(model => SaveCard(model, false))"
+    private Task SaveCard(ConfigCardInfo model)
     {
+        return SaveCard(model, false);
+    }
 
-        Console.WriteLine("===== MODEL =====");
-        Console.WriteLine(
-            JsonSerializer.Serialize(
-                model,
-                new JsonSerializerOptions { WriteIndented = true }
-            )
-        );
 
-        var dto = new ConfigCardInfoDto(model);
+    private async Task SaveCard(ConfigCardInfo model, bool setGLobalError)
+    {
+        bool isNameUnique = await BreedConfigPersistenceService.CheckIfNameUniqueAndNotEmpty(model.ConfigName, model.Guid);
+        if (isNameUnique)
+        {
+            model.ValidationError = string.Empty;
+            var dto = new ConfigCardInfoDto(model);
 
-        Console.WriteLine("===== DTO =====");
-        Console.WriteLine(
-            JsonSerializer.Serialize(
-                dto,
-                new JsonSerializerOptions { WriteIndented = true }
-            )
-        );
+            await BreedConfigPersistenceService.Save(dto);
 
-        await BreedConfigPersistenceService.Save(dto);
-
-        model.IsSaved = true;
+            model.IsSaved = true;
+            model.Guid = dto.Guid;
+        }
+        else
+        {
+            model.ValidationError = "The configuration name already exists or is empty.";
+            errorOnSave = setGLobalError && true;
+        } 
     }
 
     private void CancelCard(ConfigCardInfo model)
@@ -85,11 +96,11 @@
 
     private async Task SaveAll()
     {
-        var pendingItems = Items.Where(x => !x.Guid.HasValue).ToList();
+        errorOnSave = false;
 
-        foreach (var item in pendingItems)
+        foreach (var item in Items)
         {
-            await SaveCard(item);
+            await SaveCard(item, true);
         }
     }
 }

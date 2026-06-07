@@ -13,5 +13,7 @@ namespace PokeBreedr.Interfaces
         Task<ConfigCardInfoDto?> Obtain(Guid cardInfoID);
 
         Task<List<ConfigCardInfoDto>> GetAll();
+
+        Task<bool> CheckIfNameUniqueAndNotEmpty(string? name, Guid? itemGuid);
     }
 }
