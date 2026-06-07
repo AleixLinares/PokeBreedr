@@ -2,6 +2,7 @@
 using PokeBreedr.Enums;
 using PokeBreedr.Models;
 using PokeBreedr.Utils;
+using System.Text.Json;
 
 namespace PokeBreedr.Services
 {
@@ -9,12 +10,12 @@ namespace PokeBreedr.Services
     {
 
         // Hauria de ser el dto?
-        public List<PokemonInfoDto> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
+        public List<CombinationInfo> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
             pokemons = this.FilterInvalidPokemons(pokemons, configuration);
-            List<PokemonInfoDto> finalCombinations = new List<PokemonInfoDto>();
+            List<CombinationInfo> finalCombinations = new List<CombinationInfo>();
 
-            while(pokemons.Count > 0)
+            while(pokemons.Count > 1)
             {
                 PokemonInfoDto pokemonCandidate = pokemons.First();
                 List<PokemonInfoDto> validPokemonsForCandidate = this.FilterInvalidPokemonsForCandidate(pokemonCandidate, pokemons);
@@ -25,9 +26,16 @@ namespace PokeBreedr.Services
                 }
 
                 pokemons.RemoveAt(0);
-            }      
+            }
+            Console.WriteLine($"Total combinaciones: {finalCombinations.Count}");
+            Console.WriteLine(
+                JsonSerializer.Serialize(
+                    finalCombinations,
+                    new JsonSerializerOptions { WriteIndented = true }
+                )
+            );
 
-            return pokemons;
+            return finalCombinations;
         }
 
         public List<PokemonInfoDto> FilterInvalidPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
@@ -85,85 +93,110 @@ namespace PokeBreedr.Services
             return pokemons;
         }
 
-        private List<PokemonInfoDto> CombinationsByCandidateAndConfiguration(PokemonInfoDto candidate, List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
+        private List<CombinationInfo> CombinationsByCandidateAndConfiguration(PokemonInfoDto candidate, List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
-            List<PokemonInfoDto> combinations = new List<PokemonInfoDto>();
+            List<CombinationInfo> combinations = new List<CombinationInfo>();
 
             foreach (PokemonInfoDto pokemonCheck in pokemons)
             {
                 int differences = 0;
-                bool keephv, keepatt, keepdef, keepspatt, keepspdef, keepspeed, keepnature;
+                byte[] flags = new byte[7];
+                bool isInCandidate, isInCheck;
 
-                if (candidate.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv) != pokemonCheck.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv))
+                if (candidate.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCandidate)  != pokemonCheck.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCheck))
                 {
                     ++differences;
-                    keephv = true;
+                    if (isInCandidate)
+                    {
+                        flags[0] = 1;
+                    }
+                    else
+                    {
+                        flags[0] = 2;
+                    }
                 }
 
-                if (candidate.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv) != pokemonCheck.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv))
+                if (candidate.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCandidate) != pokemonCheck.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCheck))
                 {
                     ++differences;
-                    keepatt = true;
+                    if (isInCandidate)
+                    {
+                        flags[1] = 1;
+                    }
+                    else
+                    {
+                        flags[1] = 2;
+                    }
                 }
 
-                if (candidate.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv) != pokemonCheck.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv))
+                if (candidate.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCandidate) != pokemonCheck.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCheck))
                 {
                     ++differences;
-                    keepdef = true;
+                    if (isInCandidate)
+                    {
+                        flags[2] = 1;
+                    }
+                    else
+                    {
+                        flags[2] = 2;
+                    }
                 }
 
-                if (candidate.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv) != pokemonCheck.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv))
+                if (candidate.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCandidate) != pokemonCheck.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCheck))
                 {
                     ++differences;
-                    keepspatt = true;
+                    if (isInCandidate)
+                    {
+                        flags[3] = 1;
+                    }
+                    else
+                    {
+                        flags[3] = 2;
+                    }
                 }
 
-                if (candidate.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv) != pokemonCheck.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv))
+                if (candidate.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCandidate) != pokemonCheck.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCheck))
                 {
                     ++differences;
-                    keepspdef = true;
+                    if (isInCandidate)
+                    {
+                        flags[4] = 1;
+                    }
+                    else
+                    {
+                        flags[4] = 2;
+                    }
                 }
 
-                if (candidate.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv) != pokemonCheck.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv))
+                if (candidate.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCandidate) != pokemonCheck.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCheck))
                 {
                     ++differences;
-                    keepspeed = true;
+                    if (isInCandidate)
+                    {
+                        flags[5] = 1;
+                    }
+                    else
+                    {
+                        flags[5] = 2;
+                    }
                 }
 
                 if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
                 {
                     ++differences;
-                    keepnature = true;
+                    if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()))
+                    {
+                        flags[6] = 1;
+                    }
+                    else
+                    {
+                        flags[6] = 2;
+                    }
                 }
 
                 if (differences == 2)
                 {
-                    PokemonInfoDto newCombination = new PokemonInfoDto();
-
-                    newCombination.Guid = Guid.NewGuid();
-
-                    if (candidate.EggGroup1 == "Ditto")
-                    {
-                        newCombination.Pokemon = pokemonCheck.Pokemon;
-                    }
-                    else if (pokemonCheck.EggGroup1 == "Ditto")
-                    {
-                        newCombination.Pokemon = candidate.Pokemon;
-                    }
-                    else if (candidate.EggGroup1 == "Genderless")
-                    {
-                        newCombination.Pokemon = candidate.Pokemon;
-                    }
-                    else if (candidate.Gender == PokemonGenderEnum.Female)
-                    {
-                        newCombination.Pokemon = candidate.Pokemon;
-                    }
-                    else
-                    {
-                        newCombination.Pokemon = pokemonCheck.Pokemon;
-                    }
-
-                    newCombination.IsAlfa = candidate.IsAlfa && pokemonCheck.IsAlfa;
+                    CombinationInfo newCombination = new CombinationInfo(candidate, pokemonCheck, flags);
                     combinations.Add(newCombination);
                 }
             }

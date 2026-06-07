@@ -13,6 +13,7 @@ builder.Services.AddScoped<IPokemonPersistenceService, PokemonLocalStorageServic
 builder.Services.AddScoped<IBreedConfigPersistenceService, BreedConfigLocalStorageService>();
 
 builder.Services.AddScoped<PokemonInitialLoad>();
+builder.Services.AddScoped<BreederService>();
 
 var host = builder.Build();
 

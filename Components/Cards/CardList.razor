@@ -1,6 +1,7 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
+@using PokeBreedr.Services
 
 <div class="card-list">
 
@@ -11,6 +12,10 @@
 
         <button class="add-btn" @onclick="SaveAll">
             Guardar todo
+        </button>
+
+        <button class="add-btn" @onclick="Combine">
+            Combinar todo
         </button>
     </div>
 
@@ -32,6 +37,9 @@
 
     [Inject]
     private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    [Inject]
+    private BreederService BreederService { get; set; } = default!;
 
     private void AddCard()
     {
@@ -70,5 +78,40 @@
         {
             await SaveCard(item);
         }
+    }
+
+    private async Task Combine()
+    {
+        var dtos = new List<PokemonInfoDto>();
+
+        foreach (var item in Items)
+        {
+            dtos.Add(new PokemonInfoDto(item));
+        }
+
+        ConfigCardInfoDto config = new ConfigCardInfoDto();
+
+        config.AlfaFilter = Enums.AlphaFilterEnum.All;
+
+        config.MinHpIv = 25;
+        config.MaxHpIv = 31;
+
+        config.MinAttackIv = 31;
+        config.MaxAttackIv = 31;
+
+        config.MinDefenseIv = 31;
+        config.MaxDefenseIv = 31;
+
+        config.MinSpAttackIv = 15;
+        config.MaxSpAttackIv = 31;
+
+        config.MinSpDefenseIv = 31;
+        config.MaxSpDefenseIv = 31;
+
+        config.MinSpeedIv = 31;
+        config.MaxSpeedIv = 31;
+
+        config.SelectedNatures.Add("Modest");
+        this.BreederService.BreedPokemons(dtos, config);
     }
 }

@@ -2,9 +2,10 @@
 {
     public static class ByteExtensions
     {
-        public static bool InRange(this byte value, int min, int max)
+        public static bool InRange(this byte value, int min, int max, out bool isIn)
         {
-            return min <= value && value <= max;
+            isIn = min <= value && value <= max;
+            return isIn;
         }
     }
 }
