@@ -137,5 +137,13 @@ namespace PokeBreedr.Services
                 await localStorageModule.DisposeAsync();
             }
         }
+
+        public async Task<List<string>> GetAllConfigurationsName()
+        {
+            var configCards = await GetAll();
+
+            // ConfigName! el ! del final le dice al compilador "Confia en mi esto no es nunca nulo"
+            return configCards.Select(i => i.ConfigName!).ToList();
+        }
     }
 }
