@@ -21,21 +21,27 @@ namespace PokeBreedr.Models
 
             this.MinHpIv = dto.MinHpIv;
             this.MaxHpIv = dto.MaxHpIv;
+            this.IgnoreHpIv = dto.IgnoreHpIv;
 
             this.MinAttackIv = dto.MinAttackIv;
             this.MaxAttackIv = dto.MaxAttackIv;
+            this.IgnoreAttackIv = dto.IgnoreAttackIv;
 
             this.MinDefenseIv = dto.MinDefenseIv;
             this.MaxDefenseIv = dto.MaxDefenseIv;
+            this.IgnoreDefenseIv = dto.IgnoreDefenseIv;
 
             this.MinSpAttackIv = dto.MinSpAttackIv;
             this.MaxSpAttackIv = dto.MaxSpAttackIv;
+            this.IgnoreSpAttackIv = dto.IgnoreSpAttackIv;
 
             this.MinSpDefenseIv = dto.MinSpDefenseIv;
             this.MaxSpDefenseIv = dto.MaxSpDefenseIv;
+            this.IgnoreSpDefenseIv = dto.IgnoreSpDefenseIv;
 
             this.MinSpeedIv = dto.MinSpeedIv;
             this.MaxSpeedIv = dto.MaxSpeedIv;
+            this.IgnoreSpeedIv = dto.IgnoreSpeedIv;
 
             this.IsSaved = true;
         }
@@ -60,20 +66,32 @@ namespace PokeBreedr.Models
         private int _minHpIv = 0;
         private int _maxHpIv = 31;
 
+        public bool IgnoreHpIv;
+
         private int _minAttackIv = 0;
         private int _maxAttackIv = 31;
+
+        public bool IgnoreAttackIv;
 
         private int _minDefenseIv = 0;
         private int _maxDefenseIv = 31;
 
+        public bool IgnoreDefenseIv;
+
         private int _minSpAttackIv = 0;
         private int _maxSpAttackIv = 31;
+
+        public bool IgnoreSpAttackIv;
 
         private int _minSpDefenseIv = 0;
         private int _maxSpDefenseIv = 31;
 
+        public bool IgnoreSpDefenseIv;
+
         private int _minSpeedIv = 0;
         private int _maxSpeedIv = 31;
+
+        public bool IgnoreSpeedIv;
 
         public int MinHpIv
         {

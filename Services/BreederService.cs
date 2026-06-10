@@ -103,7 +103,7 @@ namespace PokeBreedr.Services
                 byte[] flags = new byte[7];
                 bool isInCandidate, isInCheck;
 
-                if (candidate.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCandidate)  != pokemonCheck.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCheck))
+                if (!configuration.IgnoreHpIv && candidate.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCandidate)  != pokemonCheck.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -116,7 +116,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (candidate.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCandidate) != pokemonCheck.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCheck))
+                if (!configuration.IgnoreAttackIv && candidate.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCandidate) != pokemonCheck.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -129,7 +129,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (candidate.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCandidate) != pokemonCheck.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCheck))
+                if (!configuration.IgnoreDefenseIv && candidate.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCandidate) != pokemonCheck.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -142,7 +142,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (candidate.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCandidate) != pokemonCheck.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCheck))
+                if (!configuration.IgnoreSpAttackIv && candidate.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCandidate) != pokemonCheck.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -155,7 +155,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (candidate.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCandidate) != pokemonCheck.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCheck))
+                if (!configuration.IgnoreSpDefenseIv && candidate.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCandidate) != pokemonCheck.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -168,7 +168,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (candidate.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCandidate) != pokemonCheck.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCheck))
+                if (!configuration.IgnoreSpeedIv && candidate.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCandidate) != pokemonCheck.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCheck))
                 {
                     ++differences;
                     if (isInCandidate)
@@ -181,7 +181,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
+                if (!configuration.IgnoreHpIv && configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
                 {
                     ++differences;
                     if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()))

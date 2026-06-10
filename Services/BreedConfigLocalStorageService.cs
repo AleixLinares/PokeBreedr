@@ -145,5 +145,12 @@ namespace PokeBreedr.Services
             // ConfigName! el ! del final le dice al compilador "Confia en mi esto no es nunca nulo"
             return configCards.Select(i => i.ConfigName!).ToList();
         }
+
+        public async Task<ConfigCardInfoDto?> GetConfigurationByName(string configurationName)
+        {
+            var configCards = await GetAll();
+
+            return configCards.Where(i => i.ConfigName == configurationName).FirstOrDefault();
+        }
     }
 }
