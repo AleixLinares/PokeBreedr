@@ -44,7 +44,8 @@ namespace PokeBreedr.Services
                     Name = parts[0].Trim(),
                     EggGroup1 = parts[1].Trim(),
                     EggGroup2 = parts[2].Trim(),
-                    ImageBase64 = parts[3].Trim()
+                    PokemonEgg = parts[3].Trim(),
+                    ImageBase64 = parts[4].Trim()
                 };
 
                 if (pokemon.EggGroup1 != "None") Pokemons[pokemon.Name] = pokemon;

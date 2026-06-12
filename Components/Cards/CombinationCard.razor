@@ -1,4 +1,5 @@
 ﻿@using PokeBreedr.Components.Utils
+@using PokeBreedr.Dto
 @using PokeBreedr.Enums
 @using PokeBreedr.Models
 @using PokeBreedr.Services
@@ -13,7 +14,7 @@
 
             <!-- Pokemon -->
             <div class="field">
-                <label>Pokemon: @(Model.Pokemon)</label>                
+                <label>Pokemon: @(this.PokemonEgg)</label>
 
                 <label>Nickname</label>
 
@@ -77,10 +78,10 @@
             <!-- Nature -->
             <div class="field">
                 <label>Nature</label>
-
                 <Dropdown TValue="PokemonNatureEnum?"
                           Options="NatureOptions"
-                          @bind-Value="Model.Nature"/>
+                          @bind-Value="@Model.Nature" 
+                          MarkOption="@initialNature.ToString()" />
             </div>
 
         </div>
@@ -91,40 +92,51 @@
             <div>
 
                <IVResultShower 
-                   Title ="Hp"
-                   Iv1="@Model.HpIv1"
-                   Iv2="@Model.HpIv2"
-                   SelectedHpIv="@Model.SelectedHpIv">
+                    Title ="Hp"
+                    Iv1="@Model.HpIv1"
+                    Iv2="@Model.HpIv2"
+                    SelectedHpIv="@Model.SelectedHpIv"
+                    @bind-FinalValue="@this.FinalHpIv">
                </IVResultShower>
 
-                <IVResultShower Title="Attack"
-                                Iv1="@Model.AttackIv1"
-                                Iv2="@Model.AttackIv2"
-                                SelectedHpIv="@Model.SelectedAttackIv">
+                <IVResultShower 
+                    Title="Attack"
+                    Iv1="@Model.AttackIv1"
+                    Iv2="@Model.AttackIv2"
+                    SelectedHpIv="@Model.SelectedAttackIv"
+                    @bind-FinalValue="@this.FinalAttackIv">
                 </IVResultShower>
 
-                <IVResultShower Title="Defense"
-                                Iv1="@Model.DefenseIv1"
-                                Iv2="@Model.DefenseIv2"
-                                SelectedHpIv="@Model.SelectedDefenseIv">
+                <IVResultShower 
+                    Title="Defense"
+                    Iv1="@Model.DefenseIv1"
+                    Iv2="@Model.DefenseIv2"
+                    SelectedHpIv="@Model.SelectedDefenseIv"
+                    @bind-FinalValue="@this.FinalDefenseIv">
                 </IVResultShower>
 
-                <IVResultShower Title="SpAttack"
-                                Iv1="@Model.SpAttackIv1"
-                                Iv2="@Model.SpAttackIv2"
-                                SelectedHpIv="@Model.SelectedSpAttackIv">
+                <IVResultShower
+                    Title="SpAttack"
+                    Iv1="@Model.SpAttackIv1"
+                    Iv2="@Model.SpAttackIv2"
+                    SelectedHpIv="@Model.SelectedSpAttackIv"
+                    @bind-FinalValue="@this.FinalSpAttackIv">
                 </IVResultShower>
 
-                <IVResultShower Title="SpDefense"
-                                Iv1="@Model.SpDefenseIv1"
-                                Iv2="@Model.SpDefenseIv2"
-                                SelectedHpIv="@Model.SelectedSpDefenseIv">
+                <IVResultShower
+                    Title="SpDefense"
+                    Iv1="@Model.SpDefenseIv1"
+                    Iv2="@Model.SpDefenseIv2"
+                    SelectedHpIv="@Model.SelectedSpDefenseIv"
+                    @bind-FinalValue="@this.FinalSpDefenseIv">
                 </IVResultShower>
 
-                <IVResultShower Title="Speed"
-                                Iv1="@Model.SpeedIv1"
-                                Iv2="@Model.SpeedIv2"
-                                SelectedHpIv="@Model.SelectedSpeedIv">
+                <IVResultShower 
+                    Title="Speed"
+                    Iv1="@Model.SpeedIv1"
+                    Iv2="@Model.SpeedIv2"
+                    SelectedHpIv="@Model.SelectedSpeedIv"
+                    @bind-FinalValue="@this.FinalSpeedIv">
                 </IVResultShower>
 
 
@@ -151,18 +163,28 @@
     public CombinationInfo Model { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<CombinationInfo> OnSave { get; set; }
+    public EventCallback<PokemonInfoDto> OnSave { get; set; }
 
     private string EggGroup1 = string.Empty;
     private string EggGroup2 = string.Empty;
+    private string PokemonEgg = string.Empty;
 
     private string? PokemonImage = null;
     private PokemonGenderEnum? FinalGender;
     private string? FinalNickname = null;
     private bool isGenderLocked = false;
+    private PokemonNatureEnum? initialNature;
+
+    private byte FinalHpIv;
+    private byte FinalAttackIv;
+    private byte FinalDefenseIv;
+    private byte FinalSpAttackIv;
+    private byte FinalSpDefenseIv;
+    private byte FinalSpeedIv;
 
     protected override async Task OnInitializedAsync()
     {
+        initialNature = Model.Nature;
         // Si ya viene un pokemon seleccionado
         if (!string.IsNullOrWhiteSpace(Model.Pokemon))
         {
@@ -172,10 +194,12 @@
 
     private async Task LoadPokemonInfo(string pokemonName)
     {
-        var pokemonInfo = await PokemonService.GetPokemonInfo(pokemonName);
+        var pokemonInfoInitial = await PokemonService.GetPokemonInfo(pokemonName);
+        var pokemonInfo = await PokemonService.GetPokemonInfo(pokemonInfoInitial.PokemonEgg);
 
         this.EggGroup1 = pokemonInfo.EggGroup1;
         this.EggGroup2 = pokemonInfo.EggGroup2;
+        this.PokemonEgg = pokemonInfo.Name;
 
         PokemonImage = pokemonInfo.ImageBase64;
 
@@ -215,6 +239,21 @@
 
     private async Task Save()
     {
+        PokemonInfoDto newPokemon = new PokemonInfoDto();
+        newPokemon.Guid = Guid.NewGuid();
+        newPokemon.Pokemon = this.PokemonEgg;
+        newPokemon.Name = FinalNickname ?? string.Empty;
+        newPokemon.EggGroup1 = this.EggGroup1;
+        newPokemon.EggGroup2 = this.EggGroup2;
+        newPokemon.IsAlfa = Model.IsAlfa;
+        newPokemon.Gender = this.FinalGender;
+        newPokemon.Nature = Model.Nature;
+        newPokemon.HpIv = this.FinalHpIv;
+        newPokemon.AttackIv = this.FinalAttackIv;
+        newPokemon.DefenseIv = this.FinalDefenseIv;
+        newPokemon.SpAttackIv = this.FinalSpAttackIv;
+        newPokemon.SpDefenseIv = this.FinalSpDefenseIv;
+        newPokemon.SpeedIv = this.FinalSpeedIv;
         //await OnSave.InvokeAsync(Model);
     }
 

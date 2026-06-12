@@ -98,8 +98,11 @@
     gap: 6px;
 }
 
-
+.field-changed {
+    color: red;
+}
 
 /*
     NUEVOS REVISAR LOS OTROS PARA QUITAR LO QUE SOBRA
 */
+

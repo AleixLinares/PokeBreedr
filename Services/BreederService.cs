@@ -13,13 +13,33 @@ namespace PokeBreedr.Services
         public List<CombinationInfo> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
             pokemons = this.FilterInvalidPokemons(pokemons, configuration);
+            Console.WriteLine($"pokemons 1 Total combinaciones: {pokemons.Count}");
+            Console.WriteLine(
+                JsonSerializer.Serialize(
+                    pokemons,
+                    new JsonSerializerOptions { WriteIndented = true }
+                )
+            );
             List<CombinationInfo> finalCombinations = new List<CombinationInfo>();
 
             while(pokemons.Count > 1)
             {
                 PokemonInfoDto pokemonCandidate = pokemons.First();
+                Console.WriteLine(
+                    JsonSerializer.Serialize(
+                        pokemonCandidate,
+                        new JsonSerializerOptions { WriteIndented = true }
+                    )
+                );
                 List<PokemonInfoDto> validPokemonsForCandidate = this.FilterInvalidPokemonsForCandidate(pokemonCandidate, pokemons);
 
+                Console.WriteLine($"validPokemonsForCandidate 2 Total combinaciones: {validPokemonsForCandidate.Count}");
+                Console.WriteLine(
+                   JsonSerializer.Serialize(
+                       validPokemonsForCandidate,
+                       new JsonSerializerOptions { WriteIndented = true }
+                   )
+               );
                 if (validPokemonsForCandidate.Count > 0)
                 {
                     finalCombinations.AddRange(this.CombinationsByCandidateAndConfiguration(pokemonCandidate, validPokemonsForCandidate, configuration));
@@ -49,7 +69,7 @@ namespace PokeBreedr.Services
                 pokemons = pokemons.Where(i => !i.IsAlfa).ToList();
             }
 
-            pokemons = this.FilterPokemnsForEgggroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2);
+            pokemons = this.FilterPokemnsForEggGroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2);
 
             return pokemons;
 
@@ -67,27 +87,27 @@ namespace PokeBreedr.Services
             }
             else
             {
-                pokemons = this.FilterPokemnsForEgggroups(pokemons, candidate.EggGroup1, candidate.EggGroup2);
+                pokemons = this.FilterPokemnsForEggGroups(pokemons, candidate.EggGroup1, candidate.EggGroup2);
 
                 if (candidate.Gender == PokemonGenderEnum.Male)
                 {
-                    return pokemons.Where(i => i.Gender == PokemonGenderEnum.Female).ToList();
+                    return pokemons.Where(i => i.Gender == PokemonGenderEnum.Female || i.EggGroup1 == "Ditto").ToList();
                 }
 
-                return pokemons.Where(i => i.Gender == PokemonGenderEnum.Male).ToList();
+                return pokemons.Where(i => i.Gender == PokemonGenderEnum.Male || i.EggGroup1 == "Ditto").ToList();
             }
         }
 
-        private List<PokemonInfoDto> FilterPokemnsForEgggroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
+        private List<PokemonInfoDto> FilterPokemnsForEggGroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
         {
             if (eggGroup1 != null)
             {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1).ToList();
+                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
             }
 
             if (eggGroup2 != null)
             {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2).ToList();
+                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2 || i.EggGroup1 == "Ditto").ToList();
             }
 
             return pokemons;
