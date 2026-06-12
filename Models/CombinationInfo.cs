@@ -47,8 +47,8 @@ namespace PokeBreedr.Models
                 this.Nature = pokemon2.Nature;
             }
 
-            this.hpIv1 = pokemon1.HpIv;
-            this.hpIv2 = pokemon2.HpIv;            
+            this.HpIv1 = pokemon1.HpIv;
+            this.HpIv2 = pokemon2.HpIv;            
 
             if (flags[0] == 1)
             {
@@ -130,8 +130,8 @@ namespace PokeBreedr.Models
 
         public PokemonNatureEnum? Nature { get; set; }
 
-        public byte hpIv1 { get; set; }
-        public byte hpIv2 { get; set; }
+        public byte HpIv1 { get; set; }
+        public byte HpIv2 { get; set; }
 
         public SelectedIvEnum SelectedHpIv { get; set; }
 

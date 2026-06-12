@@ -181,7 +181,7 @@ namespace PokeBreedr.Services
                     }
                 }
 
-                if (!configuration.IgnoreHpIv && configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
+                if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
                 {
                     ++differences;
                     if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()))

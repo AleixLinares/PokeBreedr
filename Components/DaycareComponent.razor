@@ -1,7 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Rendering
-@using PokeBreedr.Components.Cards
+﻿@using PokeBreedr.Components.Cards
 @using PokeBreedr.Components.Utils
-@using PokeBreedr.Enums
 @using PokeBreedr.Interfaces
 @using PokeBreedr.Models
 @using PokeBreedr.Dto
@@ -22,7 +20,20 @@
         <ConfigCard @key="SelectedCard.Guid"
               Model="SelectedCard"       
               DisableAll="@true" />
+
+        <button class="add-btn" @onclick="Combine">
+            Combinar todo
+        </button>
+
+        @foreach (var item in CombinedPokemons)
+        {
+            <CombinationCard
+                        Model="item"
+                        OnSave="TransferPokemon" />
+        }
     }
+
+   
     
 </div>
 
@@ -36,7 +47,16 @@
     [Inject]
     private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
 
-    private ConfigCardInfo SelectedCard { get; set; } = null;
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    [Inject]
+    private BreederService BreederService { get; set; } = default!;
+
+    private ConfigCardInfo? SelectedCard { get; set; } = null;
+    private List<CombinationInfo> CombinedPokemons = new();
+
+    public bool isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -60,5 +80,21 @@
             this.SelectedCard = new ConfigCardInfo(configCard);
             this.SelectedValue = configurationName;
         }          
+    }
+
+    private async Task Combine()
+    {
+        List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
+        if (SelectedCard != null)
+        {
+            ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
+            CombinedPokemons = this.BreederService.BreedPokemons(dtoList, configDto);            
+        }
+    }
+
+    private Task TransferPokemon(CombinationInfo model)
+    {
+        // Do nothing
+        return Task.CompletedTask;
     }
 }
