@@ -1,0 +1,100 @@
+﻿@using PokeBreedr.Components.Cards
+@using PokeBreedr.Components.Utils
+@using PokeBreedr.Interfaces
+@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Services
+
+
+<div>
+        <div class="field">
+            <label>Select a Configuration</label>
+
+        <DropdownSearch Options="ConfigurationNames"
+                        Value="@SelectedValue"
+                        ValueChanged="OnPokemonChanged"/>
+        </div>
+
+    @if (SelectedCard != null)
+    {
+        <ConfigCard @key="SelectedCard.Guid"
+              Model="SelectedCard"       
+              DisableAll="@true" />
+
+        <button class="add-btn" @onclick="Combine">
+            Combinar todo
+        </button>
+
+        @foreach (var item in CombinedPokemons)
+        {
+            <CombinationCard
+                        Model="item"
+                        OnSave="TransferPokemon" />
+        }
+    }
+
+   
+    
+</div>
+
+
+@code {
+    private List<DropdownOption> ConfigurationNames = new();
+
+    [Parameter]
+    public string? SelectedValue { get; set; } = null;
+
+    [Inject]
+    private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
+
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    [Inject]
+    private BreederService BreederService { get; set; } = default!;
+
+    private ConfigCardInfo? SelectedCard { get; set; } = null;
+    private List<CombinationInfo> CombinedPokemons = new();
+
+    public bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var configNames = await this.BreedConfigPersistenceService.GetAllConfigurationsName();
+
+        foreach (string configName in configNames)
+        {
+            var dropdownOption = new DropdownOption();
+            dropdownOption.Value = configName;
+            dropdownOption.Label = configName;
+            ConfigurationNames.Add(dropdownOption);
+        }
+    }
+
+    private async Task OnPokemonChanged(string configurationName)
+    {
+        ConfigCardInfoDto? configCard = await this.BreedConfigPersistenceService.GetConfigurationByName(configurationName);
+
+        if (configCard != null)
+        {
+            this.SelectedCard = new ConfigCardInfo(configCard);
+            this.SelectedValue = configurationName;
+        }          
+    }
+
+    private async Task Combine()
+    {
+        List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
+        if (SelectedCard != null)
+        {
+            ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
+            CombinedPokemons = this.BreederService.BreedPokemons(dtoList, configDto);            
+        }
+    }
+
+    private Task TransferPokemon(CombinationInfo model)
+    {
+        // Do nothing
+        return Task.CompletedTask;
+    }
+}

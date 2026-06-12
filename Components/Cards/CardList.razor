@@ -1,6 +1,7 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
+@using PokeBreedr.Services
 
 <div class="card-list">
 
@@ -11,7 +12,7 @@
 
         <button class="add-btn" @onclick="SaveAll">
             Guardar todo
-        </button>
+        </button>       
     </div>
 
     @foreach (var item in Items)
@@ -64,7 +65,7 @@
 
     private async Task SaveAll()
     {
-        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty).ToList();
+        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty && x.Gender != null).ToList();
 
         foreach (var item in pendingItems)
         {

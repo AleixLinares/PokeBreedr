@@ -1,4 +1,4 @@
-﻿@page "/configurations"
+﻿@page "/daycare"
 @using PokeBreedr.Components
 @using PokeBreedr.Components.Cards
 
@@ -10,5 +10,10 @@
 }
 else
 {
-	<ConfigCardList Items=cards />
+	<DaycareComponent />
+}
+
+
+@code {
+	public bool isLoading = false;
 }

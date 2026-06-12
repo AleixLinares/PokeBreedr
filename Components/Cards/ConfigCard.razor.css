@@ -17,14 +17,11 @@
 }
 
 .config-text-input {
-    padding: 10px 12px;
-    border: 1px solid #cfcfcf;
-    border-radius: 6px;
-    background-color: white;
-    color: #222;
-    font-size: 14px;
-    outline: none;
     width: 50%;
+}
+
+.config-name-title {
+    margin-right: 5px;
 }
 
 /* =========================
@@ -88,7 +85,7 @@
 
 .iv-row {
     display: grid;
-    grid-template-columns: 110px 140px 40px 140px;
+    grid-template-columns: 110px 140px 40px 140px auto;
     align-items: center;
     gap: 10px;
 }
@@ -113,6 +110,11 @@
         color: #222;
         font-size: 14px;
         outline: none;
+    }
+
+    .iv-input:disabled {
+        background: #eee;
+        cursor: default;
     }
 
 /* =========================

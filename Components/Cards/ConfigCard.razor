@@ -1,7 +1,6 @@
 ﻿@using PokeBreedr.Components.Utils
 @using PokeBreedr.Enums
 @using PokeBreedr.Models
-@using PokeBreedr.Dto
 
 <div class="config-card-container">
 
@@ -9,12 +8,29 @@
     <div class="config-card-header">
 
         <div>
-            <label>Configuration Name</label>
+            <label class="config-name-title">Configuration Name:</label>
 
-            <input class="config-text-input"
-                   maxlength="200"
-                   @bind="Model.ConfigName"
-                   placeholder="Write configuration name..." />
+            @if (DisableAll)
+            {
+                <label class="config-text-label">
+                    @Model.ConfigName
+                </label>
+            }
+            else
+            {
+                <input class="text-input config-text-input"
+                       disabled="@DisableAll"
+                       maxlength="200"
+                       @bind-value="Model.ConfigName"
+                       placeholder="Write configuration name..." />
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ValidationError))
+            {
+                <div>
+                    @Model.ValidationError
+                </div>
+            }
         </div>
 
     </div>
@@ -31,18 +47,30 @@
                     <div class="section-title">Filters</div>
 
                     <div class="field">
-                        <label class="checkbox-label">
-                            <span>Only Alfa:</span>
-                            <input type="checkbox"
-                                   class="card-checkbox"
-                                   @bind="Model.OnlyAlfa" />
-                        </label>
+                        <label>Alfa filter</label>
+                        <InputRadioGroup @bind-Value="Model.AlfaFilter">
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.All" />
+                                All
+                            </label>
+
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.AlphasOnly" />
+                                Alphas only
+                            </label>
+
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.NonAlphasOnly" />
+                                Non-Alphas only
+                            </label>
+                        </InputRadioGroup>
                     </div>
 
                     <div class="field">
                         <label>Egg Group 1</label>
                         <Dropdown TValue="string"
                                   Options="EggGroupOptions"
+                                  isDisabled="@DisableAll"
                                   @bind-Value="Model.OnlyEggGroup1" />
                     </div>
 
@@ -50,6 +78,7 @@
                         <label>Egg Group 2</label>
                         <Dropdown TValue="string"
                                   Options="EggGroupOptions"
+                                  isDisabled="@DisableAll"
                                   @bind-Value="Model.OnlyEggGroup2" />
                     </div>
 
@@ -58,6 +87,7 @@
 
                         <DropdownMultiple TValue="string"
                                           Options="NatureOptions"
+                                          isDisabled="@DisableAll"
                                           @bind-Values="Model.SelectedNatures"/>
                     </div>
                 </div>
@@ -74,44 +104,68 @@
 
                         <div class="iv-row">
                             <span>HP</span>
-                            <input type="number" class="iv-input" @bind="Model.MinHpIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinHpIv" disabled="@(Model.IgnoreHpIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxHpIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxHpIv" disabled="@(Model.IgnoreHpIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="card-checkbox" @bind="Model.IgnoreHpIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                         <div class="iv-row">
                             <span>Attack</span>
-                            <input type="number" class="iv-input" @bind="Model.MinAttackIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinAttackIv" disabled="@(Model.IgnoreAttackIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxAttackIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxAttackIv" disabled="@(Model.IgnoreAttackIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreAttackIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                         <div class="iv-row">
                             <span>Defense</span>
-                            <input type="number" class="iv-input" @bind="Model.MinDefenseIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinDefenseIv" disabled="@(Model.IgnoreDefenseIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxDefenseIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxDefenseIv" disabled="@(Model.IgnoreDefenseIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreDefenseIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                         <div class="iv-row">
                             <span>SpA</span>
-                            <input type="number" class="iv-input" @bind="Model.MinSpAttackIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinSpAttackIv" disabled="@(Model.IgnoreSpAttackIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxSpAttackIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxSpAttackIv" disabled="@(Model.IgnoreSpAttackIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpAttackIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                         <div class="iv-row">
                             <span>SpD</span>
-                            <input type="number" class="iv-input" @bind="Model.MinSpDefenseIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinSpDefenseIv" disabled="@(Model.IgnoreSpDefenseIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxSpDefenseIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxSpDefenseIv" disabled="@(Model.IgnoreSpDefenseIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpDefenseIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                         <div class="iv-row">
                             <span>Speed</span>
-                            <input type="number" class="iv-input" @bind="Model.MinSpeedIv" />
+                            <input type="number" class="iv-input" @bind="Model.MinSpeedIv" disabled="@(Model.IgnoreSpeedIv || DisableAll)" />
                             <span>→</span>
-                            <input type="number" class="iv-input" @bind="Model.MaxSpeedIv" />
+                            <input type="number" class="iv-input" @bind="Model.MaxSpeedIv" disabled="@(Model.IgnoreSpeedIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpeedIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
                         </div>
 
                     </div>
@@ -119,22 +173,34 @@
 
             </div>
 
-        </div>
+        </div>  
 
     </div>
 
     <!-- ACTIONS -->
-    <div>
+    @if (!DisableAll)
+    {
+        <div>
 
-        <button class="card-button" @onclick="Save">
-            @(Model.IsSaved ? "Update" : "Save")
-        </button>
+            <button disabled="@(canSave || DisableAll)" class="card-button" @onclick="Save">
+                @(Model.IsSaved ? "Update" : "Save")
+            </button>
 
-        <button class="card-button" @onclick="Cancel">
-            Cancel
-        </button>
+            @if (Model.IsSaved)
+            {
+                <button disabled="@DisableAll" class="card-button" @onclick="Delete">
+                    Eliminar
+                </button>
+            }
+            else
+            {
+                <button disabled="@DisableAll" class="card-button" @onclick="Cancel">
+                    Cancelar
+                </button>
+            }
 
-    </div>
+        </div>
+    }
 
 </div>
 
@@ -142,6 +208,9 @@
 
     [Parameter]
     public ConfigCardInfo Model { get; set; } = default!;
+
+    [Parameter]
+    public bool DisableAll { get; set; }
 
     [Parameter]
     public EventCallback<ConfigCardInfo> OnSave { get; set; }
@@ -152,19 +221,35 @@
     [Parameter]
     public EventCallback<ConfigCardInfo> OnDelete { get; set; }
 
+    private bool canSave =>
+        DisableAll ||
+        string.IsNullOrWhiteSpace(Model.ConfigName);
+
+    private bool IsIvDisabled(bool ignoreStat)
+        => DisableAll || ignoreStat;
+
     private async Task Save()
     {
-        await OnSave.InvokeAsync(Model);
+        if (DisableAll)
+            return;
+
+        if (OnSave.HasDelegate) await OnSave.InvokeAsync(Model);
     }
 
     private async Task Cancel()
     {
-        await OnCancel.InvokeAsync(Model);
+        if (DisableAll)
+            return;
+
+        if (OnCancel.HasDelegate) await OnCancel.InvokeAsync(Model);
     }
 
     private async Task Delete()
     {
-        await OnDelete.InvokeAsync(Model);
+        if (DisableAll)
+            return;
+
+        if (OnDelete.HasDelegate) await OnDelete.InvokeAsync(Model);
     }
 
     protected override async Task OnInitializedAsync()

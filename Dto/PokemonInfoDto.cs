@@ -14,6 +14,7 @@ namespace PokeBreedr.Dto
         { 
             this.Guid = pokemonInfo.Guid;
             this.Pokemon = pokemonInfo.Pokemon;
+            this.Name = pokemonInfo.Name;
             this.EggGroup1 = pokemonInfo.EggGroup1;
             this.EggGroup2 = pokemonInfo.EggGroup2;
             this.IsAlfa = pokemonInfo.IsAlfa;
@@ -30,6 +31,8 @@ namespace PokeBreedr.Dto
         public Guid Guid { get; set; }
 
         public string Pokemon { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
 
         public string? EggGroup1 { get; set; }
 
