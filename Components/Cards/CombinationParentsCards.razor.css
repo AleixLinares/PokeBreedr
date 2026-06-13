@@ -1,0 +1,25 @@
+﻿.parents-wrapper {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.95);
+    transform-origin: top;
+    transition: all 0.3s ease;
+}
+
+.parents-wrapper.open {
+    max-height: 600px;
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+.parents-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.parent-card {
+    flex: 1;
+    min-width: 280px;
+}

@@ -6,155 +6,177 @@
 
 @inject PokemonInitialLoad PokemonService
 
-<div class="card-container">
-    <div class="card-body-grid">
+<div class="combination-outside-container">
+    <div class="card-container">
+        <div class="card-body-grid">
 
-        <!-- Columna izquierda -->
-        <div class="left-column">
+            <!-- Columna izquierda -->
+            <div class="left-column">
 
-            <!-- Pokemon -->
-            <div class="field">
-                <label>Pokemon: @(this.PokemonEgg)</label>
+                <!-- Pokemon -->
+                <div class="field">
+                    <label>Pokemon: @(this.PokemonEgg)</label>
 
-                <label>Nickname</label>
+                    <label>Nickname</label>
 
-                <!-- TO DO-->
-                <input class="text-input"
-                       maxlength="200"
-                       @bind="@FinalNickname"
-                       placeholder="Nickname" />
+                    <!-- TO DO-->
+                    <input class="text-input"
+                           maxlength="200"
+                           @bind="@FinalNickname"
+                           placeholder="Nickname" />
+                </div>
+
+                <!-- Imagen -->
+                <div class="pokemon-image-container">
+                    <img src="@(string.IsNullOrWhiteSpace(PokemonImage)
+                                                                      ? "assets/defaultAvatar.png"
+                                                                      : $"data:image/png;base64,{PokemonImage}")"
+                         alt="Pokemon Avatar"
+                         class="pokemon-image" />
+                    @if (Model.IsAlfa)
+                    {
+                        <img src="assets/alphaIcon.webp"
+                             class="pokemon-alpha-icon"
+                             alt="Alpha icon">
+                    }
+
+                </div>
+
             </div>
 
-            <!-- Imagen -->
-            <div class="pokemon-image-container">
-                <img src="@(string.IsNullOrWhiteSpace(PokemonImage)
-                                                                  ? "assets/defaultAvatar.png"
-                                                                  : $"data:image/png;base64,{PokemonImage}")"
-                     alt="Pokemon Avatar"
-                     class="pokemon-image" />
-                @if (Model.IsAlfa)
+            <!-- Columna central -->
+            <div class="middle-column">
+
+                <!-- Egg Group -->
+                <div class="field">
+                    <label>
+                        Egg Group:
+                        @this.EggGroup1@(this.EggGroup2 == "" ? "" : $" / {this.EggGroup2}")
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label>
+                        Alfa
+                        <input type="checkbox"
+                               class="card-checkbox"
+                               @bind="Model.IsAlfa"
+                               disabled ="@true"/>
+                    </label>
+                </div>
+
+                <!-- Gender -->
+                <div class="field">
+                    <label>Gender</label>
+
+                    <Dropdown TValue="PokemonGenderEnum?"
+                              Options="GenderOptions"
+                              @key="GenderOptions"
+                              @bind-Value="@FinalGender"
+                              isDisabled="@(isGenderLocked)" />
+                </div>
+
+                <!-- Nature -->
+                <div class="field">
+                    <label>Nature</label>
+                    <Dropdown TValue="PokemonNatureEnum?"
+                              Options="NatureOptions"
+                              @bind-Value="@Model.Nature" 
+                              MarkOption="@initialNature.ToString()" />
+                </div>
+
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="right-column">
+
+                <div>
+
+                   <IVResultShower 
+                        Title ="Hp"
+                        Iv1="@Model.HpIv1"
+                        Iv2="@Model.HpIv2"
+                        SelectedHpIv="@Model.SelectedHpIv"
+                        @bind-FinalValue="@this.FinalHpIv">
+                   </IVResultShower>
+
+                    <IVResultShower 
+                        Title="Attack"
+                        Iv1="@Model.AttackIv1"
+                        Iv2="@Model.AttackIv2"
+                        SelectedHpIv="@Model.SelectedAttackIv"
+                        @bind-FinalValue="@this.FinalAttackIv">
+                    </IVResultShower>
+
+                    <IVResultShower 
+                        Title="Defense"
+                        Iv1="@Model.DefenseIv1"
+                        Iv2="@Model.DefenseIv2"
+                        SelectedHpIv="@Model.SelectedDefenseIv"
+                        @bind-FinalValue="@this.FinalDefenseIv">
+                    </IVResultShower>
+
+                    <IVResultShower
+                        Title="SpAttack"
+                        Iv1="@Model.SpAttackIv1"
+                        Iv2="@Model.SpAttackIv2"
+                        SelectedHpIv="@Model.SelectedSpAttackIv"
+                        @bind-FinalValue="@this.FinalSpAttackIv">
+                    </IVResultShower>
+
+                    <IVResultShower
+                        Title="SpDefense"
+                        Iv1="@Model.SpDefenseIv1"
+                        Iv2="@Model.SpDefenseIv2"
+                        SelectedHpIv="@Model.SelectedSpDefenseIv"
+                        @bind-FinalValue="@this.FinalSpDefenseIv">
+                    </IVResultShower>
+
+                    <IVResultShower 
+                        Title="Speed"
+                        Iv1="@Model.SpeedIv1"
+                        Iv2="@Model.SpeedIv2"
+                        SelectedHpIv="@Model.SelectedSpeedIv"
+                        @bind-FinalValue="@this.FinalSpeedIv">
+                    </IVResultShower>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-actions">
+
+            <button class="card-button" @onclick="Save"
+                    disabled="@true">
+                Guardar
+            </button>
+
+            <button 
+                style="width: 12%;"
+                class="card-button secondary"
+                    @onclick="ToggleParentsAsync"
+                    disabled="@isParentsLoading">
+
+                @if (isParentsLoading)
                 {
-                    <img src="assets/alphaIcon.webp"
-                         class="pokemon-alpha-icon"
-                         alt="Alpha icon">
+                    <span class="spinner"></span>
+                }
+                else
+                {
+                    <span>Ver padres</span>
                 }
 
-            </div>
-
-        </div>
-
-        <!-- Columna central -->
-        <div class="middle-column">
-
-            <!-- Egg Group -->
-            <div class="field">
-                <label>
-                    Egg Group:
-                    @this.EggGroup1@(this.EggGroup2 == "" ? "" : $" / {this.EggGroup2}")
-                </label>
-            </div>
-
-            <div class="field">
-                <label>
-                    Alfa
-                    <input type="checkbox"
-                           class="card-checkbox"
-                           @bind="Model.IsAlfa"
-                           disabled ="@true"/>
-                </label>
-            </div>
-
-            <!-- Gender -->
-            <div class="field">
-                <label>Gender</label>
-
-                <Dropdown TValue="PokemonGenderEnum?"
-                          Options="GenderOptions"
-                          @key="GenderOptions"
-                          @bind-Value="@FinalGender"
-                          isDisabled="@(isGenderLocked)" />
-            </div>
-
-            <!-- Nature -->
-            <div class="field">
-                <label>Nature</label>
-                <Dropdown TValue="PokemonNatureEnum?"
-                          Options="NatureOptions"
-                          @bind-Value="@Model.Nature" 
-                          MarkOption="@initialNature.ToString()" />
-            </div>
-
-        </div>
-
-        <!-- Columna derecha -->
-        <div class="right-column">
-
-            <div>
-
-               <IVResultShower 
-                    Title ="Hp"
-                    Iv1="@Model.HpIv1"
-                    Iv2="@Model.HpIv2"
-                    SelectedHpIv="@Model.SelectedHpIv"
-                    @bind-FinalValue="@this.FinalHpIv">
-               </IVResultShower>
-
-                <IVResultShower 
-                    Title="Attack"
-                    Iv1="@Model.AttackIv1"
-                    Iv2="@Model.AttackIv2"
-                    SelectedHpIv="@Model.SelectedAttackIv"
-                    @bind-FinalValue="@this.FinalAttackIv">
-                </IVResultShower>
-
-                <IVResultShower 
-                    Title="Defense"
-                    Iv1="@Model.DefenseIv1"
-                    Iv2="@Model.DefenseIv2"
-                    SelectedHpIv="@Model.SelectedDefenseIv"
-                    @bind-FinalValue="@this.FinalDefenseIv">
-                </IVResultShower>
-
-                <IVResultShower
-                    Title="SpAttack"
-                    Iv1="@Model.SpAttackIv1"
-                    Iv2="@Model.SpAttackIv2"
-                    SelectedHpIv="@Model.SelectedSpAttackIv"
-                    @bind-FinalValue="@this.FinalSpAttackIv">
-                </IVResultShower>
-
-                <IVResultShower
-                    Title="SpDefense"
-                    Iv1="@Model.SpDefenseIv1"
-                    Iv2="@Model.SpDefenseIv2"
-                    SelectedHpIv="@Model.SelectedSpDefenseIv"
-                    @bind-FinalValue="@this.FinalSpDefenseIv">
-                </IVResultShower>
-
-                <IVResultShower 
-                    Title="Speed"
-                    Iv1="@Model.SpeedIv1"
-                    Iv2="@Model.SpeedIv2"
-                    SelectedHpIv="@Model.SelectedSpeedIv"
-                    @bind-FinalValue="@this.FinalSpeedIv">
-                </IVResultShower>
-
-
-            </div>
-
+            </button>
         </div>
 
     </div>
-
-    <div class="card-actions">
-
-        <button class="card-button" @onclick="Save"
-                disabled="@true">
-            Guardar
-        </button>
-
-    </div>
-
+    <CombinationParentsCards @ref="parentsRef"
+            Parent1Id="Model.Parent1"
+                                 Parent2Id="Model.Parent2"
+                             IsVisible="@isParentsOpen" />
 </div>
 
 @code {
@@ -164,6 +186,10 @@
 
     [Parameter]
     public EventCallback<PokemonInfoDto> OnSave { get; set; }
+
+    private bool isParentsOpen;
+    private bool isParentsLoading;
+    private CombinationParentsCards? parentsRef;
 
     private string EggGroup1 = string.Empty;
     private string EggGroup2 = string.Empty;
@@ -290,4 +316,22 @@
         new() { Value = PokemonNatureEnum.Careful.ToString(), Label = "Careful" },
         new() { Value = PokemonNatureEnum.Quirky.ToString(), Label = "Quirky" },
     };
+
+    private async Task ToggleParentsAsync()
+    {
+        if (!isParentsOpen)
+        {
+            isParentsOpen = true;
+            isParentsLoading = true;
+            await parentsRef!.OpenAsync();
+            isParentsLoading = false;
+        }
+        else
+        {
+            isParentsOpen = false;
+            isParentsLoading = true;
+            await parentsRef!.CloseAsync();
+            isParentsLoading = false;
+        }
+    }
 }

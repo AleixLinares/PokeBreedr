@@ -13,33 +13,13 @@ namespace PokeBreedr.Services
         public List<CombinationInfo> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
             pokemons = this.FilterInvalidPokemons(pokemons, configuration);
-            Console.WriteLine($"pokemons 1 Total combinaciones: {pokemons.Count}");
-            Console.WriteLine(
-                JsonSerializer.Serialize(
-                    pokemons,
-                    new JsonSerializerOptions { WriteIndented = true }
-                )
-            );
             List<CombinationInfo> finalCombinations = new List<CombinationInfo>();
 
             while(pokemons.Count > 1)
             {
                 PokemonInfoDto pokemonCandidate = pokemons.First();
-                Console.WriteLine(
-                    JsonSerializer.Serialize(
-                        pokemonCandidate,
-                        new JsonSerializerOptions { WriteIndented = true }
-                    )
-                );
                 List<PokemonInfoDto> validPokemonsForCandidate = this.FilterInvalidPokemonsForCandidate(pokemonCandidate, pokemons);
 
-                Console.WriteLine($"validPokemonsForCandidate 2 Total combinaciones: {validPokemonsForCandidate.Count}");
-                Console.WriteLine(
-                   JsonSerializer.Serialize(
-                       validPokemonsForCandidate,
-                       new JsonSerializerOptions { WriteIndented = true }
-                   )
-               );
                 if (validPokemonsForCandidate.Count > 0)
                 {
                     finalCombinations.AddRange(this.CombinationsByCandidateAndConfiguration(pokemonCandidate, validPokemonsForCandidate, configuration));
@@ -48,12 +28,6 @@ namespace PokeBreedr.Services
                 pokemons.RemoveAt(0);
             }
             Console.WriteLine($"Total combinaciones: {finalCombinations.Count}");
-            Console.WriteLine(
-                JsonSerializer.Serialize(
-                    finalCombinations,
-                    new JsonSerializerOptions { WriteIndented = true }
-                )
-            );
 
             return finalCombinations;
         }
