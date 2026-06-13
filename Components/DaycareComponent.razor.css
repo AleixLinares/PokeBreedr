@@ -1,0 +1,17 @@
+﻿.daycare-base {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.daycare-selector {
+    width: 30%;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.daycare-selector label {
+    width: 100%;
+    text-align: center;
+}
