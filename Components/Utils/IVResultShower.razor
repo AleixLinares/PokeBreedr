@@ -90,4 +90,21 @@
         _internalValue = value;
         await FinalValueChanged.InvokeAsync(value);
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FinalValueChanged.InvokeAsync(_internalValue);
+        }
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        if (byte.TryParse(e.Value?.ToString(), out var value))
+        {
+            _internalValue = value;
+            await FinalValueChanged.InvokeAsync(value);
+        }
+    }
 }

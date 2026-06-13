@@ -31,9 +31,16 @@ namespace PokeBreedr.Services
 
             var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
-
+            bool first = true;
+            
             foreach (var line in lines)
             {
+                if(first)
+                {
+                    first = false;
+                    continue;
+                }
+
                 var parts = line.Split(',', StringSplitOptions.None);
 
                 if (parts.Length < 4) continue;

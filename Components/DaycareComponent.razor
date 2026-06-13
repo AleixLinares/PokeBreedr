@@ -54,7 +54,7 @@
     private BreederService BreederService { get; set; } = default!;
 
     private ConfigCardInfo? SelectedCard { get; set; } = null;
-    private List<CombinationInfo> CombinedPokemons = new();
+    private List<CombinationInfo> CombinedPokemons = new List<CombinationInfo>();
 
     public bool isLoading = false;
 
@@ -79,7 +79,7 @@
         {
             this.SelectedCard = new ConfigCardInfo(configCard);
             this.SelectedValue = configurationName;
-            this.CombinedPokemons = new();
+            this.CombinedPokemons = new List<CombinationInfo>();
         }          
     }
 
@@ -93,9 +93,13 @@
         }
     }
 
-    private Task TransferPokemon(PokemonInfoDto model)
+    private async Task TransferPokemon(TransferPokemonDto model)
     {
-        // Do nothing
-        return Task.CompletedTask;
+        await PokemonPersistanceService.Save(model.Pokemon);
+        await PokemonPersistanceService.Delete(model.Parent1);
+        await PokemonPersistanceService.Delete(model.Parent2);
+        CombinedPokemons = CombinedPokemons
+            .Where(i => (i.Parent1 != model.Parent1 && i.Parent1 != model.Parent2) 
+                    && (i.Parent2 != model.Parent1 && i.Parent2 != model.Parent2)).ToList();
     }
 }

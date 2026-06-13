@@ -74,12 +74,12 @@ namespace PokeBreedr.Services
 
         private List<PokemonInfoDto> FilterPokemnsForEggGroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
         {
-            if (eggGroup1 != null)
+            if (eggGroup1 != null && eggGroup1 != string.Empty)
             {
                 pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
             }
 
-            if (eggGroup2 != null)
+            if (eggGroup2 != null && eggGroup1 != string.Empty)
             {
                 pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2 || i.EggGroup1 == "Ditto").ToList();
             }
@@ -187,7 +187,7 @@ namespace PokeBreedr.Services
                         flags[6] = 2;
                     }
                 }
-
+                Console.WriteLine($"Total diferencies: {differences}");
                 if (differences == 2)
                 {
                     CombinationInfo newCombination = new CombinationInfo(candidate, pokemonCheck, flags);

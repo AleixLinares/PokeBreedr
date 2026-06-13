@@ -78,12 +78,12 @@
 
     public async Task CloseAsync()
     {
-        animateOpen = false; // 👈 inicia animación de cierre
+        animateOpen = false; // inicia animación de cierre
         StateHasChanged();
 
         await Task.Delay(200); // esperar transición CSS
 
-        render = false; // 👈 ahora sí desmonta
+        render = false; // ahora sí desmonta
         Parent1 = null;
         Parent2 = null;
 

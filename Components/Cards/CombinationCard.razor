@@ -1,6 +1,7 @@
 ﻿@using PokeBreedr.Components.Utils
 @using PokeBreedr.Dto
 @using PokeBreedr.Enums
+@using PokeBreedr.Interfaces
 @using PokeBreedr.Models
 @using PokeBreedr.Services
 
@@ -150,7 +151,7 @@
         <div class="card-actions">
 
             <button class="card-button" @onclick="Save"
-                    disabled="@true">
+                    disabled="@(FinalGender == null)">
                 Guardar
             </button>
 
@@ -185,7 +186,7 @@
     public CombinationInfo Model { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<PokemonInfoDto> OnSave { get; set; }
+    public EventCallback<TransferPokemonDto> OnSave { get; set; }
 
     private bool isParentsOpen;
     private bool isParentsLoading;
@@ -268,19 +269,27 @@
         PokemonInfoDto newPokemon = new PokemonInfoDto();
         newPokemon.Guid = Guid.NewGuid();
         newPokemon.Pokemon = this.PokemonEgg;
-        newPokemon.Name = FinalNickname ?? string.Empty;
+        newPokemon.Name = this.FinalNickname ?? string.Empty;
         newPokemon.EggGroup1 = this.EggGroup1;
         newPokemon.EggGroup2 = this.EggGroup2;
-        newPokemon.IsAlfa = Model.IsAlfa;
+        newPokemon.IsAlfa = this.Model.IsAlfa;
         newPokemon.Gender = this.FinalGender;
-        newPokemon.Nature = Model.Nature;
+        newPokemon.Nature = this.Model.Nature;
         newPokemon.HpIv = this.FinalHpIv;
         newPokemon.AttackIv = this.FinalAttackIv;
         newPokemon.DefenseIv = this.FinalDefenseIv;
         newPokemon.SpAttackIv = this.FinalSpAttackIv;
         newPokemon.SpDefenseIv = this.FinalSpDefenseIv;
         newPokemon.SpeedIv = this.FinalSpeedIv;
-        //await OnSave.InvokeAsync(Model);
+
+        TransferPokemonDto transferPokemon = new TransferPokemonDto
+            {
+                Pokemon = newPokemon,
+                Parent1 = Model.Parent1,
+                Parent2 = Model.Parent2
+            };
+
+        await OnSave.InvokeAsync(transferPokemon);
     }
 
     private List<DropdownOption> GenderOptions = new();

@@ -23,3 +23,13 @@
     flex: 1;
     min-width: 280px;
 }
+@media (max-width: 768px) {
+    .parents-grid {
+        flex-direction: column;
+    }
+
+    .parent-card {
+        width: 100%;
+        min-width: 0;
+    }
+}
