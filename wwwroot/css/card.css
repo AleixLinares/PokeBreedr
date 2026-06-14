@@ -52,3 +52,7 @@
     transition: border-color 0.2s ease;
     margin: 5px;
 }
+
+.daycare-selector .dropdown-options {
+    text-align: left !important;
+}

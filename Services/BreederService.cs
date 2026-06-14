@@ -28,12 +28,6 @@ namespace PokeBreedr.Services
                 pokemons.RemoveAt(0);
             }
             Console.WriteLine($"Total combinaciones: {finalCombinations.Count}");
-            Console.WriteLine(
-                JsonSerializer.Serialize(
-                    finalCombinations,
-                    new JsonSerializerOptions { WriteIndented = true }
-                )
-            );
 
             return finalCombinations;
         }
@@ -49,7 +43,7 @@ namespace PokeBreedr.Services
                 pokemons = pokemons.Where(i => !i.IsAlfa).ToList();
             }
 
-            pokemons = this.FilterPokemnsForEgggroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2);
+            pokemons = this.FilterPokemnsForEggGroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2);
 
             return pokemons;
 
@@ -67,27 +61,27 @@ namespace PokeBreedr.Services
             }
             else
             {
-                pokemons = this.FilterPokemnsForEgggroups(pokemons, candidate.EggGroup1, candidate.EggGroup2);
+                pokemons = this.FilterPokemnsForEggGroups(pokemons, candidate.EggGroup1, candidate.EggGroup2);
 
                 if (candidate.Gender == PokemonGenderEnum.Male)
                 {
-                    return pokemons.Where(i => i.Gender == PokemonGenderEnum.Female).ToList();
+                    return pokemons.Where(i => i.Gender == PokemonGenderEnum.Female || i.EggGroup1 == "Ditto").ToList();
                 }
 
-                return pokemons.Where(i => i.Gender == PokemonGenderEnum.Male).ToList();
+                return pokemons.Where(i => i.Gender == PokemonGenderEnum.Male || i.EggGroup1 == "Ditto").ToList();
             }
         }
 
-        private List<PokemonInfoDto> FilterPokemnsForEgggroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
+        private List<PokemonInfoDto> FilterPokemnsForEggGroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
         {
-            if (eggGroup1 != null)
+            if (eggGroup1 != null && eggGroup1 != string.Empty)
             {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1).ToList();
+                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
             }
 
-            if (eggGroup2 != null)
+            if (eggGroup2 != null && eggGroup1 != string.Empty)
             {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2).ToList();
+                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2 || i.EggGroup1 == "Ditto").ToList();
             }
 
             return pokemons;
@@ -193,7 +187,7 @@ namespace PokeBreedr.Services
                         flags[6] = 2;
                     }
                 }
-
+                Console.WriteLine($"Total diferencies: {differences}");
                 if (differences == 2)
                 {
                     CombinationInfo newCombination = new CombinationInfo(candidate, pokemonCheck, flags);

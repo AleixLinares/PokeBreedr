@@ -16,11 +16,11 @@
             }
             else
             {
-                <button class="vertical-button" @onclick="() => SetValue(SmallIv)">@SmallIv</button>
+                <button class="vertical-button" @onclick="() => UpdateValue(SmallIv)">@SmallIv</button>
                 <span>-</span>
-                <button class="vertical-button" @onclick="() => SetValue(AverageValue)">@AverageValue</button>
+                <button class="vertical-button" @onclick="() => UpdateValue(AverageValue)">@AverageValue</button>
                 <span>-</span>
-                <button class="vertical-button" @onclick="() => SetValue(BigIv)">@BigIv</button>
+                <button class="vertical-button" @onclick="() => UpdateValue(BigIv)">@BigIv</button>
             }
         }
         else if (SelectedHpIv == SelectedIvEnum.Iv1)
@@ -56,7 +56,18 @@
     private byte AverageValue => (byte)((Iv1 + Iv2) / 2);
     private byte SmallIv => Math.Min(Iv1, Iv2);
     private byte BigIv => Math.Max(Iv1, Iv2);
-    private byte FinalValue;
+
+    private byte _internalValue;
+
+    [Parameter]
+    public byte FinalValue
+    {
+        get => _internalValue;
+        set => _internalValue = value;
+    }
+
+    [Parameter]
+    public EventCallback<byte> FinalValueChanged { get; set; }
 
     private string InputClass =>
     SelectedHpIv is SelectedIvEnum.Iv1 or SelectedIvEnum.Iv2
@@ -65,17 +76,35 @@
 
     protected override void OnParametersSet()
     {
-        FinalValue = SelectedHpIv switch
+        _internalValue = SelectedHpIv switch
         {
             SelectedIvEnum.Iv1 => Iv1,
             SelectedIvEnum.Iv2 => Iv2,
             _ when SmallIv == BigIv => SmallIv,
-            _ => FinalValue
+            _ => _internalValue
         };
     }
 
-    private void SetValue(byte value)
+    private async Task UpdateValue(byte value)
     {
-        FinalValue = value;
+        _internalValue = value;
+        await FinalValueChanged.InvokeAsync(value);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FinalValueChanged.InvokeAsync(_internalValue);
+        }
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        if (byte.TryParse(e.Value?.ToString(), out var value))
+        {
+            _internalValue = value;
+            await FinalValueChanged.InvokeAsync(value);
+        }
     }
 }

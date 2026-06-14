@@ -31,9 +31,16 @@ namespace PokeBreedr.Services
 
             var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
-
+            bool first = true;
+            
             foreach (var line in lines)
             {
+                if(first)
+                {
+                    first = false;
+                    continue;
+                }
+
                 var parts = line.Split(',', StringSplitOptions.None);
 
                 if (parts.Length < 4) continue;
@@ -44,7 +51,8 @@ namespace PokeBreedr.Services
                     Name = parts[0].Trim(),
                     EggGroup1 = parts[1].Trim(),
                     EggGroup2 = parts[2].Trim(),
-                    ImageBase64 = parts[3].Trim()
+                    PokemonEgg = parts[3].Trim(),
+                    ImageBase64 = parts[4].Trim()
                 };
 
                 if (pokemon.EggGroup1 != "None") Pokemons[pokemon.Name] = pokemon;

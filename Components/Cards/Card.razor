@@ -19,6 +19,7 @@
 
                 <DropdownSearch Options="PokemonOptions"
                                 Value="@Model.Pokemon"
+                                isDisabled="@DisableAll"
                                 ValueChanged="OnPokemonChanged" />
 
                 <label>Nickname</label>
@@ -26,7 +27,8 @@
                 <input class="text-input"
                        maxlength="200"
                        @bind="Model.Name"
-                       placeholder="Nickname"/>
+                       placeholder="Nickname"
+                       disabled="@DisableAll"/>
             </div>
 
             <!-- Imagen -->
@@ -64,6 +66,7 @@
                      <input type="checkbox"
                          class="card-checkbox"
                            @bind="Model.IsAlfa" 
+                           disabled="@DisableAll"
                            />
                 </label>
             </div>
@@ -76,7 +79,7 @@
                           Options="GenderOptions"
                           @key="GenderOptions"
                           @bind-Value="Model.Gender"
-                          isDisabled="@(isLocked || isGenderLocked)" />
+                          isDisabled="@(isLocked || isGenderLocked || DisableAll)" />
             </div>
 
             <!-- Nature -->
@@ -86,7 +89,7 @@
                 <Dropdown TValue="PokemonNatureEnum?"
                           Options="NatureOptions"
                           @bind-Value="Model.Nature"
-                          isDisabled="@isLocked" />
+                          isDisabled="@(isLocked || DisableAll)" />
             </div>
 
         </div>
@@ -102,7 +105,7 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
                 <NumberSelector Title="Attack"
                                 @bind-Value="@Model.AttackIv"
@@ -110,7 +113,7 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
                 <NumberSelector Title="Defense"
                                 @bind-Value="@Model.DefenseIv"
@@ -118,7 +121,7 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
                 <NumberSelector Title="Sp. Attack"
                                 @bind-Value="@Model.SpAttackIv"
@@ -126,7 +129,7 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
                 <NumberSelector Title="Sp. Defense"
                                 @bind-Value="@Model.SpDefenseIv"
@@ -134,7 +137,7 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
                 <NumberSelector Title="Speed"
                                 @bind-Value="@Model.SpeedIv"
@@ -142,35 +145,37 @@
                                 MaxValue="31"
                                 StepSmall="1"
                                 StepLarge="10"
-                                isDisabled="@isLocked" />
+                                isDisabled="@(isLocked || DisableAll)" />
 
             </div>
 
         </div>
 
     </div>
+    @if (!DisableAll)
+    {
+        <div class="card-actions">
 
-    <div class="card-actions">
-
-        <button class="card-button" @onclick="Save"
-                disabled="@(string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
-            @(Model.IsSaved ? "Actualizar" : "Guardar")
-        </button>
-
-        @if (Model.IsSaved)
-        {
-            <button class="card-button" @onclick="Delete">
-                Eliminar
+            <button class="card-button" @onclick="Save"
+            disabled="@(string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
+                @(Model.IsSaved ? "Actualizar" : "Guardar")
             </button>
-        }
-        else
-        {
-            <button class="card-button" @onclick="Cancel">
-                Cancelar
-            </button>
-        }
 
-    </div>
+            @if (Model.IsSaved)
+            {
+                <button class="card-button" @onclick="Delete">
+                    Eliminar
+                </button>
+            }
+            else
+            {
+                <button class="card-button" @onclick="Cancel">
+                    Cancelar
+                </button>
+            }
+
+        </div>
+    }
 
 </div>
 
@@ -187,6 +192,9 @@
 
     [Parameter]
     public EventCallback<PokemonInfo> OnDelete { get; set; }
+    
+    [Parameter]
+    public bool DisableAll { get; set; }
 
     private bool isLocked => string.IsNullOrWhiteSpace(Model.Pokemon);
     private bool isGenderLocked = false;

@@ -24,3 +24,11 @@
     cursor: default;
     opacity: 0.6;
 }
+
+.dropdown-when-parent-value {
+    color: red;
+}
+
+.dropdown-options {
+    color: black !important;
+}

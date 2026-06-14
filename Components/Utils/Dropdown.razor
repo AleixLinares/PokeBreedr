@@ -1,18 +1,18 @@
 @using PokeBreedr.Models
 @typeparam TValue
 
-<select class="dropdown"
+<select class="dropdown @(IsMarked ? "dropdown-when-parent-value" : null)"
         @bind="CurrentValue"
         disabled=@isDisabled>
 
     @if (AllowEmpty)
     {
-        <option value="">-- Select an option --</option>
+        <option class="dropdown-options" value="">-- Select an option --</option>
     }
 
     @foreach (var option in Options)
     {
-        <option value="@option.Value">
+        <option class="@(MarkOption == option.Value ? "dropdown-when-parent-value" : "dropdown-options") value="@option.Value">
             @option.Label
         </option>
     }
@@ -26,6 +26,8 @@
     [Parameter]
     public TValue? Value { get; set; }
 
+    [Parameter] public string? MarkOption { get; set; }
+
     [Parameter]
     public EventCallback<TValue?> ValueChanged { get; set; }
 
@@ -33,6 +35,11 @@
     public bool AllowEmpty { get; set; } = true;
 
     [Parameter] public bool isDisabled { get; set; } = false;
+
+    private bool IsMarked =>
+        CurrentValue is not null &&
+        MarkOption is not null &&
+        CurrentValue?.ToString() == MarkOption;
 
     private TValue? CurrentValue
     {

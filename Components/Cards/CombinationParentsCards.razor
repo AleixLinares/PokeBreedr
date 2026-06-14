@@ -1,0 +1,92 @@
+﻿@using PokeBreedr.Components.Cards
+@using PokeBreedr.Interfaces
+@using PokeBreedr.Models
+
+@if (render)
+{
+    <div class="parents-wrapper @(animateOpen ? "open" : "")">
+
+        @if (isLoading)
+        {
+            <div class="parents-loading">Loading...</div>
+        }
+        else
+        {
+            <div class="parents-grid">
+                @if (Parent1 != null)
+                {
+                    <div class="parent-card">
+                        <Card Model="Parent1" DisableAll="true" />
+                    </div>
+                }
+
+                @if (Parent2 != null)
+                {
+                    <div class="parent-card">
+                        <Card Model="Parent2" DisableAll="true" />
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public Guid Parent1Id { get; set; }
+
+    [Parameter]
+    public Guid Parent2Id { get; set; }
+
+    [Parameter] public bool IsVisible { get; set; }
+
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    private PokemonInfo? Parent1 = null;
+    private PokemonInfo? Parent2 = null;
+
+    private bool isLoading;
+    private bool animateOpen;
+    private bool render;
+
+    public async Task OpenAsync()
+    {
+        render = true;
+        isLoading = true;
+        animateOpen = false;
+
+        StateHasChanged();
+
+        var dto1 = await PokemonPersistanceService.Obtain(Parent1Id);
+        Parent1 = dto1 != null ? new PokemonInfo(dto1) : null;
+
+        var dto2 = await PokemonPersistanceService.Obtain(Parent2Id);
+        Parent2 = dto2 != null ? new PokemonInfo(dto2) : null;
+
+        isLoading = false;
+
+        StateHasChanged();
+
+        await Task.Yield(); // deja pintar DOM sin "open"
+
+        animateOpen = true; // dispara animación
+        StateHasChanged();
+    }
+
+    public async Task CloseAsync()
+    {
+        animateOpen = false; // inicia animación de cierre
+        StateHasChanged();
+
+        await Task.Delay(200); // esperar transición CSS
+
+        render = false; // ahora sí desmonta
+        Parent1 = null;
+        Parent2 = null;
+
+        StateHasChanged();
+    }
+}
