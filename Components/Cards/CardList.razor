@@ -1,28 +1,28 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
-@using PokeBreedr.Services
 
 <div class="card-list">
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
-            + Añadir Card
+            + Add Card
         </button>
 
         <button class="add-btn" @onclick="SaveAll">
-            Guardar todo
+            Save all
         </button>       
     </div>
 
-    @foreach (var item in Items)
-    {
-        <Card @key="item.Guid"
-              Model="item"
-              OnSave="SaveCard"
-              OnCancel="CancelCard"
-              OnDelete="DeleteCard" />
-    }
+    <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
+        <ItemContent Context="item">
+            <Card @key="item.Guid"
+                  Model="item"
+                  OnSave="SaveCard"
+                  OnCancel="CancelCard"
+                  OnDelete="DeleteCard" />
+        </ItemContent>
+    </Virtualize>
 
 </div>
 
@@ -34,12 +34,15 @@
     [Inject]
     private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
 
-    private void AddCard()
+    private Virtualize<PokemonInfo>? virtualizeRef;
+
+    private async Task AddCard()
     {
         Items.Insert(0, new PokemonInfo
         {
             IsSaved = false
         });
+        await virtualizeRef!.RefreshDataAsync();
     }
 
     private async Task SaveCard(PokemonInfo model)
@@ -51,16 +54,18 @@
         model.IsSaved = true;
     }
 
-    private void CancelCard(PokemonInfo model)
+    private async Task CancelCard(PokemonInfo model)
     {
         Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
     }
 
-    private void DeleteCard(PokemonInfo model)
+    private async Task DeleteCard(PokemonInfo model)
     {
-        this.PokemonPersistanceService.Delete(model.Guid);
+        await this.PokemonPersistanceService.Delete(model.Guid);
 
         Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
     }
 
     private async Task SaveAll()
@@ -71,5 +76,15 @@
         {
             await SaveCard(item);
         }
+    }
+
+    private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(ItemsProviderRequest request)
+    {
+        var items = Items
+            .Skip(request.StartIndex)
+            .Take(request.Count)
+            .ToList();
+
+        return new ItemsProviderResult<PokemonInfo>(items, Items.Count);
     }
 }

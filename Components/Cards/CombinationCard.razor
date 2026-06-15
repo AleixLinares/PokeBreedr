@@ -1,7 +1,6 @@
 ﻿@using PokeBreedr.Components.Utils
 @using PokeBreedr.Dto
 @using PokeBreedr.Enums
-@using PokeBreedr.Interfaces
 @using PokeBreedr.Models
 @using PokeBreedr.Services
 
@@ -11,7 +10,7 @@
     <div class="card-container">
         <div class="card-body-grid">
 
-            <!-- Columna izquierda -->
+            <!-- Left column -->
             <div class="left-column">
 
                 <!-- Pokemon -->
@@ -27,7 +26,7 @@
                            placeholder="Nickname" />
                 </div>
 
-                <!-- Imagen -->
+                <!-- Image -->
                 <div class="pokemon-image-container">
                     <img src="@(string.IsNullOrWhiteSpace(PokemonImage)
                                                                       ? "assets/defaultAvatar.png"
@@ -45,7 +44,7 @@
 
             </div>
 
-            <!-- Columna central -->
+            <!-- Central column -->
             <div class="middle-column">
 
                 <!-- Egg Group -->
@@ -88,7 +87,7 @@
 
             </div>
 
-            <!-- Columna derecha -->
+            <!-- Right column -->
             <div class="right-column">
 
                 <div>
@@ -152,7 +151,7 @@
 
             <button class="card-button" @onclick="Save"
                     disabled="@(FinalGender == null)">
-                Guardar
+                Save
             </button>
 
             <button 
@@ -167,7 +166,7 @@
                 }
                 else
                 {
-                    <span>Ver padres</span>
+                    <span>Show parents</span>
                 }
 
             </button>
@@ -212,7 +211,7 @@
     protected override async Task OnInitializedAsync()
     {
         initialNature = Model.Nature;
-        // Si ya viene un pokemon seleccionado
+
         if (!string.IsNullOrWhiteSpace(Model.Pokemon))
         {
             await LoadPokemonInfo(Model.Pokemon);
