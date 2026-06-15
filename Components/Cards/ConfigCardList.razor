@@ -1,17 +1,16 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
-@using System.Text.Json;
 
 <div class="card-list">
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
-            + Añadir Card
+            + Add Card
         </button>
 
         <button class="add-btn" @onclick="SaveAll">
-            Guardar todo
+            Save All
         </button>
     </div>
 
@@ -22,14 +21,14 @@
         </div>
     }
 
-    @foreach (var item in Items)
-    {
+    <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
+        <ItemContent Context="item">
         <ConfigCard @key="item.Guid"
               Model="item"
               OnSave="SaveCard"
-              OnCancel="CancelCard"
-              OnDelete="DeleteCard" />
-    }
+              OnCancel="CancelCard"/>
+            </ItemContent>
+        </Virtualize>
 
 </div>
 
@@ -38,17 +37,21 @@
     [Parameter]
     public List<ConfigCardInfo> Items { get; set; } = new();
 
+    private Virtualize<ConfigCardInfo>? virtualizeRef;
+
+
     private bool errorOnSave;
 
     [Inject]
     private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
 
-    private void AddCard()
+    private async Task AddCard()
     {
         Items.Insert(0, new ConfigCardInfo
         {
             IsSaved = false
         });
+        await virtualizeRef!.RefreshDataAsync();
     }
 
     // wrapper para que OnSave="SaveCard" funcione
@@ -79,19 +82,21 @@
         } 
     }
 
-    private void CancelCard(ConfigCardInfo model)
+    private async Task CancelCard(ConfigCardInfo model)
     {
         Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
     }
 
-    private void DeleteCard(ConfigCardInfo model)
+    private async Task DeleteCard(ConfigCardInfo model)
     {
         if (model.Guid.HasValue)
         {
-            this.BreedConfigPersistenceService.Delete(model.Guid.Value);
+            await this.BreedConfigPersistenceService.Delete(model.Guid.Value);
         }        
 
         Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
     }
 
     private async Task SaveAll()
@@ -102,5 +107,15 @@
         {
             await SaveCard(item, true);
         }
+    }
+
+    private async ValueTask<ItemsProviderResult<ConfigCardInfo>> LoadItems(ItemsProviderRequest request)
+    {
+        var items = Items
+            .Skip(request.StartIndex)
+            .Take(request.Count)
+            .ToList();
+
+        return new ItemsProviderResult<ConfigCardInfo>(items, Items.Count);
     }
 }

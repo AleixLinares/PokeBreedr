@@ -1,17 +1,16 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
-@using PokeBreedr.Services
 
 <div class="card-list">
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
-            + Añadir Card
+            + Add Card
         </button>
 
         <button class="add-btn" @onclick="SaveAll">
-            Guardar todo
+            Save all
         </button>       
     </div>
 
@@ -79,17 +78,13 @@
         }
     }
 
-    private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(
-    ItemsProviderRequest request)
+    private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(ItemsProviderRequest request)
     {
         var items = Items
             .Skip(request.StartIndex)
             .Take(request.Count)
             .ToList();
 
-        return new ItemsProviderResult<PokemonInfo>(
-            items,
-            Items.Count
-        );
+        return new ItemsProviderResult<PokemonInfo>(items, Items.Count);
     }
 }
