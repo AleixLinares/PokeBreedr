@@ -15,6 +15,8 @@ builder.Services.AddScoped<IBreedConfigPersistenceService, BreedConfigLocalStora
 builder.Services.AddScoped<PokemonInitialLoad>();
 builder.Services.AddScoped<BreederService>();
 
+builder.Services.AddSingleton<ToastService>();
+
 var host = builder.Build();
 
 var store = host.Services.GetRequiredService<PokemonInitialLoad>();

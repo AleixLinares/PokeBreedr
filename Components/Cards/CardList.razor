@@ -2,28 +2,30 @@
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
 
-<div class="card-list">
+<div class="card-list-wrapper">
+    <div class="card-list">
 
-    <div class="actions">
-        <button class="add-btn" @onclick="AddCard">
-            + Add Card
-        </button>
+        <div class="actions">
+            <button class="add-btn" @onclick="AddCard">
+                + Add Card
+            </button>
 
-        <button class="add-btn" @onclick="SaveAll">
-            Save all
-        </button>       
+            <button class="add-btn" @onclick="SaveAll">
+                Save all
+            </button>       
+        </div>
+
+        <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
+            <ItemContent Context="item">
+                <Card @key="item.Guid"
+                      Model="item"
+                      OnSave="SaveCard"
+                      OnCancel="CancelCard"
+                      OnDelete="DeleteCard" />
+            </ItemContent>
+        </Virtualize>
+
     </div>
-
-    <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
-        <ItemContent Context="item">
-            <Card @key="item.Guid"
-                  Model="item"
-                  OnSave="SaveCard"
-                  OnCancel="CancelCard"
-                  OnDelete="DeleteCard" />
-        </ItemContent>
-    </Virtualize>
-
 </div>
 
 @code {

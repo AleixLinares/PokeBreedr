@@ -6,6 +6,7 @@
 @using PokeBreedr.Services
 
 @inject PokemonInitialLoad PokemonService
+@inject ToastService ToastService
 
 <div class="card-container">
     <div class="card-body-grid">
@@ -157,7 +158,7 @@
         <div class="card-actions">
 
             <button class="card-button" @onclick="Save"
-            disabled="@(string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
+            disabled="@(_isSaveBusy || string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
                 @(Model.IsSaved ? "Update" : "Save")
             </button>
 
@@ -202,6 +203,8 @@
     private List<DropdownOption> PokemonOptions = new();
 
     private string? PokemonImage = null;
+
+    private bool _isSaveBusy;
 
     protected override async Task OnInitializedAsync()
     {
@@ -314,7 +317,24 @@
 
     private async Task Save()
     {
-        await OnSave.InvokeAsync(Model);
+        if (_isSaveBusy)
+            return;
+
+        try
+        {
+            _isSaveBusy = true;
+
+            // Tu lógica de guardado
+            await OnSave.InvokeAsync(Model);            
+            await ToastService.Success("Pokemon guardado con exito");
+
+            // Cooldown anti-spam
+            await Task.Delay(500);
+        }
+        finally
+        {
+            _isSaveBusy = false;
+        }
     }
 
     private async Task Cancel()
