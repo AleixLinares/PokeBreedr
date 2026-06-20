@@ -13,7 +13,7 @@
            @oninput="OnInput"
            @onfocus="OpenDropdown" />
 
-    @if (IsOpen)
+    @if (IsOpen && !DisableOptions)
     {
         <div class="dropdown-options">
 
@@ -54,6 +54,9 @@
 
     [Parameter]
     public bool isDisabled { get; set; }
+
+    [Parameter]
+    public bool DisableOptions { get; set; }
 
     private bool IsOpen = false;
 
@@ -122,11 +125,16 @@
         StateHasChanged();
     }
 
-    private void OnInput(ChangeEventArgs e)
+    private async Task OnInput(ChangeEventArgs e)
     {
-        SearchText = e.Value?.ToString() ?? "";
+        SearchText = e.Value?.ToString() ?? string.Empty;
 
         IsOpen = true;
+
+        if(DisableOptions)
+        {
+            await ValueChanged.InvokeAsync(SearchText);
+        }
     }
 
     public async ValueTask DisposeAsync()
