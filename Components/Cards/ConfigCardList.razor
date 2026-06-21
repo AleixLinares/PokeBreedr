@@ -2,10 +2,17 @@
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
 @using PokeBreedr.Services
+@using PokeBreedr.Components.Utils
 
 @inject ToastService ToastService
 
 <div class="card-list">
+
+        <DropdownSearch
+                Value=@SearchString
+                DisableOptions =@(true)
+                ValueChanged="OnSearchChanged"
+                    />
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
@@ -45,6 +52,8 @@
 
 
     private bool errorOnSave;
+
+    private string SearchString { get; set; } = string.Empty;
 
     [Inject]
     private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
@@ -122,13 +131,26 @@
         }
     }
 
+    private async Task OnSearchChanged(string value)
+    {
+        SearchString = value;
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
     private async ValueTask<ItemsProviderResult<ConfigCardInfo>> LoadItems(ItemsProviderRequest request)
     {
-        var items = Items
+        SearchString = SearchString.Trim();
+        var query = Items
+        .Where(item => string.IsNullOrWhiteSpace(SearchString) || item.ConfigName.StartsWith(SearchString, ignoreCase: true, culture: null))
+        .OrderBy(item => item.ConfigName);
+
+        var total = query.Count();
+
+        var items = query
             .Skip(request.StartIndex)
             .Take(request.Count)
             .ToList();
 
-        return new ItemsProviderResult<ConfigCardInfo>(items, Items.Count);
+        return new ItemsProviderResult<ConfigCardInfo>(items, total);
     }
 }

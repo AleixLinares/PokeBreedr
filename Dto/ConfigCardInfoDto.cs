@@ -54,7 +54,7 @@ namespace PokeBreedr.Dto
 
         public Guid Guid { get; set; }
 
-        public string? ConfigName { get; set; }
+        public string ConfigName { get; set; } = string.Empty;
 
         public string? OnlyEggGroup1 { get; set; }
 

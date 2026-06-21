@@ -48,7 +48,7 @@ namespace PokeBreedr.Models
 
         public Guid? Guid { get; set; }
 
-        public string? ConfigName { get; set; }
+        public string ConfigName { get; set; } = string.Empty;
 
         public string? OnlyEggGroup1;
 
