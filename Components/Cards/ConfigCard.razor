@@ -281,7 +281,7 @@
             // Cooldown anti-spam
             await Task.Delay(300);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await ToastService.Error("Failed to save the configuration. Please try again.");
         }
@@ -306,7 +306,7 @@
                 await ToastService.Success("Configuration deleted successfully");
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await ToastService.Error("Failed to delete the configuration. Please try again.");
         }

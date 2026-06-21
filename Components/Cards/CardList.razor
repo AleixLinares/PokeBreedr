@@ -11,7 +11,8 @@
        <DropdownSearch
                 Value=@SearchString
                 DisableOptions =@(true)
-                ValueChanged="OnSearchChanged"
+                ValueChanged="OnSearchChanged">
+            </DropdownSearch>
 
         <div class="actions">
             <button class="add-btn" @onclick="AddCard">
@@ -92,7 +93,7 @@
 
             await ToastService.Success("All Pokémon were saved successfully.");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await ToastService.Error("An error occurred while saving Pokémon.");
         }       

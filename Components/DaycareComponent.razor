@@ -122,7 +122,7 @@
 
             await ToastService.Success("Pokémon transferred successfully.");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await ToastService.Error("Failed to transfer Pokémon. Please try again.");
         }
