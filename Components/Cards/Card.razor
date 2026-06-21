@@ -98,9 +98,50 @@
         </div>
 
         <!-- Right column -->
-        <div class="right-column">
+        <div class="@(DisableAll ? "reduced-right-column" : "right-column")">
 
-            <div class="ivs-grid-body">
+            @if (DisableAll)
+            {
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">Hp</h3> 
+                        <label style="margin-right: 15px">@Model.HpIv</label>
+                    </div>
+                </div>
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">Attack</h3>
+                        <label style="margin-right: 15px">@Model.AttackIv</label>
+                    </div>
+                </div>
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">Defense</h3> 
+                        <label style="margin-right: 15px">@Model.DefenseIv</label>
+                    </div>
+                </div>
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">SpAttack</h3>
+                        <label style="margin-right: 15px">@Model.SpAttackIv</label>
+                    </div>
+                </div>
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">SpDefense</h3>
+                        <label style="margin-right: 15px">@Model.SpDefenseIv</label>
+                    </div>
+                </div>
+                <div class="iv-row">
+                    <div class="iv-center">
+                        <h3 class="iv-title">Speed</h3>
+                        <label style="margin-right: 15px">@Model.SpeedIv</label>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="ivs-grid-body">
 
                 <NumberSelector Title="Hp"
                                 @bind-Value="@Model.HpIv"
@@ -150,7 +191,8 @@
                                 StepLarge="10"
                                 isDisabled="@(isLocked || DisableAll)" />
 
-            </div>
+                </div>
+            }
 
         </div>
 

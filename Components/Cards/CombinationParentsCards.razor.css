@@ -8,7 +8,7 @@
 }
 
 .parents-wrapper.open {
-    max-height: 600px;
+    max-height: 2000px;
     opacity: 1;
     transform: scaleY(1);
 }
@@ -23,7 +23,7 @@
     flex: 1;
     min-width: 280px;
 }
-@media (max-width: 768px) {
+@media (max-width: 1450px) {
     .parents-grid {
         flex-direction: column;
     }

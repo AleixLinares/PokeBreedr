@@ -155,18 +155,22 @@
             </button>
 
             <button 
-                style="width: 12%;"
+                style="min-width:15%"
                 class="card-button secondary"
                     @onclick="ToggleParentsAsync"
                     disabled="@isParentsLoading">
 
                 @if (isParentsLoading)
                 {
-                    <span class="spinner"></span>
+                    <span>Loading...</span>
+                }
+                else if (!isParentsOpen)
+                {
+                    <span>Show parents</span>
                 }
                 else
                 {
-                    <span>Show parents</span>
+                    <span>Hide parents</span>
                 }
 
             </button>

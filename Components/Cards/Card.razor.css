@@ -78,8 +78,15 @@
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     margin-top: 20px;
+}
+
+.reduced-right-column {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 
 .ivs-grid-body {
@@ -95,4 +102,25 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.iv-title {
+    min-width: 90px; /* opcional para alinear títulos */
+    font-weight: bold;
+}
+
+.iv-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 60px;
+    align-items: center;
+    gap: 8px;
+    max-width: 350px;
+}
+
+.iv-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-size: 14px;
 }

@@ -76,12 +76,14 @@ namespace PokeBreedr.Services
         {
             if (eggGroup1 != null && eggGroup1 != string.Empty)
             {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
-            }
-
-            if (eggGroup2 != null && eggGroup1 != string.Empty)
-            {
-                pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2 || i.EggGroup1 == "Ditto").ToList();
+                if (eggGroup2 != null && eggGroup2 != string.Empty)
+                {
+                    pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == eggGroup2 || i.EggGroup2 == eggGroup2 || i.EggGroup1 == "Ditto").ToList();
+                }
+                else
+                {
+                    pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
+                }                    
             }
 
             return pokemons;
