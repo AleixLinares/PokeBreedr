@@ -8,7 +8,7 @@
     <DropdownSearch
                 Value=@SearchString
                 DisableOptions =@(true)
-                    ValueChanged="OnSearchChanged"
+                ValueChanged="OnSearchChanged"
                     />
 
     <div class="actions">
@@ -95,14 +95,14 @@
 
     private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(ItemsProviderRequest request)
     {
-
+        SearchString = SearchString.Trim();
         var query = Items
-            .Where(x => string.IsNullOrWhiteSpace(SearchString) ||
-                    x.Name.StartsWith(SearchString, ignoreCase: true, culture: null)
-                            || x.Pokemon.StartsWith(SearchString, ignoreCase: true, culture: null))
-            .OrderBy(x => x.Pokemon)
-            .ThenBy(x => string.IsNullOrWhiteSpace(x.Name))
-            .ThenBy(x => x.Name);
+            .Where(item => string.IsNullOrWhiteSpace(SearchString) ||
+                    item.Name.StartsWith(SearchString, ignoreCase: true, culture: null)
+                            || item.Pokemon.StartsWith(SearchString, ignoreCase: true, culture: null))
+            .OrderBy(item => item.Pokemon)
+            .ThenBy(item => string.IsNullOrWhiteSpace(item.Name))
+            .ThenBy(item => item.Name);
 
         var total = query.Count();
 
