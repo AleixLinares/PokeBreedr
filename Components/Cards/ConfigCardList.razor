@@ -1,7 +1,11 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
+@using PokeBreedr.Services
 @using PokeBreedr.Components.Utils
+
+@inject ToastService ToastService
+
 <div class="card-list">
 
         <DropdownSearch
@@ -31,6 +35,7 @@
         <ItemContent Context="item">
         <ConfigCard @key="item.Guid"
               Model="item"
+              OnDelete="DeleteCard"
               OnSave="SaveCard"
               OnCancel="CancelCard"/>
             </ItemContent>
@@ -109,11 +114,20 @@
 
     private async Task SaveAll()
     {
-        errorOnSave = false;
-
-        foreach (var item in Items)
+        try
         {
-            await SaveCard(item, true);
+            errorOnSave = false;
+
+            foreach (var item in Items)
+            {
+                await SaveCard(item, true);
+            }
+
+            await ToastService.Success("All configurations were saved successfully.");
+        }
+        catch (Exception ex)
+        {
+            await ToastService.Error("An error occurred while saving the configurations.");
         }
     }
 

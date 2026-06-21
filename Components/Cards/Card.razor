@@ -6,6 +6,7 @@
 @using PokeBreedr.Services
 
 @inject PokemonInitialLoad PokemonService
+@inject ToastService ToastService
 
 <div class="card-container">
     <div class="card-body-grid">
@@ -15,7 +16,9 @@
 
             <!-- Pokemon -->
             <div class="field">
-                <label>Pokemon</label>
+                <label>
+                    Pokemon <span style="color:red">*</span>
+                </label>
 
                 <DropdownSearch Options="PokemonOptions"
                                 Value="@Model.Pokemon"
@@ -73,7 +76,9 @@
 
             <!-- Gender -->
             <div class="field">
-                <label>Gender</label>
+                <label>
+                    Gender <span style="color:red">*</span>
+                </label>
 
                 <Dropdown TValue="PokemonGenderEnum?"
                           Options="GenderOptions"
@@ -155,21 +160,36 @@
     @if (!DisableAll)
     {
         <div class="card-actions">
-
-            <button class="card-button" @onclick="Save"
-            disabled="@(string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
-                @(Model.IsSaved ? "Update" : "Save")
-            </button>
+            @if (!areWeDeleting)
+            {
+                <button class="card-button" @onclick="Save"
+                        disabled="@(_isActionBusy || string.IsNullOrWhiteSpace(Model.Pokemon) || Model.Gender == null)">
+                    @(Model.IsSaved ? "Update" : "Save")
+                </button>
+            }           
 
             @if (Model.IsSaved)
             {
-                <button class="card-button" @onclick="Delete">
-                    Delete
-                </button>
+                @if (areWeDeleting)
+                {
+                    <label style="margin-left: 10px">Are you sure?</label>
+                    <button style="color:red" disabled="@(!canWeDeleteAlready)" class="card-button" @onclick="Delete">
+                        Yes, delete
+                    </button>
+                    <button style="color:green" class="card-button" @onclick="CancelDeleteProcess">
+                        No, cancel
+                    </button>
+                }
+                else
+                {
+                    <button style="color:red" disabled="@_isActionBusy" class="card-button" @onclick="StartDeleteProcess">
+                        Delete
+                    </button>
+                }
             }
             else
             {
-                <button class="card-button" @onclick="Cancel">
+                <button disabled="@_isActionBusy" class="card-button" @onclick="Cancel">
                     Cancel
                 </button>
             }
@@ -192,7 +212,7 @@
 
     [Parameter]
     public EventCallback<PokemonInfo> OnDelete { get; set; }
-    
+
     [Parameter]
     public bool DisableAll { get; set; }
 
@@ -202,6 +222,11 @@
     private List<DropdownOption> PokemonOptions = new();
 
     private string? PokemonImage = null;
+
+    private bool _isActionBusy;
+    private bool areWeDeleting;
+    private bool canWeDeleteAlready;
+    private CancellationTokenSource? _deleteCts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -314,7 +339,28 @@
 
     private async Task Save()
     {
-        await OnSave.InvokeAsync(Model);
+        if (_isActionBusy)
+            return;
+
+        try
+        {
+            _isActionBusy = true;
+
+            // Tu lógica de guardado
+            await OnSave.InvokeAsync(Model);            
+            await ToastService.Success("Pokémon saved successfully.");
+
+            // Cooldown anti-spam
+            await Task.Delay(300);
+        }
+        catch (Exception ex)
+        {
+            await ToastService.Error("Failed to save Pokémon. Please try again.");
+        }
+        finally
+        {
+            _isActionBusy = false;
+        }
     }
 
     private async Task Cancel()
@@ -324,7 +370,65 @@
 
     private async Task Delete()
     {
-        await OnDelete.InvokeAsync(Model);
+        if (_isActionBusy)
+            return;
+
+        try
+        {
+            _isActionBusy = true;
+
+            // Tu lógica de guardado
+            await OnDelete.InvokeAsync(Model);
+            await ToastService.Success("Pokemon deleted successfully");
+
+            // Cooldown anti-spam
+            await Task.Delay(300);
+        }
+        catch (Exception ex)
+        {
+            await ToastService.Error("Failed to delete Pokémon. Please try again.");
+        }
+        finally
+        {
+            _isActionBusy = false;
+            canWeDeleteAlready = false;
+            areWeDeleting = false;
+        }
     }
 
+    private async Task StartDeleteProcess()
+    {
+        _deleteCts?.Cancel();
+        _deleteCts?.Dispose();
+
+        _deleteCts = new CancellationTokenSource();
+
+        areWeDeleting = true;
+        canWeDeleteAlready = false;
+
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(2000, _deleteCts.Token);
+
+            canWeDeleteAlready = true;
+        }
+        catch (TaskCanceledException)
+        {
+            // Cancelled, ignore
+        }
+
+        StateHasChanged();
+    }
+
+    private void CancelDeleteProcess()
+    {
+        _deleteCts?.Cancel();
+
+        areWeDeleting = false;
+        canWeDeleteAlready = false;
+
+        StateHasChanged();
+    }
 }

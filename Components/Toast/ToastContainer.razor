@@ -1,0 +1,29 @@
+﻿@using PokeBreedr.Services
+
+@implements IDisposable
+@inject ToastService ToastService
+
+<div class="toast-container">
+
+    @foreach (var toast in ToastService.Toasts)
+    {
+        <ToastItem @key="toast.Id" Toast="toast" />
+    }
+
+</div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        ToastService.OnChange += Refresh;
+    }
+
+    private void Refresh()
+        => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        ToastService.OnChange -= Refresh;
+    }
+}

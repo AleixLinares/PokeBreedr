@@ -1,0 +1,66 @@
+﻿@using PokeBreedr.Enums;
+@using PokeBreedr.Models;
+@using PokeBreedr.Services;
+
+@implements IDisposable
+
+<div class="toast-card @CssClass @(Toast.IsLeaving ? "toast-leaving" : "")">
+
+    <button class="toast-close"
+            @onclick="Close">
+        ✕
+    </button>
+    <div>
+        @Toast.Message
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public required ToastModel Toast { get; set; }
+
+    [Inject]
+    private ToastService ToastService { get; set; } = default!;
+
+    private CancellationTokenSource cts = new();
+
+    protected override void OnInitialized()
+    {
+        _ = AutoCloseAsync();
+    }
+
+    private async Task AutoCloseAsync()
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10), cts.Token);
+
+            await ToastService.RemoveAnimatedAsync(Toast.Id);
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+    private async Task Close()
+    {
+        Console.WriteLine("Detecta SIQUIERA EL CLICK??");
+        await ToastService.RemoveAnimatedAsync(Toast.Id);
+    }
+
+    private string CssClass =>
+        Toast.Type switch
+        {
+            ToastType.Success => "toast-success",
+            ToastType.Error => "toast-error",
+            ToastType.Info => "toast-info",
+            _ => "toast-info"
+        };
+
+    public void Dispose()
+    {
+        cts.Cancel();
+        cts.Dispose();
+    }
+}
