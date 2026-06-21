@@ -1,8 +1,15 @@
 ﻿@using PokeBreedr.Models
 @using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
+@using PokeBreedr.Components.Utils
 
 <div class="card-list">
+
+    <DropdownSearch
+                Value=@SearchString
+                DisableOptions =@(true)
+                ValueChanged="OnSearchChanged"
+                    />
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
@@ -33,6 +40,8 @@
 
     [Inject]
     private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    private string SearchString { get; set; } = string.Empty;
 
     private Virtualize<PokemonInfo>? virtualizeRef;
 
@@ -78,13 +87,30 @@
         }
     }
 
+    private async Task OnSearchChanged(string value)
+    {
+        SearchString = value;
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
     private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(ItemsProviderRequest request)
     {
-        var items = Items
+        SearchString = SearchString.Trim();
+        var query = Items
+            .Where(item => string.IsNullOrWhiteSpace(SearchString) ||
+                    item.Name.StartsWith(SearchString, ignoreCase: true, culture: null)
+                            || item.Pokemon.StartsWith(SearchString, ignoreCase: true, culture: null))
+            .OrderBy(item => item.Pokemon)
+            .ThenBy(item => string.IsNullOrWhiteSpace(item.Name))
+            .ThenBy(item => item.Name);
+
+        var total = query.Count();
+
+        var items = query
             .Skip(request.StartIndex)
             .Take(request.Count)
             .ToList();
 
-        return new ItemsProviderResult<PokemonInfo>(items, Items.Count);
+        return new ItemsProviderResult<PokemonInfo>(items, total);
     }
 }
