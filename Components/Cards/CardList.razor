@@ -1,6 +1,9 @@
-﻿@using PokeBreedr.Models
-@using PokeBreedr.Dto
+﻿@using PokeBreedr.Dto
 @using PokeBreedr.Interfaces
+@using PokeBreedr.Models
+@using PokeBreedr.Services
+
+@inject ToastService ToastService
 
 <div class="card-list-wrapper">
     <div class="card-list">
@@ -72,12 +75,21 @@
 
     private async Task SaveAll()
     {
-        var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty && x.Gender != null).ToList();
-
-        foreach (var item in pendingItems)
+        try
         {
-            await SaveCard(item);
+            var pendingItems = Items.Where(x => x.Pokemon != null && x.Pokemon != string.Empty && x.Gender != null).ToList();
+
+            foreach (var item in pendingItems)
+            {
+                await SaveCard(item);
+            }
+
+            await ToastService.Success("All Pokémon were saved successfully.");
         }
+        catch (Exception ex)
+        {
+            await ToastService.Error("An error occurred while saving Pokémon.");
+        }       
     }
 
     private async ValueTask<ItemsProviderResult<PokemonInfo>> LoadItems(ItemsProviderRequest request)

@@ -5,6 +5,7 @@
 @using PokeBreedr.Dto
 @using PokeBreedr.Services
 
+@inject ToastService ToastService
 
 <div class="daycare-base">
         <div class="daycare-selector">
@@ -85,21 +86,45 @@
 
     private async Task Combine()
     {
-        List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
-        if (SelectedCard != null)
+        try
         {
-            ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
-            CombinedPokemons = this.BreederService.BreedPokemons(dtoList, configDto);            
+            List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
+            if (SelectedCard != null)
+            {
+                ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
+                CombinedPokemons = this.BreederService.BreedPokemons(dtoList, configDto);
+                await ToastService.Info($"Found {CombinedPokemons.Count} matching combinations.");
+            }
+            else
+            {
+                await ToastService.Info("Please select a configuration card first.");
+            }
+        }
+        catch
+        {
+            await ToastService.Error("Failed to generate Pokémon combinations. Please try again.");
         }
     }
 
     private async Task TransferPokemon(TransferPokemonDto model)
     {
-        await PokemonPersistanceService.Save(model.Pokemon);
-        await PokemonPersistanceService.Delete(model.Parent1);
-        await PokemonPersistanceService.Delete(model.Parent2);
-        CombinedPokemons = CombinedPokemons
-            .Where(i => (i.Parent1 != model.Parent1 && i.Parent1 != model.Parent2) 
-                    && (i.Parent2 != model.Parent1 && i.Parent2 != model.Parent2)).ToList();
+        try
+        {
+            await PokemonPersistanceService.Save(model.Pokemon);
+            await PokemonPersistanceService.Delete(model.Parent1);
+            await PokemonPersistanceService.Delete(model.Parent2);
+
+            CombinedPokemons = CombinedPokemons
+                .Where(i =>
+                    (i.Parent1 != model.Parent1 && i.Parent1 != model.Parent2) &&
+                    (i.Parent2 != model.Parent1 && i.Parent2 != model.Parent2))
+                .ToList();
+
+            await ToastService.Success("Pokémon transferred successfully.");
+        }
+        catch (Exception ex)
+        {
+            await ToastService.Error("Failed to transfer Pokémon. Please try again.");
+        }
     }
 }
