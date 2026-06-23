@@ -195,6 +195,14 @@
     {
         try
         {
+            bool checkParent1 = await PokemonPersistanceService.Obtain(model.Parent1) != null;
+            bool checkParent2 = await PokemonPersistanceService.Obtain(model.Parent2) != null;
+
+            if (!checkParent1 || !checkParent2)
+            {
+                throw new KeyNotFoundException("One or more parents no longer exists");
+            }
+
             await PokemonPersistanceService.Save(model.Pokemon);
             await PokemonPersistanceService.Delete(model.Parent1);
             await PokemonPersistanceService.Delete(model.Parent2);
@@ -208,6 +216,10 @@
             this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
 
             await ToastService.Success("Pokémon transferred successfully.");
+        }
+        catch (KeyNotFoundException)
+        {
+            await ToastService.Error("Failed to transfer Pokémon. One or more parents no longer exists.");
         }
         catch (Exception)
         {
@@ -229,13 +241,11 @@
                 .Select(i => i.Parent1 == parent ? i.Parent2 : i.Parent1)
                 .Distinct()
                 .ToList();
-            Console.WriteLine("otherParentGuids" + otherParentGuids.Count.ToString());
             foreach (var otherGuid in otherParentGuids)
             {
                 var other = await this.PokemonPersistanceService.Obtain(otherGuid);
                 AddParentOption(other, false);
             }
-            Console.WriteLine("parents2" + Parents2.Count.ToString());
         }
 
         ApplyFilters();
@@ -244,8 +254,6 @@
     private void OnParent2Selected(string? selectedGuid)
     {
         SelectedParent2 = selectedGuid;
-
-        Console.WriteLine("Aplicando filtros 2");
         ApplyFilters();
     }
 
@@ -255,8 +263,6 @@
 
         var hasParent1 = Guid.TryParse(SelectedParent1, out var parent1);
         var hasParent2 = Guid.TryParse(SelectedParent2, out var parent2);
-        Console.WriteLine("hasParent1" + hasParent1.ToString());
-        Console.WriteLine("hasParent2" + hasParent2.ToString());
 
         if (hasParent1 && hasParent2)
         {

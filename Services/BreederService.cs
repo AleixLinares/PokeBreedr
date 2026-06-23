@@ -2,7 +2,6 @@
 using PokeBreedr.Enums;
 using PokeBreedr.Models;
 using PokeBreedr.Utils;
-using System.Text.Json;
 
 namespace PokeBreedr.Services
 {
@@ -95,102 +94,110 @@ namespace PokeBreedr.Services
 
             foreach (PokemonInfoDto pokemonCheck in pokemons)
             {
-                int differences = 0;
+                int differencesCandidate = 0;
+                int differencesCheck = 0;
                 byte[] flags = new byte[7];
                 bool isInCandidate, isInCheck;
 
                 if (!configuration.IgnoreHpIv && candidate.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCandidate)  != pokemonCheck.HpIv.InRange(configuration.MinHpIv, configuration.MaxHpIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[0] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[0] = 2;
                     }
                 }
 
                 if (!configuration.IgnoreAttackIv && candidate.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCandidate) != pokemonCheck.AttackIv.InRange(configuration.MinAttackIv, configuration.MaxAttackIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[1] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[1] = 2;
                     }
                 }
 
                 if (!configuration.IgnoreDefenseIv && candidate.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCandidate) != pokemonCheck.DefenseIv.InRange(configuration.MinDefenseIv, configuration.MaxDefenseIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[2] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[2] = 2;
                     }
                 }
 
                 if (!configuration.IgnoreSpAttackIv && candidate.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCandidate) != pokemonCheck.SpAttackIv.InRange(configuration.MinSpAttackIv, configuration.MaxSpAttackIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[3] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[3] = 2;
                     }
                 }
 
                 if (!configuration.IgnoreSpDefenseIv && candidate.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCandidate) != pokemonCheck.SpDefenseIv.InRange(configuration.MinSpDefenseIv, configuration.MaxSpDefenseIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[4] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[4] = 2;
                     }
                 }
 
                 if (!configuration.IgnoreSpeedIv && candidate.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCandidate) != pokemonCheck.SpeedIv.InRange(configuration.MinSpeedIv, configuration.MaxSpeedIv, out isInCheck))
                 {
-                    ++differences;
                     if (isInCandidate)
                     {
+                        ++differencesCandidate;
                         flags[5] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[5] = 2;
                     }
                 }
 
                 if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()) != configuration.SelectedNatures.Contains(pokemonCheck.Nature.ToString()))
                 {
-                    ++differences;
                     if (configuration.SelectedNatures.Contains(candidate.Nature.ToString()))
                     {
+                        ++differencesCandidate;
                         flags[6] = 1;
                     }
                     else
                     {
+                        ++differencesCheck;
                         flags[6] = 2;
                     }
                 }
-                Console.WriteLine($"Total diferencies: {differences}");
-                if (differences == 2)
+
+                if (differencesCandidate == 1 && differencesCheck == 1)
                 {
                     CombinationInfo newCombination = new CombinationInfo(candidate, pokemonCheck, flags);
                     combinations.Add(newCombination);

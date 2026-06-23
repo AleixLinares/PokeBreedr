@@ -1,6 +1,7 @@
 ﻿@using PokeBreedr.Components.Utils
 @using PokeBreedr.Dto
 @using PokeBreedr.Enums
+@using PokeBreedr.Interfaces
 @using PokeBreedr.Models
 @using PokeBreedr.Services
 
@@ -67,7 +68,9 @@
 
                 <!-- Gender -->
                 <div class="field">
-                    <label>Gender</label>
+                    <label>
+                        Gender <span style="color:red">*</span>
+                    </label>
 
                     <Dropdown TValue="PokemonGenderEnum?"
                               Options="GenderOptions"
@@ -149,10 +152,10 @@
 
         <div class="card-actions">
 
-            <button class="card-button" @onclick="Save"
+            <button class="card-button" @onclick="OpenModal"
                     disabled="@(FinalGender == null)">
                 Save
-            </button>
+             </button>
 
             <button 
                 style="min-width:15%"
@@ -181,6 +184,37 @@
             Parent1Id="Model.Parent1"
             Parent2Id="Model.Parent2"
             IsVisible="@isParentsOpen" />
+
+    <Modal IsVisible="@showModal" OnClose="CloseModal">
+
+        <div class="modal-header">
+            <h2>Confirm action</h2>
+        </div>
+
+        <div class="modal-body">
+            <p>
+                The resulting combinations from the parents
+                <strong>@Parent1Name</strong> and
+                <strong>@Parent2Name</strong>
+                will be automatically removed from the combinations list.
+            </p>
+
+            <p class="warning-text">
+                This action cannot be undone. Are you sure?
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button class="card-button btn-danger" @onclick="Save">
+                Transfer
+            </button>
+
+            <button class="card-button btn-secondary" @onclick="CloseModal">
+                Cancel
+            </button>
+        </div>
+
+    </Modal>
 </div>
 
 @code {
@@ -190,6 +224,11 @@
 
     [Parameter]
     public EventCallback<TransferPokemonDto> OnSave { get; set; }
+
+    [Inject]
+    private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
+
+    private bool showModal = false;
 
     private bool isParentsOpen;
     private bool isParentsLoading;
@@ -212,6 +251,9 @@
     private byte FinalSpDefenseIv;
     private byte FinalSpeedIv;
 
+    private string Parent1Name = "";
+    private string Parent2Name = "";
+
     protected override async Task OnInitializedAsync()
     {
         initialNature = Model.Nature;
@@ -226,6 +268,27 @@
     {
         var pokemonInfoInitial = await PokemonService.GetPokemonInfo(pokemonName);
         var pokemonInfo = await PokemonService.GetPokemonInfo(pokemonInfoInitial.PokemonEgg);
+
+        var parent1 = await PokemonPersistanceService.Obtain(Model.Parent1);
+        var parent2 = await PokemonPersistanceService.Obtain(Model.Parent2);
+
+        if (parent1 != null)
+        {
+            Parent1Name = BuildPokemonLabel(parent1);
+        }
+        else
+        {
+            Parent1Name = "Missing parent";
+        }
+
+        if (parent2 != null)
+        {
+            Parent2Name = BuildPokemonLabel(parent2);
+        }
+        else
+        {
+            Parent2Name = "Missing parent";
+        }
 
         this.EggGroup1 = pokemonInfo.EggGroup1;
         this.EggGroup2 = pokemonInfo.EggGroup2;
@@ -345,5 +408,26 @@
             await parentsRef!.CloseAsync();
             isParentsLoading = false;
         }
+    }
+
+    void OpenModal()
+    {
+        showModal = true;
+    }
+
+    void CloseModal()
+    {
+        showModal = false;
+    }
+
+    private static string BuildPokemonLabel(PokemonInfoDto pokemon)
+    {
+        var nickname = string.IsNullOrWhiteSpace(pokemon.Name)
+            ? "No nickname"
+            : pokemon.Name;
+
+        return $"{pokemon.Pokemon} ({nickname}) " +
+               $"{pokemon.HpIv}-{pokemon.AttackIv}-{pokemon.DefenseIv}-" +
+               $"{pokemon.SpAttackIv}-{pokemon.SpDefenseIv}-{pokemon.SpeedIv}";
     }
 }

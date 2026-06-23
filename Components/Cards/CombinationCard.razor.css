@@ -112,3 +112,39 @@
     flex-direction: column;
     width: 100%;
 }
+
+.modal-header {
+    margin-bottom: 10px;
+}
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.4rem;
+    }
+
+.modal-body {
+    margin: 15px 0;
+    line-height: 1.5;
+}
+
+.warning-text {
+    color: #b00020;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-danger {
+    background: #d32f2f;
+    color: white;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+}
