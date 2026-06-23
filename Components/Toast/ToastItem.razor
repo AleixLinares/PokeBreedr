@@ -6,13 +6,16 @@
 
 <div class="toast-card @CssClass @(Toast.IsLeaving ? "toast-leaving" : "")">
 
-    <button class="toast-close"
-            @onclick="Close">
-        ✕
-    </button>
-    <div>
+    <div class="toast-header">
+        <button class="toast-close" @onclick="Close">
+            ✕
+        </button>
+    </div>
+
+    <div class="toast-body">
         @Toast.Message
     </div>
+
 </div>
 
 @code

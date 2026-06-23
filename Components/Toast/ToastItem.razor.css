@@ -40,6 +40,18 @@
     font-size: 16px;
 }
 
+.toast-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.toast-body {
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.4;
+    padding-right: 6px;
+}
+
 @keyframes toast-enter {
 
     from {
