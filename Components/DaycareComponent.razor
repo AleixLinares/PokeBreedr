@@ -28,15 +28,16 @@
 
         if (showingCombinations)
         {
-            <DropdownSearch2 Options="Parents1"
-                            Value="@SelectedParent1"
-                            ValueChanged="OnParent1Selected" />
+            <div class="dropdown-row">
+                <DropdownSearch2 @ref="Parent1Dropdown" 
+                    Options="Parents1"
+                                ValueChanged="OnParent1Selected" />
 
-            <DropdownSearch2 Options="Parents2"
-                            Value="@SelectedParent2"
-                            isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
-                            ValueChanged="OnParent2Selected" />
-
+                <DropdownSearch2 @ref="Parent2Dropdown"
+                    Options="Parents2"
+                                isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
+                                ValueChanged="OnParent2Selected" />
+            </div>
             @foreach (var item in CombinedPokemonsShow)
             {
                 <CombinationCard @key="@($"{item.Parent1}-{item.Parent2}")"
@@ -77,6 +78,8 @@
 
     public string? SelectedParent1 { get; set; } = null;
     public string? SelectedParent2 { get; set; } = null;
+    private DropdownSearch2? Parent1Dropdown;
+    private DropdownSearch2? Parent2Dropdown;
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,6 +97,8 @@
     private async Task OnConfigurationChanged(string configurationName)
     {
         showingCombinations = false;
+        Parent2Dropdown?.EmptySearchSyting();
+        Parent1Dropdown?.EmptySearchSyting();
         ConfigCardInfoDto? configCard = await this.BreedConfigPersistenceService.GetConfigurationByName(configurationName);
 
         if (configCard != null)
@@ -108,6 +113,9 @@
     private async Task Combine()
     {
         showingCombinations = false;
+
+        Parent2Dropdown?.EmptySearchSyting();
+        Parent1Dropdown?.EmptySearchSyting();
         try
         {
             if (SelectedCard == null)
@@ -210,6 +218,7 @@
     private async Task OnParent1Selected(string? selectedGuid)
     {        
         SelectedParent1 = selectedGuid;
+        Parent2Dropdown?.EmptySearchSyting();
         Parents2.Clear();
         SelectedParent2 = null;
         var hasParent = Guid.TryParse(SelectedParent1, out var parent);

@@ -15,3 +15,11 @@
     width: 100%;
     text-align: center;
 }
+
+.dropdown-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 15px;
+}

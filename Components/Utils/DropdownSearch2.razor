@@ -3,9 +3,9 @@
 @implements IAsyncDisposable
 @inject IJSRuntime JS
 
-<div class="dropdown-search" @ref="DropdownRef">
+<div class="dropdown-search2" @ref="DropdownRef">
 
-    <input class="dropdown-input"
+    <input class="dropdown-input2"
            type="text"
            disabled="@isDisabled"
            placeholder=Search...
@@ -13,15 +13,14 @@
            @oninput="OnInput"
            @onfocus="OpenDropdown" />
 
-    @if (IsOpen && !DisableOptions)
-    {
-        <div class="dropdown-options">
+    @if (IsOpen)   {
+        <div class="dropdown-options2">
 
             @if (FilteredOptions.Any())
             {
                 @foreach (var option in FilteredOptions)
                 {
-                    <div class="dropdown-option"
+                    <div class="dropdown-option2"
                          @onclick="() => SelectOption(option)">
 
                         @option.Label
@@ -31,7 +30,7 @@
             }
             else
             {
-                <div class="dropdown-empty">
+                <div class="dropdown-empty2">
                     Sin resultados
                 </div>
             }
@@ -47,16 +46,10 @@
     public List<DropdownOption> Options { get; set; } = new();
 
     [Parameter]
-    public string? Value { get; set; }
-
-    [Parameter]
     public EventCallback<string?> ValueChanged { get; set; }
 
     [Parameter]
     public bool isDisabled { get; set; }
-
-    [Parameter]
-    public bool DisableOptions { get; set; }
 
     private bool IsOpen = false;
 
@@ -67,16 +60,6 @@
     private DotNetObjectReference<DropdownSearch2>? ObjRef;
 
     private string ListenerId = Guid.NewGuid().ToString();
-
-    protected override void OnParametersSet()
-    {
-        if (Options == null || Options.Count == 0)
-            return;
-
-        var selected = Options.FirstOrDefault(x => x.Value == Value);
-
-        SearchText = selected?.Label ?? Value ?? "";
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -96,8 +79,7 @@
         string.IsNullOrWhiteSpace(SearchText)
             ? Options
             : Options.Where(x =>
-                    x.Label.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ||
-                    x.Value.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                    x.Label.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
     private void OpenDropdown()
@@ -113,35 +95,38 @@
         StateHasChanged();
     }
 
+    // Seleccionamos opcion del desplegable
     private async Task SelectOption(DropdownOption option)
     {
+        // Rellenamos el input con el valor seleccionado
         SearchText = option.Label;
+
+        // Cerramos el selector de opciones
         IsOpen = false;
 
-        Value = option.Value;
+        // Guardamos el valor, no necesario aqui
+        // Value = option.Value;
 
+        // Enviamos el valor al padre
         await ValueChanged.InvokeAsync(option.Value);
 
+        // Infromamos que el estado ha cambiado
         StateHasChanged();
     }
 
     private async Task OnInput(ChangeEventArgs e)
     {
+        // Necesitamos actualizar este valor para actualizar el FilteredOptions.
         SearchText = e.Value?.ToString() ?? string.Empty;            
 
+        // Al seleccionar opcion, se cierra el modal, por lo que no se volveria a abrir hasta que
+        // devolvamos el foco al input, es decir hagamos clic. Con esto al escribir en el input mostramos 
+        // las opciones conforme las vamos buscando
         IsOpen = true;
 
-        if (!Options.Any(i => i.Value == SearchText))
-        {
-            await ValueChanged.InvokeAsync(SearchText);
-        }
+        await ValueChanged.InvokeAsync(SearchText);
 
         StateHasChanged();
-
-        if (DisableOptions)
-        {
-            await ValueChanged.InvokeAsync(SearchText);
-        }
     }
 
     public async ValueTask DisposeAsync()
@@ -158,5 +143,10 @@
         }
 
         ObjRef?.Dispose();
+    }
+
+    public void EmptySearchSyting()
+    {
+        SearchText = "";
     }
 }
