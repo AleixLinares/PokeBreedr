@@ -13,7 +13,7 @@
 
         <DropdownSearch Options="ConfigurationNames"
                         Value="@SelectedValue"
-                        ValueChanged="OnPokemonChanged"/>
+                        ValueChanged="OnConfigurationChanged"/>
         </div>
 
     @if (SelectedCard != null)
@@ -26,11 +26,23 @@
             Combine all
         </button>
 
-        @foreach (var item in CombinedPokemons)
+        if (showingCombinations)
         {
-            <CombinationCard
-                        Model="item"
-                        OnSave="TransferPokemon" />
+            <DropdownSearch2 Options="Parents1"
+                            Value="@SelectedParent1"
+                            ValueChanged="OnParent1Selected" />
+
+            <DropdownSearch2 Options="Parents2"
+                            Value="@SelectedParent2"
+                            isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
+                            ValueChanged="OnParent2Selected" />
+
+            @foreach (var item in CombinedPokemonsShow)
+            {
+                <CombinationCard @key="@($"{item.Parent1}-{item.Parent2}")"
+                Model="item"
+                OnSave="TransferPokemon" />
+            }
         }
     }
 
@@ -55,9 +67,16 @@
     private BreederService BreederService { get; set; } = default!;
 
     private ConfigCardInfo? SelectedCard { get; set; } = null;
-    private List<CombinationInfo> CombinedPokemons = new List<CombinationInfo>();
+    private List<CombinationInfo> CombinedPokemonsBase = new List<CombinationInfo>();
+    private List<CombinationInfo> CombinedPokemonsShow = new List<CombinationInfo>();
+    private List<DropdownOption> Parents1 = new List<DropdownOption>();
+    private List<DropdownOption> Parents2 = new List<DropdownOption>();
 
     public bool isLoading = false;
+    private bool showingCombinations = false;
+
+    public string? SelectedParent1 { get; set; } = null;
+    public string? SelectedParent2 { get; set; } = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,38 +91,96 @@
         }
     }
 
-    private async Task OnPokemonChanged(string configurationName)
+    private async Task OnConfigurationChanged(string configurationName)
     {
+        showingCombinations = false;
         ConfigCardInfoDto? configCard = await this.BreedConfigPersistenceService.GetConfigurationByName(configurationName);
 
         if (configCard != null)
         {
             this.SelectedCard = new ConfigCardInfo(configCard);
             this.SelectedValue = configurationName;
-            this.CombinedPokemons = new List<CombinationInfo>();
+            this.CombinedPokemonsBase = new List<CombinationInfo>();
+            this.CombinedPokemonsShow = new List<CombinationInfo>();
         }          
     }
 
     private async Task Combine()
     {
+        showingCombinations = false;
         try
         {
-            List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
-            if (SelectedCard != null)
-            {
-                ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
-                CombinedPokemons = this.BreederService.BreedPokemons(dtoList, configDto);
-                await ToastService.Info($"Found {CombinedPokemons.Count} matching combinations.");
-            }
-            else
+            if (SelectedCard == null)
             {
                 await ToastService.Info("Please select a configuration card first.");
+                return;
             }
+
+            List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
+
+            ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
+            CombinedPokemonsBase = this.BreederService.BreedPokemons(dtoList, configDto);
+            await ToastService.Info($"Found {CombinedPokemonsBase.Count} matching combinations.");
+
+            Parents1.Clear();
+
+            foreach (var combination in CombinedPokemonsBase)
+            {
+                var parent1Task = PokemonPersistanceService.Obtain(combination.Parent1);
+                var parent2Task = PokemonPersistanceService.Obtain(combination.Parent2);
+
+                await Task.WhenAll(parent1Task, parent2Task);
+
+                AddParentOption(parent1Task.Result);
+                AddParentOption(parent2Task.Result);
+            }
+
+            showingCombinations = true;
+            this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
         }
         catch
         {
             await ToastService.Error("Failed to generate Pokémon combinations. Please try again.");
         }
+    }
+
+    private void AddParentOption(PokemonInfoDto? parent, bool parent1 = true)
+    {
+        if (parent == null)
+            return;
+
+        var option = new DropdownOption
+        {
+            Value = parent.Guid.ToString(),
+            Label = BuildPokemonLabel(parent)
+        };
+
+        if (parent1)
+        {
+            if (!Parents1.Any(x => x.Value == option.Value))
+            {
+                Parents1.Add(option);
+            }
+        }
+        else
+        {
+            if (!Parents2.Any(x => x.Value == option.Value))
+            {
+                Parents2.Add(option);
+            }
+        }
+
+    }
+
+    private static string BuildPokemonLabel(PokemonInfoDto pokemon)
+    {
+        var nickname = string.IsNullOrWhiteSpace(pokemon.Name)
+            ? "No nickname"
+            : pokemon.Name;
+
+        return $"{pokemon.Pokemon} ({nickname}) " +
+               $"{pokemon.HpIv}-{pokemon.AttackIv}-{pokemon.DefenseIv}-" +
+               $"{pokemon.SpAttackIv}-{pokemon.SpDefenseIv}-{pokemon.SpeedIv}";
     }
 
     private async Task TransferPokemon(TransferPokemonDto model)
@@ -114,11 +191,13 @@
             await PokemonPersistanceService.Delete(model.Parent1);
             await PokemonPersistanceService.Delete(model.Parent2);
 
-            CombinedPokemons = CombinedPokemons
+            CombinedPokemonsBase = CombinedPokemonsBase
                 .Where(i =>
                     (i.Parent1 != model.Parent1 && i.Parent1 != model.Parent2) &&
                     (i.Parent2 != model.Parent1 && i.Parent2 != model.Parent2))
                 .ToList();
+
+            this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
 
             await ToastService.Success("Pokémon transferred successfully.");
         }
@@ -126,5 +205,71 @@
         {
             await ToastService.Error("Failed to transfer Pokémon. Please try again.");
         }
+    }
+
+    private async Task OnParent1Selected(string? selectedGuid)
+    {        
+        SelectedParent1 = selectedGuid;
+        Parents2.Clear();
+        SelectedParent2 = null;
+        var hasParent = Guid.TryParse(SelectedParent1, out var parent);
+        if (hasParent)
+        {
+            var otherParentGuids = CombinedPokemonsBase
+                .Where(i => i.Parent1 == parent || i.Parent2 == parent)
+                .Select(i => i.Parent1 == parent ? i.Parent2 : i.Parent1)
+                .Distinct()
+                .ToList();
+            Console.WriteLine("otherParentGuids" + otherParentGuids.Count.ToString());
+            foreach (var otherGuid in otherParentGuids)
+            {
+                var other = await this.PokemonPersistanceService.Obtain(otherGuid);
+                AddParentOption(other, false);
+            }
+            Console.WriteLine("parents2" + Parents2.Count.ToString());
+        }
+
+        ApplyFilters();
+    }
+
+    private void OnParent2Selected(string? selectedGuid)
+    {
+        SelectedParent2 = selectedGuid;
+
+        Console.WriteLine("Aplicando filtros 2");
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        var query = CombinedPokemonsBase.AsEnumerable();
+
+        var hasParent1 = Guid.TryParse(SelectedParent1, out var parent1);
+        var hasParent2 = Guid.TryParse(SelectedParent2, out var parent2);
+        Console.WriteLine("hasParent1" + hasParent1.ToString());
+        Console.WriteLine("hasParent2" + hasParent2.ToString());
+
+        if (hasParent1 && hasParent2)
+        {
+            query = query.Where(i =>
+                (i.Parent1 == parent1 && i.Parent2 == parent2) ||
+                (i.Parent1 == parent2 && i.Parent2 == parent1));
+        }
+        else if (hasParent1)
+        {
+            query = query.Where(i =>
+                i.Parent1 == parent1 ||
+                i.Parent2 == parent1);
+        }
+        else if (hasParent2)
+        {
+            query = query.Where(i =>
+                i.Parent1 == parent2 ||
+                i.Parent2 == parent2);
+        }
+
+        CombinedPokemonsShow = query.ToList();
+
+        StateHasChanged();
     }
 }
