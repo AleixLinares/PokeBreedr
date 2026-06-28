@@ -1,75 +1,77 @@
-﻿.number-selector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-}
+﻿    .number-selector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
 
-.rotate-content {
-    rotate: -90deg;
-}
+    .rotate-content {
+        rotate: -90deg;
+    }
 
-/* INPUT CUADRADO */
-.value-input {
-    width: 42px;
-    height: 42px;
-    padding: 0;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: bold;
-    border: 1px solid #bbb;
-    border-radius: 6px;
-}
+    /* INPUT CUADRADO */
+    .value-input {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: bold;
+        border: 1px solid #6c757d;
+        border-radius: 6px;
+        background-color: #6c757d;
+        color: #f8f9fa;
+    }
 
-/* BOTONES VERTICALES */
-.vertical-button {
-    width: 42px;
-    height: 28px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.15s ease;
-}
+    /* BOTONES VERTICALES */
+    .vertical-button {
+        width: 42px;
+        height: 28px;
+        border: 1px solid #6c757d;
+        border-radius: 6px;
+        background: #6c757d;
+        color: #f8f9fa;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.15s ease;
+        font-size: 11px;
+    }
 
-.vertical-button:hover {
-    background: #f3f3f3;
-    transform: translateY(-1px);
-}
+    .vertical-button:hover {
+        opacity: 0.85;
+        transform: translateY(-1px);
+    }
 
-.vertical-button:disabled {
-    background: #eee;
-    cursor: default;
-    opacity: 0.6;
-}
+    .vertical-button:disabled {
+        cursor: default;
+        opacity: 0.6;
+    }
 
-.max-button {
-    color: #1d7a1d;
-}
+    .max-button {
+        color: #14c914;
+    }
 
 .min-button {
-    color: #b54747;
+    color: #de1414;
 }
 
-/* QUITAR SPINNERS */
-.value-input::-webkit-outer-spin-button,
-.value-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
+    /* QUITAR SPINNERS */
+    .value-input::-webkit-outer-spin-button,
+    .value-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
-.value-input[type=number] {
-    -moz-appearance: textfield;
-}
+    .value-input[type=number] {
+        -moz-appearance: textfield;
+    }
 
-.value-input:disabled {
-    background: #eee;
-    cursor: default;
-    opacity: 0.6;
-}
+    .value-input:disabled {
+        cursor: default;
+        opacity: 0.6;
+    }
 
-.title-header {
-    font-weight: bold;
-    color: black;
-}
+    .title-header {
+        font-weight: bold;
+        color: #f8f9fa;
+    }

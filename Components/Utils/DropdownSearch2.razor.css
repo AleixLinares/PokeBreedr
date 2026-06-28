@@ -7,7 +7,7 @@
 .dropdown-input2 {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid #cfcfcf;
+    border: 1px solid #212529;
     border-radius: 6px;
     outline: none;
     font-size: 14px;
@@ -24,7 +24,7 @@
     left: 0;
     right: 0;
     background: white;
-    border: 1px solid #cfcfcf;
+    border: 1px solid #212529;
     border-radius: 6px;
     max-height: 240px;
     overflow-y: auto;
@@ -35,11 +35,11 @@
     padding: 10px 12px;
     cursor: pointer;
     transition: background 0.15s ease;
-    color: black;
+    color: #f8f9fa;
 }
 
     .dropdown-option2:hover {
-        background: #f2f2f2;
+        background: #454a4f;
     }
 
 .dropdown-empty2 {

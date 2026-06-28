@@ -1,11 +1,12 @@
 ﻿.config-card-container {
-    background-color: #ffffff;
-    border: 1px solid #d8d8d8;
+    background-color: #25292e;
+    border: 1px solid #25292e;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     margin-bottom: 24px;
     display: inline-block;
+    width: 55%;
 }
 
 /* =========================
@@ -13,7 +14,7 @@
 ========================= */
 .config-card-header {
     padding: 20px;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid #25292e;
 }
 
 .config-text-input {
@@ -48,10 +49,10 @@
 
 /* asegurar misma altura visual */
 .config-section {
-    border: 1px solid #ececec;
+    border: 1px solid #25292e;
+    background-color: #25292e;
     border-radius: 8px;
     padding: 16px;
-    background-color: #fcfcfc;
     flex: 1;
 }
 
@@ -62,7 +63,7 @@
     font-size: 15px;
     font-weight: 600;
     margin-bottom: 14px;
-    color: #333;
+    color: #f8f9fa;
 }
 
 /* =========================
@@ -102,15 +103,15 @@
         color: #666;
     }
 
-    .iv-input {
-        padding: 10px 12px;
-        border: 1px solid #cfcfcf;
-        border-radius: 6px;
-        background-color: white;
-        color: #222;
-        font-size: 14px;
-        outline: none;
-    }
+.iv-input {
+    padding: 10px 12px;
+    border: 1px solid #212529;
+    border-radius: 6px;
+    background-color: white;
+    color: #222;
+    font-size: 14px;
+    outline: none;
+}
 
     .iv-input:disabled {
         background: #eee;
