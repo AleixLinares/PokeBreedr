@@ -6,34 +6,33 @@
 
 @inject ToastService ToastService
 
-<div class="card-list-wrapper">
-    <div class="card-list">
-       <DropdownSearch
+<div class="card-list">
+    <div style="width: 30%">
+        <DropdownSearch
                 Value=@SearchString
                 DisableOptions =@(true)
                 ValueChanged="OnSearchChanged">
             </DropdownSearch>
-
-        <div class="actions">
-            <button class="add-btn" @onclick="AddCard">
-                + Add Card
-            </button>
-
-            <button class="add-btn" @onclick="SaveAll">
-                Save all
-            </button>       
-        </div>
-
-        <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
-            <ItemContent Context="item">
-                <Card @key="item.Guid"
-                      Model="item"
-                      OnSave="SaveCard"
-                      OnCancel="CancelCard"
-                      OnDelete="DeleteCard" />
-            </ItemContent>
-        </Virtualize>
     </div>
+    <div class="actions">
+        <button class="add-btn" @onclick="AddCard">
+            + Add Card
+        </button>
+
+        <button class="add-btn" @onclick="SaveAll">
+            Save all
+        </button>       
+    </div>
+
+    <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
+        <ItemContent Context="item">
+            <Card @key="item.Guid"
+                    Model="item"
+                    OnSave="SaveCard"
+                    OnCancel="CancelCard"
+                    OnDelete="DeleteCard" />
+        </ItemContent>
+    </Virtualize>
 </div>
 
 @code {

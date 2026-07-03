@@ -11,9 +11,11 @@
         <div class="daycare-selector">
             <label>Select a Configuration</label>
 
-        <DropdownSearch Options="ConfigurationNames"
-                        Value="@SelectedValue"
-                        ValueChanged="OnConfigurationChanged"/>
+                <div style="width: 30%">
+                    <DropdownSearch Options="ConfigurationNames"
+                                Value="@SelectedValue"
+                                ValueChanged="OnConfigurationChanged"/>
+                </div>
         </div>
 
     @if (SelectedCard != null)
@@ -29,14 +31,20 @@
         if (showingCombinations)
         {
             <div class="dropdown-row">
-                <DropdownSearch2 @ref="Parent1Dropdown" 
-                    Options="Parents1"
-                                ValueChanged="OnParent1Selected" />
+                <div class="daycare-parent-element">
+                    <label>Parent 1</label>
+                    <DropdownSearch2 @ref="Parent1Dropdown"
+                                     Options="Parents1"
+                                     ValueChanged="OnParent1Selected" />
+                </div>
 
-                <DropdownSearch2 @ref="Parent2Dropdown"
-                    Options="Parents2"
-                                isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
-                                ValueChanged="OnParent2Selected" />
+                <div class="daycare-parent-element">
+                    <label>Parent 2</label>
+                    <DropdownSearch2 @ref="Parent2Dropdown"
+                                     Options="Parents2"
+                                     isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
+                                     ValueChanged="OnParent2Selected" />
+                </div>
             </div>
             @foreach (var item in CombinedPokemonsShow)
             {

@@ -8,11 +8,12 @@
 
 <div class="card-list">
 
+    <div style="width: 30%">
         <DropdownSearch
                 Value=@SearchString
                 DisableOptions =@(true)
-                ValueChanged="OnSearchChanged"
-                    />
+                ValueChanged="OnSearchChanged"/>
+    </div>
 
     <div class="actions">
         <button class="add-btn" @onclick="AddCard">
