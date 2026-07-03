@@ -80,3 +80,17 @@
     width: 100%;
     padding: 0 10px;
 }
+
+/*
+    Source - https://stackoverflow.com/a/22306944
+    Posted by JayD, modified by community. See post 'Timeline' for change history
+    Retrieved 2026-07-03, License - CC BY-SA 4.0
+    */
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
