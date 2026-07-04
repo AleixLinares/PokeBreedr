@@ -15,28 +15,37 @@ namespace PokeBreedr.Models
             if (pokemon1.EggGroup1 == "Ditto")
             {
                 this.Pokemon = pokemon2.Pokemon;
+                this.HasHiddenAbility = pokemon2.HasHiddenAbility;
             }
             else if (pokemon2.EggGroup1 == "Ditto")
             {
                 this.Pokemon = pokemon1.Pokemon;
+                this.HasHiddenAbility = pokemon1.HasHiddenAbility;
             }
             else if (pokemon1.EggGroup1 == "Genderless")
             {
                 this.Pokemon = pokemon1.Pokemon;
+                this.HasHiddenAbility = pokemon1.HasHiddenAbility || pokemon2.HasHiddenAbility;
             }
             else if (pokemon1.Gender == PokemonGenderEnum.Female)
             {
                 this.Pokemon = pokemon1.Pokemon;
+                this.HasHiddenAbility = pokemon1.HasHiddenAbility;
             }
             else
             {
                 this.Pokemon = pokemon2.Pokemon;
+                this.HasHiddenAbility = pokemon2.HasHiddenAbility;
             }
 
             this.Parent1 = pokemon1.Guid;
             this.Parent2 = pokemon2.Guid;
 
             this.IsAlfa = pokemon1.IsAlfa && pokemon2.IsAlfa;
+
+            this.Particles = pokemon1.Particles
+                .Union(pokemon2.Particles)
+                .ToList();
 
             if (flags[6] == 1)
             {
@@ -128,7 +137,11 @@ namespace PokeBreedr.Models
 
         public bool IsAlfa { get; set; }
 
+        public bool HasHiddenAbility { get; set; }
+
         public PokemonNatureEnum? Nature { get; set; }
+
+        public List<string> Particles { get; set; } = new();
 
         public byte HpIv1 { get; set; }
         public byte HpIv2 { get; set; }
