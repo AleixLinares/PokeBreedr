@@ -1,6 +1,6 @@
 .card-container {
-    background-color: #ffffff;
-    border: 1px solid #ccc;
+    background-color: #25292e;
+    border: 1px solid #25292e;
     border-radius: 10px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -35,6 +35,7 @@
 
 .pokemon-image-container {
     width: 100%;
+    position: relative;
     border: 1px solid #ccc;
     border-radius: 8px;
     overflow: hidden;
@@ -51,24 +52,62 @@
     image-rendering: pixelated;
 }
 
-/* =========================
-   MIDDLE COLUMN
-========================= */
-.middle-column {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-top: 34px;
+.pokemon-alpha-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+    image-rendering: pixelated;
 }
 
+.pokemon-ha-icon {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    width: 38px;
+    height: 32px;
+    z-index: 10;
+    image-rendering: pixelated;
+}
+
+    /* =========================
+       MIDDLE COLUMN
+    ========================= */
+    .middle-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin-top: 34px;
+    }
+
+    .checkbox-row {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .checkbox-row label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
 /* =========================
    RIGHT COLUMN
 ========================= */
 .right-column {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     margin-top: 20px;
+}
+
+.reduced-right-column {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 
 .ivs-grid-body {
@@ -86,16 +125,23 @@
     gap: 6px;
 }
 
-.card-button {
-    padding: 10px 12px;
-    border: 1px solid #cfcfcf;
-    border-radius: 6px;
-    background-color: white;
-    color: #222;
-    font-size: 14px;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s ease;
-    margin: 5px;
+.iv-title {
+    min-width: 90px; /* opcional para alinear títulos */
+    font-weight: bold;
 }
 
+.iv-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 60px;
+    align-items: center;
+    gap: 8px;
+    max-width: 350px;
+}
+
+.iv-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-size: 14px;
+}

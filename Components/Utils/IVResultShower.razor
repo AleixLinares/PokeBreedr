@@ -1,0 +1,110 @@
+﻿@using PokeBreedr.Enums
+
+<div class="iv-row">
+    <h3 class="iv-title">@Title</h3>
+
+    <div class="iv-center">
+        @if (SelectedHpIv == SelectedIvEnum.None)
+        {
+            if (SmallIv == BigIv)
+            {
+                <label style="margin-right: 15px">@SmallIv</label>
+                <span>-</span>
+                <label style="margin-right: 15px;margin-left:15px">@SmallIv</label>
+                <span>-</span>
+                <label style="margin-left: 15px">@BigIv</label>
+            }
+            else
+            {
+                <button class="vertical-button" @onclick="() => UpdateValue(SmallIv)">@SmallIv</button>
+                <span>-</span>
+                <button class="vertical-button" @onclick="() => UpdateValue(AverageValue)">@AverageValue</button>
+                <span>-</span>
+                <button class="vertical-button" @onclick="() => UpdateValue(BigIv)">@BigIv</button>
+            }
+        }
+        else if (SelectedHpIv == SelectedIvEnum.Iv1)
+        {
+            <label style="color:red">@Iv1</label>
+        }
+        else if (SelectedHpIv == SelectedIvEnum.Iv2)
+        {
+            <label style="color:red">@Iv2</label>
+        }
+    </div>
+
+    <input type="number"
+           @bind="FinalValue"
+           min="0"
+           max="31"
+           class="value-input @InputClass" />
+</div>
+
+@code {
+
+    [Parameter] public string? Title { get; set; }
+
+    [Parameter]
+    public byte Iv1 { get; set; }
+
+    [Parameter]
+    public byte Iv2 { get; set; }
+
+    [Parameter]
+    public SelectedIvEnum SelectedHpIv { get; set; }
+
+    private byte AverageValue => (byte)((Iv1 + Iv2) / 2);
+    private byte SmallIv => Math.Min(Iv1, Iv2);
+    private byte BigIv => Math.Max(Iv1, Iv2);
+
+    private byte _internalValue;
+
+    [Parameter]
+    public byte FinalValue
+    {
+        get => _internalValue;
+        set => _internalValue = value;
+    }
+
+    [Parameter]
+    public EventCallback<byte> FinalValueChanged { get; set; }
+
+    private string InputClass =>
+    SelectedHpIv is SelectedIvEnum.Iv1 or SelectedIvEnum.Iv2
+        ? "color-red"
+        : string.Empty;
+
+    protected override void OnParametersSet()
+    {
+        _internalValue = SelectedHpIv switch
+        {
+            SelectedIvEnum.Iv1 => Iv1,
+            SelectedIvEnum.Iv2 => Iv2,
+            _ when SmallIv == BigIv => SmallIv,
+            _ => _internalValue
+        };
+    }
+
+    private async Task UpdateValue(byte value)
+    {
+        _internalValue = value;
+        await FinalValueChanged.InvokeAsync(value);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FinalValueChanged.InvokeAsync(_internalValue);
+        }
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        if (byte.TryParse(e.Value?.ToString(), out var value))
+        {
+            _internalValue = value;
+            await FinalValueChanged.InvokeAsync(value);
+        }
+    }
+}

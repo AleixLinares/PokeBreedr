@@ -1,0 +1,157 @@
+﻿@using PokeBreedr.Models
+@using PokeBreedr.Dto
+@using PokeBreedr.Interfaces
+@using PokeBreedr.Services
+@using PokeBreedr.Components.Utils
+
+@inject ToastService ToastService
+
+<div class="card-list">
+
+    <div style="width: 30%">
+        <DropdownSearch
+                Value=@SearchString
+                DisableOptions =@(true)
+                ValueChanged="OnSearchChanged"/>
+    </div>
+
+    <div class="actions">
+        <button class="add-btn" @onclick="AddCard">
+            + Add Card
+        </button>
+
+        <button class="add-btn" @onclick="SaveAll">
+            Save All
+        </button>
+    </div>
+
+    @if (errorOnSave)
+    {
+        <div>
+            One or more configurations could not be saved.
+        </div>
+    }
+
+    <Virtualize @ref="virtualizeRef" ItemsProvider="LoadItems" ItemSize="180">
+        <ItemContent Context="item">
+        <ConfigCard @key="item.Guid"
+              Model="item"
+              OnDelete="DeleteCard"
+              OnSave="SaveCard"
+              OnCancel="CancelCard"/>
+            </ItemContent>
+        </Virtualize>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<ConfigCardInfo> Items { get; set; } = new();
+
+    private Virtualize<ConfigCardInfo>? virtualizeRef;
+
+
+    private bool errorOnSave;
+
+    private string SearchString { get; set; } = string.Empty;
+
+    [Inject]
+    private IBreedConfigPersistenceService BreedConfigPersistenceService { get; set; } = default!;
+
+    private async Task AddCard()
+    {
+        Items.Insert(0, new ConfigCardInfo
+        {
+            IsSaved = false
+        });
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
+    // wrapper para que OnSave="SaveCard" funcione
+    // Podria ser OnSave="@(model => SaveCard(model, false))"
+    private Task SaveCard(ConfigCardInfo model)
+    {
+        return SaveCard(model, false);
+    }
+
+
+    private async Task SaveCard(ConfigCardInfo model, bool setGLobalError)
+    {
+        bool isNameUnique = await BreedConfigPersistenceService.CheckIfNameUniqueAndNotEmpty(model.ConfigName, model.Guid);
+        if (isNameUnique)
+        {
+            model.ValidationError = string.Empty;
+            var dto = new ConfigCardInfoDto(model);
+
+            await BreedConfigPersistenceService.Save(dto);
+
+            model.IsSaved = true;
+            model.Guid = dto.Guid;
+        }
+        else
+        {
+            model.ValidationError = "The configuration name already exists or is empty.";
+            errorOnSave = setGLobalError && true;
+        } 
+    }
+
+    private async Task CancelCard(ConfigCardInfo model)
+    {
+        Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
+    private async Task DeleteCard(ConfigCardInfo model)
+    {
+        if (model.Guid.HasValue)
+        {
+            await this.BreedConfigPersistenceService.Delete(model.Guid.Value);
+        }        
+
+        Items.Remove(model);
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
+    private async Task SaveAll()
+    {
+        try
+        {
+            errorOnSave = false;
+
+            foreach (var item in Items)
+            {
+                await SaveCard(item, true);
+            }
+
+            await ToastService.Success("All configurations were saved successfully.");
+        }
+        catch (Exception)
+        {
+            await ToastService.Error("An error occurred while saving the configurations.");
+        }
+    }
+
+    private async Task OnSearchChanged(string value)
+    {
+        SearchString = value;
+        await virtualizeRef!.RefreshDataAsync();
+    }
+
+    private async ValueTask<ItemsProviderResult<ConfigCardInfo>> LoadItems(ItemsProviderRequest request)
+    {
+        SearchString = SearchString.Trim();
+        var query = Items
+        .Where(item => string.IsNullOrWhiteSpace(SearchString) || item.ConfigName.StartsWith(SearchString, ignoreCase: true, culture: null))
+        .OrderBy(item => item.ConfigName);
+
+        var total = query.Count();
+
+        var items = query
+            .Skip(request.StartIndex)
+            .Take(request.Count)
+            .ToList();
+
+        return new ItemsProviderResult<ConfigCardInfo>(items, total);
+    }
+}

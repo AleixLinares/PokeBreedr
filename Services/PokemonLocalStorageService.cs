@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 using PokeBreedr.Dto;
 using PokeBreedr.Interfaces;
-using PokeBreedr.Models;
 using System.Text.Json;
 
 namespace PokeBreedr.Services

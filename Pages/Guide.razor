@@ -1,0 +1,468 @@
+﻿@page "/guide"
+
+<PageTitle>Guide</PageTitle>
+
+<div class="guide-container">
+<div class="container py-4">
+
+    <h1 class="mb-4">Breeder Guide</h1>
+
+    <p>
+        Here I will explain how to use this breeder, along with some examples.
+    </p>
+
+    <h2 class="mt-4">What is this?</h2>
+
+    <p>
+        This is a <strong>Lossless Deterministic Pokémon Breeder</strong>. Let's start by explaining these terms:
+    </p>
+
+    <h3>Lossless</h3>
+
+    <p>
+        The result will never "lose" a characteristic that you have defined as important.
+        Importance is determined through what we call <strong>Configurations</strong>,
+        which will be explained later.
+    </p>
+
+    <h3>Deterministic</h3>
+
+    <p>
+        The result is always guaranteed. This application does not rely on chance-based
+        breeding outcomes or random results.
+    </p>
+
+    <h3>Combination</h3>
+
+    <p>
+        A combination is the result of breeding two Pokémon together. This term is used
+        throughout the application for clarity.
+    </p>
+
+    <hr />
+
+    <h2>General</h2>
+
+        <p>
+            Any field marked with a red asterisk (<span style="color:red">*</span>) is required and must be completed before
+            you can continue or save.
+        </p>
+
+    <hr />
+
+    <h2>Pokémon</h2>
+
+    <p>
+        The <strong>Pokémon</strong> tab is used to enter Pokémon and their information.
+        This includes:
+    </p>
+
+    <ul>
+        <li>Nature</li>
+        <li>Gender</li>
+        <li>IVs</li>
+        <li>Alpha status</li>
+        <li>Hidden Ability</li>
+        <li>Particles</li>
+    </ul>
+
+    <p>
+        You can also assign nicknames to your Pokémon. These are used to make it easier
+        to identify specific Pokémon within the application.
+    </p>
+
+    <hr />
+
+    <h2>Configurations</h2>
+
+    <p>
+        This is where you define the requirements a Pokémon must meet, as well as which characteristics are important and must be preserved during breeding.
+    </p>
+
+    <p>You can also:</p>
+
+    <ul>
+        <li>Define an Egg Group.</li>
+        <li>Filter results to show only Alpha or non-Alpha Pokémon.</li>
+        <li>Select one or more Natures.</li>
+        <li>Define a valid range for each IV.</li>
+        <li>Ignore specific IVs if they are not important for your breeding goal.</li>
+    </ul>
+
+    <hr />
+
+    <h2>Daycare</h2>
+
+    <p>
+        This is where you generate breeding combinations.
+    </p>
+
+    <p>
+        First, select an existing configuration. Once selected, you can combine all
+        Pokémon that meet that configuration's requirements.
+    </p>
+
+    <p>
+        Most information is calculated automatically, including:
+    </p>
+
+    <ul>
+        <li>Whether the resulting Pokémon is Alpha.</li>
+        <li>Whether it has a Hidden Ability.</li>
+        <li>Particle inheritance.</li>
+        <li>The resulting species.</li>
+    </ul>
+
+    <p>
+        IVs and Nature that are guaranteed to be inherited through breeding items are
+        automatically highlighted in red. The rest must be selected manually.
+    </p>
+
+    <hr />
+
+    <h2>Combination Results</h2>
+
+    <p>
+        Within the results screen you can:
+    </p>
+
+    <ul>
+        <li>View the parents of each combination.</li>
+        <li>Filter combinations by parent.</li>
+        <li>
+            Enter the information obtained after performing the actual breeding:
+            <ul>
+                <li>Final IVs (unless they are guaranteed by inheritance).</li>
+                <li>Nature (unless it is guaranteed by inheritance).</li>
+                <li>Gender.</li>
+            </ul>
+        </li>
+        <li>
+            Save the resulting Pokémon and automatically add it to your Pokémon collection.
+        </li>
+    </ul>
+
+    <hr />
+
+    <h2>Examples</h2>
+
+    <div>
+        <strong>Important:</strong> The application assumes that breeding items
+        (Braces and Everstone) are being used. Characteristics marked in red need the use of 
+        breeding items in order to being transfered.
+    </div>
+
+    <h2 class="mt-4">Configuration 1</h2>
+
+    <div class="text-center mb-4">
+        <img src="assets/image1.png"
+                alt="Configuration 1"
+                class="img-fluid rounded border" />
+    </div>
+
+    <p>
+        This is the most basic configuration possible. It can be summarized as:
+    </p>
+
+    <blockquote class="blockquote">
+        <p>"Combine any Pokémon with compatible 31 IVs."</p>
+    </blockquote>
+
+    <p>
+        In the examples below, <strong>X</strong> means any value lower than 31.
+        The exact value is irrelevant.
+    </p>
+
+    <h3>Example 1</h3>
+
+    <h5>Pokémon A</h5>
+
+    <p>
+        31 HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+    </p>
+
+    <h5>Pokémon B</h5>
+
+    <p>
+        31 HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - X Speed
+    </p>
+
+    <p>
+        The system determines that these two Pokémon can be combined without losing
+        any required 31 IVs. The result will be:
+    </p>
+
+    <h5>Combination</h5>
+
+    <p class="fw-bold">
+        31 HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+    </p>
+
+    <div class="text-center mb-4">
+            <img src="assets/image4.png"
+                 alt="Combination 4"
+                 class="img-fluid rounded border d-block mx-auto" />
+    </div>
+
+    <h3 class="mt-4">Example 2</h3>
+
+    <h5>Pokémon A</h5>
+
+    <p>
+        31 HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+    </p>
+
+    <h5>Pokémon B</h5>
+
+    <p>
+        X HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - X Speed
+    </p>
+
+    <p>
+        The system determines that these two Pokémon cannot be combined because there
+        is a risk of losing either the 31 HP IV or the 31 Speed IV (depending on which
+        Brace is used). Therefore, no valid result will be generated.
+    </p>
+
+    <p>
+        Now let's change the configuration to:
+    </p>
+
+    <div class="text-center mb-4">
+        <img src="assets/image2.png"
+                alt="Configuration 2"
+                class="img-fluid rounded border" />
+    </div>
+
+    <h3>Example 3</h3>
+
+    <h5>Pokémon A</h5>
+
+    <p>
+        31 HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+    </p>
+
+    <h5>Pokémon B</h5>
+
+    <p>
+        26 HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - X Speed
+    </p>
+
+    <p>
+        The system determines that these two Pokémon can be combined without losing
+        the HP IV requirement because the resulting HP IV is guaranteed to be at least
+        25, which is the minimum value defined in the configuration.
+    </p>
+
+    <p>
+        The other two important IVs can be inherited through the use of Braces.
+    </p>
+
+    <h5>Combination</h5>
+
+    <p class="fw-bold">
+        26-31 HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+    </p>
+
+    <p>
+        We can also create configurations where all defensive IVs must be between
+        25 and 31, or even configurations where every IV must be between 25 and 31
+        if that matches our breeding goals.
+    </p>
+
+    <p>
+        This application also supports more specialized configurations.
+    </p>
+
+    <div class="text-center mb-4">
+        <img src="assets/image3.png"
+                alt="Configuration 3"
+                class="img-fluid rounded border" />
+    </div>
+
+    <p>
+        In this configuration, we are looking for physical attackers in the Field
+        Egg Group. Defense-related IVs do not need to be perfect (31), and values
+        of 25 or higher are acceptable.
+    </p>
+
+    <h3>Example 4</h3>
+
+    <h5>Pokémon A</h5>
+
+    <p>
+        X HP - X Attack - 25 Defense - 5 Sp. Attack - 27 Sp. Defense - 31 Speed
+    </p>
+
+    <h5>Pokémon B</h5>
+
+    <p>
+        X HP - 31 Attack - 28 Defense - 31 Sp. Attack - 30 Sp. Defense - X Speed
+    </p>
+
+    <h5>Combination</h5>
+
+    <p class="fw-bold">
+        X HP - 31 Attack - 25-28 Defense - 5-31 Sp. Attack - 27-30 Sp. Defense - 31 Speed
+    </p>
+
+    <p>
+        In this case, because the Sp. Attack IV has been marked as ignored, the
+        combination is allowed to lose the 31 IV in that stat.
+    </p>
+
+    <p>
+        Remember: the breeder will never lose a characteristic that you have marked
+        as important. Since Sp. Attack was configured to be ignored, it is not
+        considered when validating breeding combinations.
+    </p>
+
+        <h3 class="mt-4">Example 5</h3>
+
+        <h5>Pokémon A</h5>
+
+        <p>
+            X HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+            <br />
+            Nature: Adamant
+        </p>
+
+        <h5>Pokémon B</h5>
+
+        <p>
+            X HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - X Speed
+        </p>
+
+        <p>
+            The system determines that these two Pokémon cannot be combined.
+            In this configuration, both the Adamant Nature and the 31 Speed IV are
+            marked as important characteristics.
+        </p>
+
+        <p>
+            Because only one breeding item can be used to guarantee inheritance, there is no way to
+            guarantee both the Adamant Nature and the 31 Speed IV. Therefore, no valid result will be generated.
+        </p>
+
+        <h3 class="mt-4">Example 6</h3>
+
+        <h5>Pokémon A</h5>
+
+        <p>
+            X HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+            <br />
+            Nature: Adamant
+        </p>
+
+        <h5>Pokémon B</h5>
+
+        <p>
+            X HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+        </p>
+
+        <h5>Combination</h5>
+
+        <p class="fw-bold">
+            X HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+            <br />
+            Nature: Adamant
+        </p>
+
+        <p>
+            In this case, both parents already have a 31 Speed IV. Because the Speed IV
+            requirement is already satisfied by both Pokémon, the breeding items can be
+            used to guarantee inheritance of the 31 Attack IV and the Adamant Nature.
+        </p>
+
+        <div class="text-center mb-4">
+            <img src="assets/image5.png"
+                 alt="Combination 6"
+                 class="img-fluid rounded border" />
+        </div>
+
+        <p>
+            As a result, the combination preserves all important characteristics and is
+            considered valid.
+        </p>
+
+        <h3 class="mt-4">Example 7</h3>
+
+        <h5>Pokémon A</h5>
+
+        <p>
+            X HP - X Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+            <br />
+            Nature: Adamant
+        </p>
+
+        <h5>Pokémon B</h5>
+
+        <p>
+            X HP - 31 Attack - X Defense - X Sp. Attack - X Sp. Defense - 31 Speed
+            <br />
+            Nature: Jolly
+        </p>
+
+        <p>
+            The system determines that these two Pokémon cannot be combined.
+        </p>
+
+        <p>
+            In this configuration, both Adamant and Jolly have been selected as valid
+            Natures and are therefore considered important characteristics.
+        </p>
+
+        <p>
+            Breeding these two Pokémon would inevitably result in the loss of one of the required Natures. Therefore, no valid result will
+            be generated.
+        </p>
+
+</div>
+</div>
+
+<style>
+    .guide-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+        color: #f8f9fa;
+        background-color: #343a40;
+        border-radius: 12px;
+        font-size: 1.4rem;
+    }
+
+        .guide-container h1,
+        .guide-container h2,
+        .guide-container h3,
+        .guide-container h4,
+        .guide-container h5,
+        .guide-container h6 {
+            color: #ffffff;
+            margin-top: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .guide-container p,
+        .guide-container li,
+        .guide-container blockquote {
+            color: #f8f9fa;
+        }
+
+        .guide-container hr {
+            border-color: rgba(255,255,255,.2);
+        }
+
+        .guide-container .border {
+            border-color: rgba(255,255,255,.25) !important;
+        }
+
+        .guide-container .blockquote {
+            border-left: 4px solid #6c757d;
+            padding-left: 1rem;
+            margin-left: .5rem;
+        }
+
+        .guide-container strong {
+            color: #ffffff;
+        }
+</style>

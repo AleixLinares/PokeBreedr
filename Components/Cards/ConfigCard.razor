@@ -1,0 +1,421 @@
+﻿@using PokeBreedr.Components.Utils
+@using PokeBreedr.Enums
+@using PokeBreedr.Models
+@using PokeBreedr.Services
+
+@inject ToastService ToastService
+
+<div class="config-card-container">
+
+    <!-- HEADER -->
+    <div class="config-card-header">
+
+        <div>
+            <label class="config-name-title">
+                Configuration Name: <span style="color:red">*</span>
+                </label>
+
+            @if (DisableAll)
+            {
+                <label class="config-text-label">
+                    @Model.ConfigName
+                </label>
+            }
+            else
+            {
+                <input class="text-input config-text-input"
+                       disabled="@DisableAll"
+                       maxlength="200"
+                       @bind-value="Model.ConfigName" 
+                       @oninput="OnConfigNameChanged"
+                       placeholder="Write configuration name..." />
+            }
+
+            @if (!string.IsNullOrEmpty(Model.ValidationError))
+            {
+                <div>
+                    @Model.ValidationError
+                </div>
+            }
+        </div>
+
+    </div>
+
+    <!-- BODY -->
+    <div class="config-card-body">
+
+        <div class="config-main-grid">
+
+            <!-- LEFT -->
+            <div class="config-left">
+
+                <div class="config-section">
+                    <div class="section-title">Filters</div>
+
+                    <div class="field">
+                        <label>Alfa filter</label>
+                        <InputRadioGroup @bind-Value="Model.AlfaFilter">
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.All" />
+                                All
+                            </label>
+
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.AlphasOnly" />
+                                Alphas only
+                            </label>
+
+                            <label>
+                                <InputRadio disabled="@DisableAll" Value="AlphaFilterEnum.NonAlphasOnly" />
+                                Non-Alphas only
+                            </label>
+                        </InputRadioGroup>
+                    </div>
+
+                    <div class="field">
+                        <label>Egg Group 1</label>
+                        <Dropdown TValue="string"
+                                  Options="EggGroupOptions"
+                                  isDisabled="@DisableAll"
+                                  @bind-Value="Model.OnlyEggGroup1" />
+                    </div>
+
+                    <div class="field">
+                        <label>Egg Group 2</label>
+                        <Dropdown TValue="string"
+                                  Options="EggGroupOptions"
+                                  isDisabled="@DisableAll"
+                                  @bind-Value="Model.OnlyEggGroup2" />
+                    </div>
+
+                    <div class="field" style="margin-top: 5px">
+                        <label>Natures</label>
+
+                        <DropdownMultiple TValue="string"
+                                          Options="NatureOptions"
+                                          isDisabled="@DisableAll"
+                                          @bind-Values="Model.SelectedNatures"/>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="config-right">
+
+                <div class="config-section">
+                    <div class="section-title">IV Filters</div>
+
+                    <div class="iv-stack">
+
+                        <div class="iv-row">
+                            <span>HP</span>
+                            <input type="number" class="iv-input" @bind="Model.MinHpIv" disabled="@(Model.IgnoreHpIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxHpIv" disabled="@(Model.IgnoreHpIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="card-checkbox" @bind="Model.IgnoreHpIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                        <div class="iv-row">
+                            <span>Attack</span>
+                            <input type="number" class="iv-input" @bind="Model.MinAttackIv" disabled="@(Model.IgnoreAttackIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxAttackIv" disabled="@(Model.IgnoreAttackIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreAttackIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                        <div class="iv-row">
+                            <span>Defense</span>
+                            <input type="number" class="iv-input" @bind="Model.MinDefenseIv" disabled="@(Model.IgnoreDefenseIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxDefenseIv" disabled="@(Model.IgnoreDefenseIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreDefenseIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                        <div class="iv-row">
+                            <span>SpA</span>
+                            <input type="number" class="iv-input" @bind="Model.MinSpAttackIv" disabled="@(Model.IgnoreSpAttackIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxSpAttackIv" disabled="@(Model.IgnoreSpAttackIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpAttackIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                        <div class="iv-row">
+                            <span>SpD</span>
+                            <input type="number" class="iv-input" @bind="Model.MinSpDefenseIv" disabled="@(Model.IgnoreSpDefenseIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxSpDefenseIv" disabled="@(Model.IgnoreSpDefenseIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpDefenseIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                        <div class="iv-row">
+                            <span>Speed</span>
+                            <input type="number" class="iv-input" @bind="Model.MinSpeedIv" disabled="@(Model.IgnoreSpeedIv || DisableAll)" />
+                            <span>→</span>
+                            <input type="number" class="iv-input" @bind="Model.MaxSpeedIv" disabled="@(Model.IgnoreSpeedIv || DisableAll)" />
+                            <label class="checkbox-label">
+                                <input class="card-checkbox" type="checkbox" @bind="Model.IgnoreSpeedIv" disabled="@DisableAll" />
+                                Ignore
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>  
+
+    </div>
+
+    <!-- ACTIONS -->
+    @if (!DisableAll)
+    {
+        <div>
+            @if (!areWeDeleting) 
+            {
+                <button disabled="@(_isActionBusy || canSave || DisableAll)" class="card-button" @onclick="Save">
+                    @(Model.IsSaved ? "Update" : "Save")
+                </button>
+            }
+
+            @if (Model.IsSaved)
+            {
+                @if (areWeDeleting)
+                {
+                    <label style="margin-left: 10px">Are you sure?</label>
+                    <button style="color:red" disabled="@(!canWeDeleteAlready)" class="card-button" @onclick="Delete">
+                        Yes, delete
+                    </button>
+                    <button style="color:green" class="card-button" @onclick="CancelDeleteProcess">
+                        No, cancel
+                    </button>
+                }
+                else
+                {
+                    <button style="color:red" disabled="@DisableAll" class="card-button" @onclick="StartDeleteProcess">
+                        Delete
+                    </button>
+                }
+            }
+            else
+            {
+                <button disabled="@DisableAll" class="card-button" @onclick="Cancel">
+                    Cancel
+                </button>
+            }
+
+        </div>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public ConfigCardInfo Model { get; set; } = default!;
+
+    [Parameter]
+    public bool DisableAll { get; set; }
+
+    [Parameter]
+    public EventCallback<ConfigCardInfo> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<ConfigCardInfo> OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback<ConfigCardInfo> OnDelete { get; set; }
+
+    private bool canSave =>
+        DisableAll ||
+        string.IsNullOrWhiteSpace(Model.ConfigName);
+
+    private bool IsIvDisabled(bool ignoreStat)
+        => DisableAll || ignoreStat;
+
+    private bool _isActionBusy;
+    private bool areWeDeleting;
+    private bool canWeDeleteAlready;
+    private CancellationTokenSource? _deleteCts;
+
+    private async Task Cancel()
+    {
+        if (DisableAll)
+            return;
+
+        if (OnCancel.HasDelegate) await OnCancel.InvokeAsync(Model);
+    }
+
+    private async Task Save()
+    {
+        if (_isActionBusy || DisableAll)
+            return;
+
+        try
+        {
+            _isActionBusy = true;
+
+            // Tu lógica de guardado
+            if (OnSave.HasDelegate)
+            {
+                await OnSave.InvokeAsync(Model);
+                await ToastService.Success("Configuration saved successfully.");
+            }
+
+            // Cooldown anti-spam
+            await Task.Delay(300);
+        }
+        catch (Exception)
+        {
+            await ToastService.Error("Failed to save the configuration. Please try again.");
+        }
+        finally
+        {
+            _isActionBusy = false;
+        }
+    }
+
+    private async Task Delete()
+    {
+        if (_isActionBusy || DisableAll)
+            return;
+
+        try
+        {
+            _isActionBusy = true;
+
+            if (OnDelete.HasDelegate)
+            {
+                await OnDelete.InvokeAsync(Model);
+                await ToastService.Success("Configuration deleted successfully");
+            }
+        }
+        catch (Exception)
+        {
+            await ToastService.Error("Failed to delete the configuration. Please try again.");
+        }
+        finally
+        {
+            _isActionBusy = false;
+            canWeDeleteAlready = false;
+            areWeDeleting = false;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
+    }
+
+    private List<DropdownOption> EggGroupOptions = new()
+    {
+        new() { Value = "", Label = "Any" },
+        new() { Value = "Monster", Label = "Monster" },
+        new() { Value = "Dragon", Label = "Dragon" },
+        new() { Value = "Water 1", Label = "Water 1" },
+        new() { Value = "Water 2", Label = "Water 2" },
+        new() { Value = "Water 3", Label = "Water 3" },
+        new() { Value = "Bug", Label = "Bug" },
+        new() { Value = "Flying", Label = "Flying" },
+        new() { Value = "Field", Label = "Field" },
+        new() { Value = "Fairy", Label = "Fairy" },
+        new() { Value = "Grass", Label = "Grass" },
+        new() { Value = "Humanoid", Label = "Humanoid" },
+        new() { Value = "Mineral", Label = "Mineral" },
+        new() { Value = "Chaos", Label = "Chaos" },
+        new() { Value = "Ditto", Label = "Ditto" },
+        new() { Value = "Genderless", Label = "Genderless" }
+    };
+
+    private List<DropdownOption> NatureOptions = new()
+    {
+        new() { Value = PokemonNatureEnum.Hardy.ToString(), Label = "Hardy" },
+        new() { Value = PokemonNatureEnum.Lonely.ToString(), Label = "Lonely" },
+        new() { Value = PokemonNatureEnum.Brave.ToString(), Label = "Brave" },
+        new() { Value = PokemonNatureEnum.Adamant.ToString(), Label = "Adamant" },
+        new() { Value = PokemonNatureEnum.Naughty.ToString(), Label = "Naughty" },
+
+        new() { Value = PokemonNatureEnum.Bold.ToString(), Label = "Bold" },
+        new() { Value = PokemonNatureEnum.Docile.ToString(), Label = "Docile" },
+        new() { Value = PokemonNatureEnum.Relaxed.ToString(), Label = "Relaxed" },
+        new() { Value = PokemonNatureEnum.Impish.ToString(), Label = "Impish" },
+        new() { Value = PokemonNatureEnum.Lax.ToString(), Label = "Lax" },
+
+        new() { Value = PokemonNatureEnum.Timid.ToString(), Label = "Timid" },
+        new() { Value = PokemonNatureEnum.Hasty.ToString(), Label = "Hasty" },
+        new() { Value = PokemonNatureEnum.Serious.ToString(), Label = "Serious" },
+        new() { Value = PokemonNatureEnum.Jolly.ToString(), Label = "Jolly" },
+        new() { Value = PokemonNatureEnum.Naive.ToString(), Label = "Naive" },
+
+        new() { Value = PokemonNatureEnum.Modest.ToString(), Label = "Modest" },
+        new() { Value = PokemonNatureEnum.Mild.ToString(), Label = "Mild" },
+        new() { Value = PokemonNatureEnum.Quiet.ToString(), Label = "Quiet" },
+        new() { Value = PokemonNatureEnum.Bashful.ToString(), Label = "Bashful" },
+        new() { Value = PokemonNatureEnum.Rash.ToString(), Label = "Rash" },
+
+        new() { Value = PokemonNatureEnum.Calm.ToString(), Label = "Calm" },
+        new() { Value = PokemonNatureEnum.Gentle.ToString(), Label = "Gentle" },
+        new() { Value = PokemonNatureEnum.Sassy.ToString(), Label = "Sassy" },
+        new() { Value = PokemonNatureEnum.Careful.ToString(), Label = "Careful" },
+        new() { Value = PokemonNatureEnum.Quirky.ToString(), Label = "Quirky" },
+    };
+
+    private void OnConfigNameChanged(ChangeEventArgs e)
+    {
+        Model.ConfigName = e.Value?.ToString() ?? string.Empty;
+
+        StateHasChanged();
+    }
+
+    private async Task StartDeleteProcess()
+    {
+        _deleteCts?.Cancel();
+        _deleteCts?.Dispose();
+
+        _deleteCts = new CancellationTokenSource();
+
+        areWeDeleting = true;
+        canWeDeleteAlready = false;
+
+        StateHasChanged();
+
+        try
+        {
+            await Task.Delay(2000, _deleteCts.Token);
+
+            canWeDeleteAlready = true;
+        }
+        catch (TaskCanceledException)
+        {
+            // Cancelled, ignore
+        }
+
+        StateHasChanged();
+    }
+
+    private void CancelDeleteProcess()
+    {
+        _deleteCts?.Cancel();
+
+        areWeDeleting = false;
+        canWeDeleteAlready = false;
+
+        StateHasChanged();
+    }
+}

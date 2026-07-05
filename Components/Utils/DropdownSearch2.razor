@@ -1,0 +1,152 @@
+﻿@using Microsoft.JSInterop
+@using PokeBreedr.Models
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div class="dropdown-search2" @ref="DropdownRef">
+
+    <input class="dropdown-input2"
+           type="text"
+           disabled="@isDisabled"
+           placeholder=Search...
+           value="@SearchText"
+           @oninput="OnInput"
+           @onfocus="OpenDropdown" />
+
+    @if (IsOpen)   {
+        <div class="dropdown-options2">
+
+            @if (FilteredOptions.Any())
+            {
+                @foreach (var option in FilteredOptions)
+                {
+                    <div class="dropdown-option2"
+                         @onclick="() => SelectOption(option)">
+
+                        @option.Label
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="dropdown-empty2">
+                    Sin resultados
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+@code {
+
+    [Parameter]
+    public List<DropdownOption> Options { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter]
+    public bool isDisabled { get; set; }
+
+    private bool IsOpen = false;
+
+    private string SearchText = "";
+
+    private ElementReference DropdownRef;
+
+    private DotNetObjectReference<DropdownSearch2>? ObjRef;
+
+    private string ListenerId = Guid.NewGuid().ToString();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ObjRef = DotNetObjectReference.Create(this);
+
+            await JS.InvokeVoidAsync(
+                "dropdownInterop.registerOutsideClick",
+                ListenerId,
+                DropdownRef,
+                ObjRef);
+        }
+    }
+
+    private List<DropdownOption> FilteredOptions =>
+        string.IsNullOrWhiteSpace(SearchText)
+            ? Options
+            : Options.Where(x =>
+                    x.Label.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+    private void OpenDropdown()
+    {
+        IsOpen = true;
+    }
+
+    [JSInvokable]
+    public void CloseDropdown()
+    {
+        IsOpen = false;
+
+        StateHasChanged();
+    }
+
+    // Seleccionamos opcion del desplegable
+    private async Task SelectOption(DropdownOption option)
+    {
+        // Rellenamos el input con el valor seleccionado
+        SearchText = option.Label;
+
+        // Cerramos el selector de opciones
+        IsOpen = false;
+
+        // Guardamos el valor, no necesario aqui
+        // Value = option.Value;
+
+        // Enviamos el valor al padre
+        await ValueChanged.InvokeAsync(option.Value);
+
+        // Infromamos que el estado ha cambiado
+        StateHasChanged();
+    }
+
+    private async Task OnInput(ChangeEventArgs e)
+    {
+        // Necesitamos actualizar este valor para actualizar el FilteredOptions.
+        SearchText = e.Value?.ToString() ?? string.Empty;            
+
+        // Al seleccionar opcion, se cierra el modal, por lo que no se volveria a abrir hasta que
+        // devolvamos el foco al input, es decir hagamos clic. Con esto al escribir en el input mostramos 
+        // las opciones conforme las vamos buscando
+        IsOpen = true;
+
+        await ValueChanged.InvokeAsync(SearchText);
+
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync(
+                "dropdownInterop.unregisterOutsideClick",
+                ListenerId);
+        }
+        catch
+        {
+            // ignorar si el componente ya murió
+        }
+
+        ObjRef?.Dispose();
+    }
+
+    public void EmptySearchSyting()
+    {
+        SearchText = "";
+    }
+}

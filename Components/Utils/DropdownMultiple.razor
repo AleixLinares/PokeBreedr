@@ -13,6 +13,7 @@
 
                 <button type="button"
                         class="remove-btn"
+                        disabled="@isDisabled"
                         @onclick="() => Remove(selected)">
                     ✕
                 </button>
@@ -22,7 +23,7 @@
 
     </div>
 
-    <select class="dropdown"
+    <select class="dropdown-mul"
             @bind="TempValue"
             @bind:after="OnSelected"
             disabled="@isDisabled">
