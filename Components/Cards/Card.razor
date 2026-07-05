@@ -45,6 +45,13 @@
                             class="pokemon-alpha-icon" 
                             alt="Alpha icon">
                 }
+
+                @if (Model.HasHiddenAbility)
+                {
+                    <img src="assets/HADiamond.png"
+                         class="pokemon-ha-icon"
+                         alt="HA icon">
+                }
                 
             </div>
 
@@ -61,14 +68,21 @@
                 </label>
             </div>
 
-            <div class="field">
+            <div class="checkbox-row">
                 <label>
                     Alfa
-                     <input type="checkbox"
-                         class="card-checkbox"
-                           @bind="Model.IsAlfa" 
-                           disabled="@(DisableAll || isLocked)"
-                           />
+                    <input type="checkbox"
+                           class="card-checkbox"
+                           @bind="Model.IsAlfa"
+                           disabled="@(DisableAll || isLocked)" />
+                </label>
+
+                <label>
+                    HA
+                    <input type="checkbox"
+                           class="card-checkbox"
+                           @bind="Model.HasHiddenAbility"
+                           disabled="@(DisableAll || isLocked)" />
                 </label>
             </div>
 
@@ -93,6 +107,15 @@
                           Options="NatureOptions"
                           @bind-Value="Model.Nature"
                           isDisabled="@(isLocked || DisableAll)" />
+            </div>
+
+            <div class="field" style="margin-top: 5px">
+                <label>Particles</label>
+
+                <DropdownMultiple TValue="string"
+                                  Options="ParticleOptions"
+                                  isDisabled="@DisableAll"
+                                  @bind-Values="Model.Particles" />
             </div>
 
         </div>
@@ -271,6 +294,7 @@
     protected override async Task OnInitializedAsync()
     {
         NatureOptions = NatureOptions.OrderBy(i => i.Label).ToList();
+        ParticleOptions = ParticleOptions.OrderBy(i => i.Label).ToList();
 
         var pokemonNames = await PokemonService.GetAllPokemonsNames();
 
@@ -375,6 +399,48 @@
         new() { Value = PokemonNatureEnum.Sassy.ToString(), Label = "Sassy" },
         new() { Value = PokemonNatureEnum.Careful.ToString(), Label = "Careful" },
         new() { Value = PokemonNatureEnum.Quirky.ToString(), Label = "Quirky" },
+    };
+
+    private List<DropdownOption> ParticleOptions = new()
+    {
+        new() { Value = "Shiny Phantom", Label = "Shiny Phantom" },
+        new() { Value = "Phantom", Label = "Phantom" },
+        new() { Value = "Spirit of Spring", Label = "Spirit of Spring" },
+        new() { Value = "Xmas Decorations", Label = "Xmas Decorations" },
+        new() { Value = "Menacing Spirit", Label = "Menacing Spirit" },
+        new() { Value = "Shiny Menacing Spirit", Label = "Shiny Menacing Spirit" },
+        new() { Value = "Anniversary Cake", Label = "Anniversary Cake" },
+        new() { Value = "Kanto Friends", Label = "Kanto Friends" },
+        new() { Value = "Shiny Kanto Friends", Label = "Shiny Kanto Friends" },
+        new() { Value = "Red Dragon", Label = "Red Dragon" },
+        new() { Value = "Eerie Howl", Label = "Eerie Howl" },
+        new() { Value = "Graveyard", Label = "Graveyard" },
+        new() { Value = "King's Fall", Label = "King's Fall" },
+        new() { Value = "Zodiac", Label = "Zodiac" },
+        new() { Value = "Witch's Cat", Label = "Witch's Cat" },
+        new() { Value = "Pumpcat", Label = "Pumpcat" },
+        new() { Value = "Spinning Scythe", Label = "Spinning Scythe" },
+        new() { Value = "Spider's Web", Label = "Spider's Web" },
+        new() { Value = "Zombie Grip", Label = "Zombie Grip" },
+        new() { Value = "Pungent Stench", Label = "Pungent Stench" },
+        new() { Value = "Witch's Haze", Label = "Witch's Haze" },
+        new() { Value = "Pumpkid's Treat", Label = "Pumpkid's Treat" },
+        new() { Value = "Paper Lantern", Label = "Paper Lantern" },
+        new() { Value = "Fireworks", Label = "Fireworks" },
+        new() { Value = "Black Hole", Label = "Black Hole" },
+        new() { Value = "White Kitty", Label = "White Kitty" },
+        new() { Value = "Rising Star", Label = "Rising Star" },
+        new() { Value = "Snowflake", Label = "Snowflake" },
+        new() { Value = "Present", Label = "Present" },
+        new() { Value = "Hitodama", Label = "Hitodama" },
+        new() { Value = "Bats", Label = "Bats" },
+        new() { Value = "Ghosts", Label = "Ghosts" },
+        new() { Value = "The Eye", Label = "The Eye" },
+        new() { Value = "Pumpking's Delight", Label = "Pumpking's Delight" },
+        new() { Value = "Shiny Dark Crystal", Label = "Shiny Dark Crystal" },
+        new() { Value = "Dark Crystal", Label = "Dark Crystal" },
+        new() { Value = "Blood Lotus Field", Label = "Blood Lotus Field" },
+        new() { Value = "Lotus Field", Label = "Lotus Field" },
     };
 
     private async Task Save()

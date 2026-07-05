@@ -18,6 +18,8 @@ namespace PokeBreedr.Dto
             this.EggGroup1 = pokemonInfo.EggGroup1;
             this.EggGroup2 = pokemonInfo.EggGroup2;
             this.IsAlfa = pokemonInfo.IsAlfa;
+            this.HasHiddenAbility = pokemonInfo.HasHiddenAbility;
+            this.Particles = pokemonInfo.Particles;
             this.Gender = pokemonInfo.Gender;
             this.Nature = pokemonInfo.Nature;
             this.HpIv = pokemonInfo.HpIv;
@@ -40,9 +42,13 @@ namespace PokeBreedr.Dto
 
         public bool IsAlfa { get; set; }
 
+        public bool HasHiddenAbility { get; set; }
+
         public PokemonGenderEnum? Gender { get; set; }
 
         public PokemonNatureEnum? Nature { get; set; }
+
+        public List<string> Particles { get; set; } = new();
 
         public byte HpIv { get; set; }
 
