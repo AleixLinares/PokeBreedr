@@ -110,7 +110,8 @@
         var query = Items
             .Where(item => string.IsNullOrWhiteSpace(SearchString) ||
                     item.Name.StartsWith(SearchString, ignoreCase: true, culture: null)
-                            || item.Pokemon.StartsWith(SearchString, ignoreCase: true, culture: null))
+                            || item.Pokemon.StartsWith(SearchString, ignoreCase: true, culture: null) 
+                            || !item.IsSaved)
             .OrderBy(item => item.IsSaved)
             .ThenBy(item => item.Pokemon)
             .ThenBy(item => string.IsNullOrWhiteSpace(item.Name))
