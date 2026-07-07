@@ -29,3 +29,8 @@
 .nav-button:hover {
     background-color: #3a4048;
 }
+
+.nav-button:has(a.active) {
+    background-color: #3a4048;
+    border-bottom: 3px solid #4da3ff;
+}
