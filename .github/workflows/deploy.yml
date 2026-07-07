@@ -1,0 +1,51 @@
+name: Deploy PokeBreedr Website
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish
+        run: dotnet publish -c Release
+
+      - name: Checkout target repo
+        uses: actions/checkout@v4
+        with:
+          repository: PokeBreedr/pokebreedr.github.io
+          token: ${{ secrets.PUSH_TOKEN }}
+          path: target
+
+      - name: Replace contents (keep 404.html)
+        run: |
+          find target -mindepth 1 \
+            ! -path "target/.git*" \
+            ! -name "404.html" \
+            -exec rm -rf {} +
+
+          cp -a bin/Release/net10.0/publish/wwwroot/. target/
+
+      - name: Commit & Push
+        working-directory: target
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .
+
+          git diff --cached --quiet && exit 0
+
+          git commit -m "Deployment"
+          git push
