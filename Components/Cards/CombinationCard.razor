@@ -6,6 +6,7 @@
 @using PokeBreedr.Services
 
 @inject PokemonInitialLoad PokemonService
+@inject ToastService ToastService
 
 <div class="combination-outside-container">
     <div class="combination-card-container">
@@ -46,6 +47,13 @@
                         <img src="assets/HADiamond.png"
                              class="pokemon-ha-icon"
                              alt="HA icon">
+                    }
+
+                    @if (Model.IsIgnored)
+                    {
+                        <img src="assets/ignoreIcon.png"
+                             class="pokemon-ignore-icon"
+                             alt="ignore icon">
                     }
 
                 </div>
@@ -201,6 +209,10 @@
                 }
 
             </button>
+
+            <button class="card-button" @onclick="ToggleIgnore">
+                @(Model.IsIgnored ? "Restore" : "Ignore")
+            </button>
         </div>
 
     </div>
@@ -248,6 +260,9 @@
 
     [Parameter]
     public EventCallback<TransferPokemonDto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnIgnore { get; set; }
 
     [Inject]
     private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
@@ -497,5 +512,19 @@
         return $"{pokemon.Pokemon} ({nickname}) " +
                $"{pokemon.HpIv}-{pokemon.AttackIv}-{pokemon.DefenseIv}-" +
                $"{pokemon.SpAttackIv}-{pokemon.SpDefenseIv}-{pokemon.SpeedIv}";
+    }
+
+    private async Task ToggleIgnore()
+    {
+        Model.IsIgnored = !Model.IsIgnored;
+        if (Model.IsIgnored)
+        {
+            await ToastService.Success("Pokémon marked as ignored.");
+        }
+        else
+        {
+            await ToastService.Success("Pokémon removed from ignored list.");
+        }
+        await OnIgnore.InvokeAsync(Model.IsIgnored);
     }
 }

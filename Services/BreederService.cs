@@ -7,9 +7,15 @@ namespace PokeBreedr.Services
 {
     public class BreederService
     {
+        private readonly PokemonInitialLoad PokemonInitialLoad;
+
+        public BreederService(PokemonInitialLoad pokemonInitialLoad)
+        {
+            this.PokemonInitialLoad = pokemonInitialLoad;
+        }
 
         // Hauria de ser el dto?
-        public List<CombinationInfo> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
+        public async Task<List<CombinationInfo>> BreedPokemons(List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
             pokemons = this.FilterInvalidPokemons(pokemons, configuration);
             List<CombinationInfo> finalCombinations = new List<CombinationInfo>();
@@ -21,7 +27,8 @@ namespace PokeBreedr.Services
 
                 if (validPokemonsForCandidate.Count > 0)
                 {
-                    finalCombinations.AddRange(this.CombinationsByCandidateAndConfiguration(pokemonCandidate, validPokemonsForCandidate, configuration));
+                    var currentCombinations = await this.CombinationsByCandidateAndConfiguration(pokemonCandidate, validPokemonsForCandidate, configuration);
+                    finalCombinations.AddRange(currentCombinations);
                 }
 
                 pokemons.RemoveAt(0);
@@ -88,7 +95,7 @@ namespace PokeBreedr.Services
             return pokemons;
         }
 
-        private List<CombinationInfo> CombinationsByCandidateAndConfiguration(PokemonInfoDto candidate, List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
+        private async Task<List<CombinationInfo>> CombinationsByCandidateAndConfiguration(PokemonInfoDto candidate, List<PokemonInfoDto> pokemons, ConfigCardInfoDto configuration)
         {
             List<CombinationInfo> combinations = new List<CombinationInfo>();
 
@@ -200,7 +207,18 @@ namespace PokeBreedr.Services
                 if (differencesCandidate == 1 && differencesCheck == 1)
                 {
                     CombinationInfo newCombination = new CombinationInfo(candidate, pokemonCheck, flags);
-                    combinations.Add(newCombination);
+                    try
+                    {
+                        var pokemonInfo = await this.PokemonInitialLoad.GetPokemonInfo(newCombination.Pokemon);
+
+                        newCombination.PokemonEgg = pokemonInfo.PokemonEgg;
+                        combinations.Add(newCombination);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        // El Pokémon no existe en el diccionario.
+                        // Ignoramos esta combinación y continuamos.
+                    }
                 }
             }
 

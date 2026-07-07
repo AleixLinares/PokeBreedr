@@ -28,7 +28,13 @@
             Combine all
         </button>
 
-        if (showingCombinations)
+        if (isLoading)
+        {
+             <div>
+                Loading combinations...
+            </div>   
+        }
+        else if (showingCombinations)
         {
             <div class="dropdown-row">
                 <div class="daycare-parent-element">
@@ -49,8 +55,9 @@
             @foreach (var item in CombinedPokemonsShow)
             {
                 <CombinationCard @key="@($"{item.Parent1}-{item.Parent2}")"
-                Model="item"
-                OnSave="TransferPokemon" />
+                    Model="item"
+                    OnSave="TransferPokemon"
+                    OnIgnore="HandleIgnore" />
             }
         }
     }
@@ -74,6 +81,9 @@
 
     [Inject]
     private BreederService BreederService { get; set; } = default!;
+
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
 
     private ConfigCardInfo? SelectedCard { get; set; } = null;
     private List<CombinationInfo> CombinedPokemonsBase = new List<CombinationInfo>();
@@ -121,6 +131,7 @@
     private async Task Combine()
     {
         showingCombinations = false;
+        isLoading = true;
 
         Parent2Dropdown?.EmptySearchSyting();
         Parent1Dropdown?.EmptySearchSyting();
@@ -135,7 +146,7 @@
             List<PokemonInfoDto> dtoList = await PokemonPersistanceService.GetAll();
 
             ConfigCardInfoDto configDto = new ConfigCardInfoDto(SelectedCard);
-            CombinedPokemonsBase = this.BreederService.BreedPokemons(dtoList, configDto);
+            CombinedPokemonsBase = await this.BreederService.BreedPokemons(dtoList, configDto);
             await ToastService.Info($"Found {CombinedPokemonsBase.Count} matching combinations.");
 
             Parents1.Clear();
@@ -153,10 +164,15 @@
 
             showingCombinations = true;
             this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
+            this.ApplyOrdering();
         }
         catch
         {
             await ToastService.Error("Failed to generate Pokémon combinations. Please try again.");
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 
@@ -222,6 +238,7 @@
                 .ToList();
 
             this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
+            this.ApplyOrdering();
 
             await ToastService.Success("Pokémon transferred successfully.");
         }
@@ -257,12 +274,14 @@
         }
 
         ApplyFilters();
+        ApplyOrdering();
     }
 
     private void OnParent2Selected(string? selectedGuid)
     {
         SelectedParent2 = selectedGuid;
         ApplyFilters();
+        ApplyOrdering();
     }
 
     private void ApplyFilters()
@@ -294,5 +313,24 @@
         CombinedPokemonsShow = query.ToList();
 
         StateHasChanged();
+    }
+
+    private void ApplyOrdering()
+    {
+        CombinedPokemonsShow = CombinedPokemonsShow
+            .OrderBy(x => x.IsIgnored)
+            .ThenBy(x => x.PokemonEgg)
+            .ToList();
+    }
+
+    private async Task HandleIgnore(bool isIgnored)
+    {
+        var scrollPosition = await JS.InvokeAsync<double>("getScrollPosition");
+
+        ApplyOrdering();
+
+        await InvokeAsync(StateHasChanged);
+
+        await JS.InvokeVoidAsync("restoreScrollPosition", scrollPosition);
     }
 }
