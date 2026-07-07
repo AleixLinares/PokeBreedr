@@ -7,7 +7,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     margin-bottom: 25px;
     display: inline-block;
-    width: 45%;
+    min-width: 45%;
 }
 
 .card-header {
