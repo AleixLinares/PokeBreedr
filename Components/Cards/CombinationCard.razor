@@ -6,6 +6,7 @@
 @using PokeBreedr.Services
 
 @inject PokemonInitialLoad PokemonService
+@inject ToastService ToastService
 
 <div class="combination-outside-container">
     <div class="combination-card-container">
@@ -210,7 +211,7 @@
             </button>
 
             <button class="card-button" @onclick="ToggleIgnore">
-                Ignore
+                @(Model.IsIgnored ? "Restore" : "Ignore")
             </button>
         </div>
 
@@ -516,7 +517,14 @@
     private async Task ToggleIgnore()
     {
         Model.IsIgnored = !Model.IsIgnored;
-
+        if (Model.IsIgnored)
+        {
+            await ToastService.Success("Pokémon marked as ignored.");
+        }
+        else
+        {
+            await ToastService.Success("Pokémon removed from ignored list.");
+        }
         await OnIgnore.InvokeAsync(Model.IsIgnored);
     }
 }

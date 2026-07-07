@@ -82,6 +82,9 @@
     [Inject]
     private BreederService BreederService { get; set; } = default!;
 
+    [Inject]
+    private IJSRuntime JS { get; set; } = default!;
+
     private ConfigCardInfo? SelectedCard { get; set; } = null;
     private List<CombinationInfo> CombinedPokemonsBase = new List<CombinationInfo>();
     private List<CombinationInfo> CombinedPokemonsShow = new List<CombinationInfo>();
@@ -320,9 +323,14 @@
             .ToList();
     }
 
-    private Task HandleIgnore(bool isIgnored)
+    private async Task HandleIgnore(bool isIgnored)
     {
+        var scrollPosition = await JS.InvokeAsync<double>("getScrollPosition");
+
         ApplyOrdering();
-        return Task.CompletedTask;
+
+        await InvokeAsync(StateHasChanged);
+
+        await JS.InvokeVoidAsync("restoreScrollPosition", scrollPosition);
     }
 }
