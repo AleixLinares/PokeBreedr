@@ -135,7 +135,11 @@ namespace PokeBreedr.Models
 
         public string Pokemon { get; set; } = string.Empty;
 
+        public string PokemonEgg { get; set; } = string.Empty;
+
         public bool IsAlfa { get; set; }
+
+        public bool IsIgnored { get; set; }
 
         public bool HasHiddenAbility { get; set; }
 

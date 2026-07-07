@@ -48,6 +48,13 @@
                              alt="HA icon">
                     }
 
+                    @if (Model.IsIgnored)
+                    {
+                        <img src="assets/ignoreIcon.png"
+                             class="pokemon-ignore-icon"
+                             alt="ignore icon">
+                    }
+
                 </div>
 
             </div>
@@ -201,6 +208,10 @@
                 }
 
             </button>
+
+            <button class="card-button" @onclick="ToggleIgnore">
+                Ignore
+            </button>
         </div>
 
     </div>
@@ -248,6 +259,9 @@
 
     [Parameter]
     public EventCallback<TransferPokemonDto> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnIgnore { get; set; }
 
     [Inject]
     private IPokemonPersistenceService PokemonPersistanceService { get; set; } = default!;
@@ -497,5 +511,12 @@
         return $"{pokemon.Pokemon} ({nickname}) " +
                $"{pokemon.HpIv}-{pokemon.AttackIv}-{pokemon.DefenseIv}-" +
                $"{pokemon.SpAttackIv}-{pokemon.SpDefenseIv}-{pokemon.SpeedIv}";
+    }
+
+    private async Task ToggleIgnore()
+    {
+        Model.IsIgnored = !Model.IsIgnored;
+
+        await OnIgnore.InvokeAsync(Model.IsIgnored);
     }
 }

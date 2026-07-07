@@ -74,6 +74,14 @@
     image-rendering: pixelated;
 }
 
+    .pokemon-ignore-icon {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        z-index: 11;
+        image-rendering: pixelated;
+    }
+
 /* =========================
    MIDDLE COLUMN
 ========================= */
