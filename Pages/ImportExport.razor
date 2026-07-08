@@ -1,0 +1,68 @@
+﻿@page "/importexport"
+
+@using Microsoft.AspNetCore.Components.Forms
+@inject IJSRuntime JSRuntime
+
+<h3>Import / Export</h3>
+
+<div class="d-flex gap-2">
+
+    <InputFile OnChange="ImportCsv" accept=".csv" />
+
+    <button class="btn btn-primary" @onclick="ExportCsv">
+        Exportar CSV
+    </button>
+
+</div>
+@code {
+
+    private IJSObjectReference? importExportCsvModule;
+
+    private async Task<IJSObjectReference> GetModule()
+    {
+        importExportCsvModule ??= await JSRuntime.InvokeAsync<IJSObjectReference>(
+            "import",
+            "./js/importExportCsv.js");
+
+        return importExportCsvModule;
+    }
+
+
+    private async Task ImportCsv(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        using var stream = file.OpenReadStream();
+        using var reader = new StreamReader(stream);
+
+        var csv = await reader.ReadToEndAsync();
+
+        var lines = csv.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var line in lines)
+        {
+            Console.WriteLine(line);
+        }
+
+    }
+
+    private async Task ExportCsv()
+    {
+        string csv = "column1,column2";
+
+        var module = await GetModule();
+
+        await module.InvokeVoidAsync(
+            "downloadCsv",
+            "export.csv",
+            csv);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (importExportCsvModule is not null)
+        {
+            await importExportCsvModule.DisposeAsync();
+        }
+    }
+}
