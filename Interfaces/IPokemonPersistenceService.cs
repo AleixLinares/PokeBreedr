@@ -8,6 +8,8 @@ namespace PokeBreedr.Interfaces
 
         Task Save(PokemonInfoDto pokemonInfo);
 
+        Task SaveAll(List<PokemonInfoDto> pokemons);
+
         Task Delete(Guid pokemonInfoId);
 
         Task<PokemonInfoDto?> Obtain(Guid pokemonInfoID);

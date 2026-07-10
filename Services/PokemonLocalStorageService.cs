@@ -102,7 +102,7 @@ namespace PokeBreedr.Services
             return new List<PokemonInfoDto>();
         }
 
-        private async Task SaveAll(List<PokemonInfoDto> pokemons)
+        public async Task SaveAll(List<PokemonInfoDto> pokemons)
         {
             var module = await GetModule();
 
