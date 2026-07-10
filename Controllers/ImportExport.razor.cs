@@ -4,7 +4,6 @@ using Microsoft.JSInterop;
 using PokeBreedr.Dto;
 using PokeBreedr.Enums;
 using PokeBreedr.Interfaces;
-using PokeBreedr.Models;
 using PokeBreedr.Services;
 using PokeBreedr.Utils;
 
@@ -81,9 +80,18 @@ namespace PokeBreedr.Pages
                 }
                 else if(pokemon.Gender == PokemonGenderEnum.Genderless && eggroup != "Genderless")
                 {
-                    string resultLine = "row: " + i + "," + line + "," + "Error: " + "This pokemon is cannot be genderless" + "\n";
+                    string resultLine = "row: " + i + "," + line + "," + "Error: " + "This pokemon cannot be genderless" + "\n";
                     resultCsv += resultLine;
                     continue;
+                }
+
+                if(pokemon.Pokemon == "Ditto")
+                {
+                    pokemon.Gender = PokemonGenderEnum.Ditto;
+                }
+                else if(eggroup == "Genderless")
+                {
+                    pokemon.Gender = PokemonGenderEnum.Genderless;
                 }
 
                 currentPokemonDictionary.Add(pokemon.Guid, pokemon);
