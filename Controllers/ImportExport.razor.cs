@@ -24,6 +24,8 @@ namespace PokeBreedr.Pages
 
         private bool importFinished;
         private string resultCsv = string.Empty;
+        private string StatusMessage = string.Empty;
+        private bool IsError;
         private List<string> validPokemons = new List<string>();
 
         protected override async Task OnInitializedAsync()
@@ -42,6 +44,10 @@ namespace PokeBreedr.Pages
 
         private async Task ImportCsv(InputFileChangeEventArgs e)
         {
+            resultCsv = string.Empty;
+            IsError = false;
+            StatusMessage = string.Empty;
+
             var file = e.File;
 
             using var stream = file.OpenReadStream();
@@ -61,10 +67,12 @@ namespace PokeBreedr.Pages
 
                 PokemonInfoDto? pokemon = this.TryParseCsvLine(line, out string error);
 
+                Console.WriteLine(pokemon?.Pokemon);
                 if (pokemon == null) 
                 {
                     string resultLine = "row: " + i + "," + line + "," + "Error: " + error + "\n";
                     resultCsv += resultLine;
+                    Console.WriteLine(resultLine);
                     continue;
                 }
 
@@ -94,13 +102,24 @@ namespace PokeBreedr.Pages
                     pokemon.Gender = PokemonGenderEnum.Genderless;
                 }
 
-                currentPokemonDictionary.Add(pokemon.Guid, pokemon);
+                currentPokemonDictionary[pokemon.Guid] = pokemon;
             }
 
             var newPokemonsList = currentPokemonDictionary.Values.ToList();
 
             await this.PokemonPersistenceService.SaveAll(newPokemonsList);
             importFinished = true;
+
+            if (string.IsNullOrEmpty(resultCsv))
+            {
+                IsError = false;
+                StatusMessage = "All Pokemons imported";
+            }
+            else
+            {
+                IsError = true;
+                StatusMessage = "One or more Pokemons could not be imported";
+            }
         }
 
         private PokemonInfoDto? TryParseCsvLine(string line, out string errors)
@@ -175,8 +194,9 @@ namespace PokeBreedr.Pages
                 return null;
             }
 
+            pokemon.Gender = genderEnum;
 
-            if (parsedLine[6] != string.Empty && !parsedLine[5].IsWhiteSpace())
+            if (parsedLine[6] != string.Empty && !parsedLine[6].IsWhiteSpace())
             {
                 if (!parsedLine[6].TryParseEnum<PokemonNatureEnum>(out var pokemonNature))
                 {
@@ -188,10 +208,17 @@ namespace PokeBreedr.Pages
             }
             byte[] iVs = new byte[6];
             int j, k;
-            for (j = 7, k= 0; j < 6; ++j, ++k)
+            for (j = 7, k= 0; k < 6; ++j, ++k)
             {
-                if (!byte.TryParse(parsedLine[j], out var iv) || iv < 0 || iv > 31)
+                if (!byte.TryParse(parsedLine[j], out var iv))
                 {
+                    Console.WriteLine("falla en ivs?");
+                    errors = "The iVs have to be a number between 0 and 31";
+                    return null;
+                }
+                if (iv < 0 || iv > 31)
+                {
+                    Console.WriteLine("falla en ivs 2?");
                     errors = "The iVs have to be a number between 0 and 31";
                     return null;
                 }
@@ -208,7 +235,7 @@ namespace PokeBreedr.Pages
 
             if (parsedLine[13] != string.Empty)
             {
-                var particles = parsedLine[10].Split(';', StringSplitOptions.TrimEntries);
+                var particles = parsedLine[13].Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var particle in particles)
                 {
@@ -237,12 +264,7 @@ namespace PokeBreedr.Pages
             {
                 var nature = pokemon.Nature.HasValue ? pokemon.Nature.Value.ToString() : string.Empty;
 
-                string particles = string.Empty;
-
-                foreach(var particle in pokemon.Particles)
-                {
-                    particles += $"{particle.ToString()};";
-                }
+                string particles = string.Join(";", pokemon.Particles);
 
                 csv += $"{pokemon.Guid},{pokemon.Pokemon},{pokemon.Name}," +
                     $"{pokemon.IsAlfa},{pokemon.HasHiddenAbility},{pokemon.Gender.ToString()},{pokemon.Nature?.ToString()}," +
@@ -258,7 +280,7 @@ namespace PokeBreedr.Pages
         private async Task ExportResultCsv()
         {
             var module = await GetModule();
-
+            
             await module.InvokeVoidAsync(
                 "downloadCsv",
                 "importResult.csv",
