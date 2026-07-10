@@ -48,7 +48,7 @@ namespace PokeBreedr.Dto
 
         public PokemonNatureEnum? Nature { get; set; }
 
-        public List<string> Particles { get; set; } = new();
+        public List<ParticleEnum> Particles { get; set; } = new();
 
         public byte HpIv { get; set; }
 

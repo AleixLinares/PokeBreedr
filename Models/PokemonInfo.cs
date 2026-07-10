@@ -48,7 +48,7 @@ namespace PokeBreedr.Models
         public PokemonGenderEnum? Gender;
 
         public PokemonNatureEnum? Nature;
-        public List<string> Particles { get; set; } = new();
+        public List<ParticleEnum> Particles { get; set; } = new();
 
         public bool IsSaved { get; set; }
 

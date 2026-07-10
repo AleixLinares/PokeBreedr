@@ -114,7 +114,7 @@
                 <div class="field" style="margin-top: 5px">
                     <label>Particles</label>
 
-                    <DropdownMultiple TValue="string"
+                    <DropdownMultiple TValue="ParticleEnum"
                                       Options="ParticleOptions"
                                       isDisabled="@true"
                                       @bind-Values="Model.Particles" />
@@ -434,46 +434,46 @@
     };
 
     private List<DropdownOption> ParticleOptions = new()
-    {
-        new() { Value = "Shiny Phantom", Label = "Shiny Phantom" },
-        new() { Value = "Phantom", Label = "Phantom" },
-        new() { Value = "Spirit of Spring", Label = "Spirit of Spring" },
-        new() { Value = "Xmas Decorations", Label = "Xmas Decorations" },
-        new() { Value = "Menacing Spirit", Label = "Menacing Spirit" },
-        new() { Value = "Shiny Menacing Spirit", Label = "Shiny Menacing Spirit" },
-        new() { Value = "Anniversary Cake", Label = "Anniversary Cake" },
-        new() { Value = "Kanto Friends", Label = "Kanto Friends" },
-        new() { Value = "Shiny Kanto Friends", Label = "Shiny Kanto Friends" },
-        new() { Value = "Red Dragon", Label = "Red Dragon" },
-        new() { Value = "Eerie Howl", Label = "Eerie Howl" },
-        new() { Value = "Graveyard", Label = "Graveyard" },
-        new() { Value = "King's Fall", Label = "King's Fall" },
-        new() { Value = "Zodiac", Label = "Zodiac" },
-        new() { Value = "Witch's Cat", Label = "Witch's Cat" },
-        new() { Value = "Pumpcat", Label = "Pumpcat" },
-        new() { Value = "Spinning Scythe", Label = "Spinning Scythe" },
-        new() { Value = "Spider's Web", Label = "Spider's Web" },
-        new() { Value = "Zombie Grip", Label = "Zombie Grip" },
-        new() { Value = "Pungent Stench", Label = "Pungent Stench" },
-        new() { Value = "Witch's Haze", Label = "Witch's Haze" },
-        new() { Value = "Pumpkid's Treat", Label = "Pumpkid's Treat" },
-        new() { Value = "Paper Lantern", Label = "Paper Lantern" },
-        new() { Value = "Fireworks", Label = "Fireworks" },
-        new() { Value = "Black Hole", Label = "Black Hole" },
-        new() { Value = "White Kitty", Label = "White Kitty" },
-        new() { Value = "Rising Star", Label = "Rising Star" },
-        new() { Value = "Snowflake", Label = "Snowflake" },
-        new() { Value = "Present", Label = "Present" },
-        new() { Value = "Hitodama", Label = "Hitodama" },
-        new() { Value = "Bats", Label = "Bats" },
-        new() { Value = "Ghosts", Label = "Ghosts" },
-        new() { Value = "The Eye", Label = "The Eye" },
-        new() { Value = "Pumpking's Delight", Label = "Pumpking's Delight" },
-        new() { Value = "Shiny Dark Crystal", Label = "Shiny Dark Crystal" },
-        new() { Value = "Dark Crystal", Label = "Dark Crystal" },
-        new() { Value = "Blood Lotus Field", Label = "Blood Lotus Field" },
-        new() { Value = "Lotus Field", Label = "Lotus Field" },
-    };
+{
+    new() { Value = ParticleEnum.ShinyPhantom.ToString(), Label = "Shiny Phantom" },
+    new() { Value = ParticleEnum.Phantom.ToString(), Label = "Phantom" },
+    new() { Value = ParticleEnum.SpiritOfSpring.ToString(), Label = "Spirit of Spring" },
+    new() { Value = ParticleEnum.XmasDecorations.ToString(), Label = "Xmas Decorations" },
+    new() { Value = ParticleEnum.MenacingSpirit.ToString(), Label = "Menacing Spirit" },
+    new() { Value = ParticleEnum.ShinyMenacingSpirit.ToString(), Label = "Shiny Menacing Spirit" },
+    new() { Value = ParticleEnum.AnniversaryCake.ToString(), Label = "Anniversary Cake" },
+    new() { Value = ParticleEnum.KantoFriends.ToString(), Label = "Kanto Friends" },
+    new() { Value = ParticleEnum.ShinyKantoFriends.ToString(), Label = "Shiny Kanto Friends" },
+    new() { Value = ParticleEnum.RedDragon.ToString(), Label = "Red Dragon" },
+    new() { Value = ParticleEnum.EerieHowl.ToString(), Label = "Eerie Howl" },
+    new() { Value = ParticleEnum.Graveyard.ToString(), Label = "Graveyard" },
+    new() { Value = ParticleEnum.KingsFall.ToString(), Label = "King's Fall" },
+    new() { Value = ParticleEnum.Zodiac.ToString(), Label = "Zodiac" },
+    new() { Value = ParticleEnum.WitchsCat.ToString(), Label = "Witch's Cat" },
+    new() { Value = ParticleEnum.Pumpcat.ToString(), Label = "Pumpcat" },
+    new() { Value = ParticleEnum.SpinningScythe.ToString(), Label = "Spinning Scythe" },
+    new() { Value = ParticleEnum.SpidersWeb.ToString(), Label = "Spider's Web" },
+    new() { Value = ParticleEnum.ZombieGrip.ToString(), Label = "Zombie Grip" },
+    new() { Value = ParticleEnum.PungentStench.ToString(), Label = "Pungent Stench" },
+    new() { Value = ParticleEnum.WitchsHaze.ToString(), Label = "Witch's Haze" },
+    new() { Value = ParticleEnum.PumpkidsTreat.ToString(), Label = "Pumpkid's Treat" },
+    new() { Value = ParticleEnum.PaperLantern.ToString(), Label = "Paper Lantern" },
+    new() { Value = ParticleEnum.Fireworks.ToString(), Label = "Fireworks" },
+    new() { Value = ParticleEnum.BlackHole.ToString(), Label = "Black Hole" },
+    new() { Value = ParticleEnum.WhiteKitty.ToString(), Label = "White Kitty" },
+    new() { Value = ParticleEnum.RisingStar.ToString(), Label = "Rising Star" },
+    new() { Value = ParticleEnum.Snowflake.ToString(), Label = "Snowflake" },
+    new() { Value = ParticleEnum.Present.ToString(), Label = "Present" },
+    new() { Value = ParticleEnum.Hitodama.ToString(), Label = "Hitodama" },
+    new() { Value = ParticleEnum.Bats.ToString(), Label = "Bats" },
+    new() { Value = ParticleEnum.Ghosts.ToString(), Label = "Ghosts" },
+    new() { Value = ParticleEnum.TheEye.ToString(), Label = "The Eye" },
+    new() { Value = ParticleEnum.PumpkingsDelight.ToString(), Label = "Pumpking's Delight" },
+    new() { Value = ParticleEnum.ShinyDarkCrystal.ToString(), Label = "Shiny Dark Crystal" },
+    new() { Value = ParticleEnum.DarkCrystal.ToString(), Label = "Dark Crystal" },
+    new() { Value = ParticleEnum.BloodLotusField.ToString(), Label = "Blood Lotus Field" },
+    new() { Value = ParticleEnum.LotusField.ToString(), Label = "Lotus Field" },
+};
 
     private async Task ToggleParentsAsync()
     {
