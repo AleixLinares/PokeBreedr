@@ -52,6 +52,15 @@
                                      ValueChanged="OnParent2Selected" />
                 </div>
             </div>
+            <div style="width:30%" class="dropdown-row">
+                <DropdownSearch Value=@SearchPokemon
+                    DisableOptions=@(true)
+                    ValueChanged="OnSearchChanged">
+                </DropdownSearch>
+            </div>
+            <div>
+                Showing <strong>@CombinedPokemonsShow.Count()</strong> Pokemons
+            </div>
             @foreach (var item in CombinedPokemonsShow)
             {
                 <CombinationCard @key="@($"{item.Parent1}-{item.Parent2}")"
@@ -84,6 +93,8 @@
 
     [Inject]
     private IJSRuntime JS { get; set; } = default!;
+
+    private string SearchPokemon { get; set; } = string.Empty;
 
     private ConfigCardInfo? SelectedCard { get; set; } = null;
     private List<CombinationInfo> CombinedPokemonsBase = new List<CombinationInfo>();
@@ -162,6 +173,8 @@
                 AddParentOption(parent2Task.Result);
             }
 
+            Parents1 = Parents1.OrderBy(i => i.Label).ToList();
+
             showingCombinations = true;
             this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
             this.ApplyOrdering();
@@ -237,6 +250,21 @@
                     (i.Parent2 != model.Parent1 && i.Parent2 != model.Parent2))
                 .ToList();
 
+            Parents1.Clear();
+
+            foreach (var combination in CombinedPokemonsBase)
+            {
+                var parent1Task = PokemonPersistanceService.Obtain(combination.Parent1);
+                var parent2Task = PokemonPersistanceService.Obtain(combination.Parent2);
+
+                await Task.WhenAll(parent1Task, parent2Task);
+
+                AddParentOption(parent1Task.Result);
+                AddParentOption(parent2Task.Result);
+            }
+            Parents1 = Parents1.OrderBy(i => i.Label).ToList();
+
+            showingCombinations = true;
             this.CombinedPokemonsShow = CombinedPokemonsBase.ToList();
             this.ApplyOrdering();
 
@@ -271,10 +299,14 @@
                 var other = await this.PokemonPersistanceService.Obtain(otherGuid);
                 AddParentOption(other, false);
             }
+
+            Parents2 = Parents2.OrderBy(i => i.Label).ToList();
         }
 
         ApplyFilters();
         ApplyOrdering();
+
+        StateHasChanged();
     }
 
     private void OnParent2Selected(string? selectedGuid)
@@ -282,6 +314,8 @@
         SelectedParent2 = selectedGuid;
         ApplyFilters();
         ApplyOrdering();
+
+        StateHasChanged();
     }
 
     private void ApplyFilters()
@@ -310,9 +344,13 @@
                 i.Parent2 == parent2);
         }
 
-        CombinedPokemonsShow = query.ToList();
+        if (!string.IsNullOrEmpty(SearchPokemon))
+        {
+            query = query.Where(i => i.PokemonEgg.StartsWith(SearchPokemon, ignoreCase: true, culture: null));
 
-        StateHasChanged();
+        }
+
+        CombinedPokemonsShow = query.ToList();
     }
 
     private void ApplyOrdering()
@@ -327,10 +365,19 @@
     {
         var scrollPosition = await JS.InvokeAsync<double>("getScrollPosition");
 
+        ApplyFilters();
         ApplyOrdering();
 
         await InvokeAsync(StateHasChanged);
 
         await JS.InvokeVoidAsync("restoreScrollPosition", scrollPosition);
+    }
+
+    private async Task OnSearchChanged(string value)
+    {
+        SearchPokemon = value;
+        ApplyFilters();
+        ApplyOrdering();
+        StateHasChanged();
     }
 }
