@@ -30,19 +30,21 @@
     color: #f8f9fa;
     font-size: 14px;
 }
-    ::deep input[type="file"]::file-selector-button:hover {
-        background-color: #5a6268;
-    }
 
-    ::deep input[type="file"]::file-selector-button:disabled {
-        background: #6c757d;
-        color: #f8f9fa;
-        cursor: default;
-        opacity: 0.6;
-    }
+::deep input[type="file"]::file-selector-button:hover {
+    background-color: #5a6268;
+}
 
-::deep input[type="file"]::label {
-    background-color: #6c757d;
+::deep input[type="file"]::file-selector-button:disabled {
+    background: #6c757d;
     color: #f8f9fa;
-    font-size: 14px;
+    cursor: default;
+    opacity: 0.6;
+}
+
+.import-button-row {
+    display: flex;
+    gap: 10px; 
+    align-items: center;
+    flex-direction: column;
 }

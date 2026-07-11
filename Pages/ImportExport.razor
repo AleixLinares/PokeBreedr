@@ -2,17 +2,23 @@
 
 @using Microsoft.AspNetCore.Components.Forms
 
-<h3 class="import-export-title">Import / Export</h3>
+<h1 class="import-export-title">Import / Export</h1>
 
 <div class="import-export-container">
     <InputFile class="input-file" OnChange="ImportCsv" accept=".csv" />
+    <div class="import-button-row">
+        <button class="add-btn"
+                @onclick="SubmitCsv"
+                disabled="@(!importFinished || IsError)">
+            Submit CSV
+        </button>
 
-    <button class="add-btn"
+        <button class="add-btn"
             @onclick="ExportResultCsv"
-            disabled="@(!importFinished)">
+            disabled="@(!importFinished || !IsError)">
         Download result
-    </button>
-
+        </button>
+    </div>
     <button class="add-btn" @onclick="ExportCsv">
         Export CSV
     </button>
@@ -24,3 +30,351 @@
         @StatusMessage
     </p>
 }
+
+<h1 class="mb-4">Import / Export Guide</h1>
+
+<p>
+    This page allows you to <strong>import</strong> and <strong>export</strong> your Pokémon collection.
+</p>
+
+<h2>Contents</h2>
+
+<ul>
+    <li><a href="importexport#explanation">Explanation</a></li>
+    <li><a href="importexport#examples">Examples</a></li>
+    <li><a href="importexport#accepted-values">Accepted Values</a></li>
+</ul>
+
+<p>
+    The export feature can be used to:
+</p>
+
+<ul>
+    <li>Create a backup of your Pokémon collection.</li>
+    <li>Transfer your Pokémon to another computer or browser.</li>
+    <li>Edit or create large amounts of Pokémon at once.</li>
+</ul>
+
+<p>
+    Pokémon are exported as a <strong>CSV (Comma Separated Values)</strong> file.
+    This file can be opened as a text file and edit manually, or with applications such as <strong>Microsoft Excel</strong>,
+    <strong>Google Sheets</strong>, <strong>LibreOffice Calc</strong>, or any other spreadsheet editor.
+</p>
+
+<p>
+    After making your changes, simply save the file again as a CSV and import it back into the application.
+</p>
+
+<hr />
+
+<h2 style="scroll-margin-top: 90px;" id="explanation">Explanation</h2>
+
+<p>
+    The CSV file must contain the following columns in this exact order and separated with commas:
+</p>
+
+<blockquote class="blockquote">
+    <p>
+        Id,Pokemon,Nickname,IsAlpha,HasHiddenAbility,Gender,Nature,HpIv,AttackIv,DefenseIv,SpAttackIv,SpDefenseIv,SpeedIv,Particles
+    </p>
+</blockquote>
+
+<h3>Import Results</h3>
+
+<p>
+    After importing your CSV, if there are no errors, you will be able to submit your pokemons. If any rows contain errors, you can download a results CSV that identifies the rows that failed and explains why.
+</p>
+
+<h3>Column Reference</h3>
+<p>
+    Each column is described below, along with its requirements and expected values.
+</p>
+
+<div style="  margin-bottom: 20px;">
+    <span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+    </span> : You must fill the column.
+    </div>
+    <div>
+    <span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+        Optional
+    </span> : You can leave it empty, but the column must be there.
+    </div>
+
+<h3>Id</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    The Pokémon identifier.
+</p>
+
+<ul>
+    <li>Leave it empty to create a new Pokémon.</li>
+    <li>Keep the value if you exported the Pokémon and want to update it.</li>
+</ul>
+
+<h3>Pokemon</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    The Pokémon species.
+    You can use the Pokémon name exactly as it appears in-game.
+</p>
+
+<h3>Nickname</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    Optional nickname used to help identify the Pokémon inside the application.
+</p>
+
+<h3>IsAlpha</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    Whether the Pokémon is an Alpha Pokémon.
+    You can use either the text value (<strong>True</strong>/<strong>False</strong>)
+    or the numeric value (<strong>1</strong>/<strong>0</strong>).
+</p>
+
+<h3>HasHiddenAbility</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    Whether the Pokémon has its Hidden Ability.
+    You can use either the text value (<strong>True</strong>/<strong>False</strong>)
+    or the numeric value (<strong>1</strong>/<strong>0</strong>).
+</p>
+
+<h3>Gender</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    The Pokémon's gender.
+    You may use either the gender name or its numeric value.
+</p>
+
+<h3>Nature</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    The Pokémon's Nature.
+    You may use either the Nature name or its numeric value.
+</p>
+
+<h3>HP IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    HP Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>Attack IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    Attack Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>Defense IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    Defense Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>SpAttack IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    Special Attack Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>SpDefense IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    Special Defense Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>Speed IV</h3>
+<span style="background:#dc3545;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Required
+</span>
+<p>
+    Speed Individual Value.
+    Valid values range from <strong>0</strong> to <strong>31</strong>.
+</p>
+
+<h3>Particles</h3>
+<span style="background:#2BCCE3;color:white;padding:2px 6px;border-radius:4px;font-size:0.75rem;">
+    Optional
+</span>
+<p>
+    The particle effects attached to the Pokémon.
+</p>
+
+<p>
+    Multiple particles can be assigned by separating them with a semicolon (<strong>;</strong>).
+</p>
+
+<p>
+    You may use either the particle names or their numeric values.
+</p>
+
+<hr />
+
+<h2 style="scroll-margin-top: 90px;" id="examples">Examples</h2>
+
+<pre>
+,Ditto,,False,False,Ditto,Bold,0,0,0,0,0,0,
+
+,Beldum,,False,False,Genderless,,0,0,0,0,0,0,
+
+,Bulbasaur,,False,False,Male,Jolly,26,5,31,25,14,9,ShinyPhantom;Phantom
+
+This last example is equivalent to the one above, but uses numeric values instead of text:
+,Bulbasaur,,0,0,0,11,26,5,31,25,14,9,0;1
+</pre>
+
+<hr />
+
+<h2 id="accepted-values" style="scroll-margin-top: 90px;">Accepted Values</h2>
+<div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="width:220px;">
+        <h3>Gender</h3>
+
+        <table style="text-align:left;">
+            <thead>
+        <tr>
+            <th>Text</th>
+            <th>Numeric</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Male</td><td>0</td></tr>
+        <tr><td>Female</td><td>1</td></tr>
+        <tr><td>Genderless</td><td>2</td></tr>
+        <tr><td>Ditto</td><td>3</td></tr>
+    </tbody>
+</table>
+</div>
+    <div style="width:220px;">
+        <h3>IsAlpha / HasHiddenAbility</h3>
+
+        <table style="text-align:left;">
+            <thead>
+        <tr>
+            <th>Text</th>
+            <th>Numeric</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>False</td><td>0</td></tr>
+        <tr><td>True</td><td>1</td></tr>
+    </tbody>
+</table>
+</div>
+    <div style="width:320px;">
+        <h3>Natures</h3>
+
+        <table style="text-align:left;">
+            <thead>
+        <tr><th>Nature</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>Adamant</td><td>0</td></tr>
+        <tr><td>Bashful</td><td>1</td></tr>
+        <tr><td>Bold</td><td>2</td></tr>
+        <tr><td>Brave</td><td>3</td></tr>
+        <tr><td>Calm</td><td>4</td></tr>
+        <tr><td>Careful</td><td>5</td></tr>
+        <tr><td>Docile</td><td>6</td></tr>
+        <tr><td>Gentle</td><td>7</td></tr>
+        <tr><td>Hardy</td><td>8</td></tr>
+        <tr><td>Hasty</td><td>9</td></tr>
+        <tr><td>Impish</td><td>10</td></tr>
+        <tr><td>Jolly</td><td>11</td></tr>
+        <tr><td>Lax</td><td>12</td></tr>
+        <tr><td>Lonely</td><td>13</td></tr>
+        <tr><td>Mild</td><td>14</td></tr>
+        <tr><td>Modest</td><td>15</td></tr>
+        <tr><td>Naive</td><td>16</td></tr>
+        <tr><td>Naughty</td><td>17</td></tr>
+        <tr><td>Quiet</td><td>18</td></tr>
+        <tr><td>Quirky</td><td>19</td></tr>
+        <tr><td>Rash</td><td>20</td></tr>
+        <tr><td>Relaxed</td><td>21</td></tr>
+        <tr><td>Sassy</td><td>22</td></tr>
+        <tr><td>Serious</td><td>23</td></tr>
+        <tr><td>Timid</td><td>24</td></tr>
+    </tbody>
+</table>
+</div>
+    <div style="width:320px;">
+<h3>Particles</h3>
+
+        <table style="text-align:left;">
+            <thead>
+        <tr><th>Particle</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>ShinyPhantom</td><td>0</td></tr>
+        <tr><td>Phantom</td><td>1</td></tr>
+        <tr><td>SpiritOfSpring</td><td>2</td></tr>
+        <tr><td>XmasDecorations</td><td>3</td></tr>
+        <tr><td>MenacingSpirit</td><td>4</td></tr>
+        <tr><td>ShinyMenacingSpirit</td><td>5</td></tr>
+        <tr><td>AnniversaryCake</td><td>6</td></tr>
+        <tr><td>KantoFriends</td><td>7</td></tr>
+        <tr><td>ShinyKantoFriends</td><td>8</td></tr>
+        <tr><td>RedDragon</td><td>9</td></tr>
+        <tr><td>EerieHowl</td><td>10</td></tr>
+        <tr><td>Graveyard</td><td>11</td></tr>
+        <tr><td>KingsFall</td><td>12</td></tr>
+        <tr><td>Zodiac</td><td>13</td></tr>
+        <tr><td>WitchsCat</td><td>14</td></tr>
+        <tr><td>Pumpcat</td><td>15</td></tr>
+        <tr><td>SpinningScythe</td><td>16</td></tr>
+        <tr><td>SpidersWeb</td><td>17</td></tr>
+        <tr><td>ZombieGrip</td><td>18</td></tr>
+        <tr><td>PungentStench</td><td>19</td></tr>
+        <tr><td>WitchsHaze</td><td>20</td></tr>
+        <tr><td>PumpkidsTreat</td><td>21</td></tr>
+        <tr><td>PaperLantern</td><td>22</td></tr>
+        <tr><td>Fireworks</td><td>23</td></tr>
+        <tr><td>BlackHole</td><td>24</td></tr>
+        <tr><td>WhiteKitty</td><td>25</td></tr>
+        <tr><td>RisingStar</td><td>26</td></tr>
+        <tr><td>Snowflake</td><td>27</td></tr>
+        <tr><td>Present</td><td>28</td></tr>
+        <tr><td>Hitodama</td><td>29</td></tr>
+        <tr><td>Bats</td><td>30</td></tr>
+        <tr><td>Ghosts</td><td>31</td></tr>
+        <tr><td>TheEye</td><td>32</td></tr>
+        <tr><td>PumpkingsDelight</td><td>33</td></tr>
+        <tr><td>ShinyDarkCrystal</td><td>34</td></tr>
+        <tr><td>DarkCrystal</td><td>35</td></tr>
+        <tr><td>BloodLotusField</td><td>36</td></tr>
+        <tr><td>LotusField</td><td>37</td></tr>
+    </tbody>
+</table>
+</div>
+</div>

@@ -27,6 +27,7 @@ namespace PokeBreedr.Pages
         private string StatusMessage = string.Empty;
         private bool IsError;
         private List<string> validPokemons = new List<string>();
+        private List<PokemonInfoDto> newPokemonsList = new List<PokemonInfoDto>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -42,11 +43,20 @@ namespace PokeBreedr.Pages
             return importExportCsvModule;
         }
 
+        private async Task SubmitCsv()
+        {
+            await this.PokemonPersistenceService.SaveAll(newPokemonsList);
+            newPokemonsList = new List<PokemonInfoDto>();
+            importFinished = false;
+            StatusMessage = "All Pokemons imported correclty";
+        }
+
         private async Task ImportCsv(InputFileChangeEventArgs e)
         {
             resultCsv = string.Empty;
             IsError = false;
             StatusMessage = string.Empty;
+            newPokemonsList = new List<PokemonInfoDto>();
 
             var file = e.File;
 
@@ -67,7 +77,6 @@ namespace PokeBreedr.Pages
 
                 PokemonInfoDto? pokemon = this.TryParseCsvLine(line, out string error);
 
-                Console.WriteLine(pokemon?.Pokemon);
                 if (pokemon == null) 
                 {
                     string resultLine = "row: " + i + "," + line + "," + "Error: " + error + "\n";
@@ -105,20 +114,19 @@ namespace PokeBreedr.Pages
                 currentPokemonDictionary[pokemon.Guid] = pokemon;
             }
 
-            var newPokemonsList = currentPokemonDictionary.Values.ToList();
+            newPokemonsList = currentPokemonDictionary.Values.ToList();
 
-            await this.PokemonPersistenceService.SaveAll(newPokemonsList);
             importFinished = true;
 
             if (string.IsNullOrEmpty(resultCsv))
             {
                 IsError = false;
-                StatusMessage = "All Pokemons imported";
+                StatusMessage = "All Pokemons processed correclty. You can now submit your pokemons.";
             }
             else
             {
                 IsError = true;
-                StatusMessage = "One or more Pokemons could not be imported";
+                StatusMessage = "One or more Pokemons could not be processed correclty, download results to see which are wrong";
             }
         }
 
@@ -130,9 +138,25 @@ namespace PokeBreedr.Pages
 
             if (parsedLine.Length != 14)
             {
-                errors = "The line doesn't match the expected structure separated by comas" +
-                    ": Id; Pokemon; Nickname; IsAlpha; HasHiddenAbility; Gender; Nature; HpIv; AttackIv; DefenseIv; SpAttackIv; SpDefenseIv; SpeedIv; Particles";
-                return null;
+                if (parsedLine.Length == 13)
+                {
+                    var temp = (string[])parsedLine.Clone();
+
+                    parsedLine = new string[14];
+
+                    for (int i = 0; i < 13; ++i)
+                    {
+                        parsedLine[i] = temp[i];
+                    }
+
+                    parsedLine[13] = string.Empty;
+                }
+                else
+                {
+                    errors = "The line doesn't match the expected structure separated by comas" +
+                        ": Id; Pokemon; Nickname; IsAlpha; HasHiddenAbility; Gender; Nature; HpIv; AttackIv; DefenseIv; SpAttackIv; SpDefenseIv; SpeedIv; Particles";
+                    return null;
+                }
             }
 
             PokemonInfoDto pokemon = new PokemonInfoDto();
@@ -145,7 +169,7 @@ namespace PokeBreedr.Pages
             {
                 if (!Guid.TryParse(parsedLine[0], out var guid))
                 {
-                    errors = "The Id doesn't match the following format: " + Guid.Empty;
+                    errors = "Id: invalid format. Expected the following format: " + Guid.Empty;
                     return null;
                 }
 
@@ -154,7 +178,7 @@ namespace PokeBreedr.Pages
 
             if(parsedLine[1] == string.Empty || parsedLine[1].IsWhiteSpace() || !validPokemons.Contains(parsedLine[1], StringComparer.OrdinalIgnoreCase))
             {
-                errors = "The Pokemon is required and has to be valid";
+                errors = "Pokemon: is required and must be valid";
                 return null;
             }
 
@@ -169,7 +193,7 @@ namespace PokeBreedr.Pages
 
             if (!parsedLine[3].IsWhiteSpace() && !validValues.Contains(parsedLine[3],StringComparer.OrdinalIgnoreCase))
             {
-                errors = "IsAlpha can only be false or 0 or empty if it's not alpha or true or 1 if it is";
+                errors = "IsAlpha: invalid value. Allowed values are false, 0, empty, true, or 1.";
                 return null;
             }
 
@@ -177,9 +201,9 @@ namespace PokeBreedr.Pages
                 parsedLine[3].Equals("1") ||
                 parsedLine[3].Equals("true", StringComparison.OrdinalIgnoreCase);
 
-            if (!parsedLine[4].IsWhiteSpace() && !validValues.Contains(parsedLine[3],StringComparer.OrdinalIgnoreCase))
+            if (!parsedLine[4].IsWhiteSpace() && !validValues.Contains(parsedLine[4],StringComparer.OrdinalIgnoreCase))
             {
-                errors = "HasHiddenAbility can only be false or 0 or empty if doesn't have hidden ability or true or 1 if it has";
+                errors = "HasHiddenAbility: invalid value. Allowed values are false, 0, empty, true, or 1.";
                 return null;
             }
 
@@ -189,8 +213,7 @@ namespace PokeBreedr.Pages
 
             if (!parsedLine[5].TryParseEnum<PokemonGenderEnum>(out var genderEnum))
             {
-                Console.WriteLine(parsedLine[5]);
-                errors = $"The Gender is required and must be male (0); female (1); genderless (2) or ditto (0)";
+                errors = $"Gender: is required. Allowed values are male (0), female (1), genderless (2), or ditto (0).";
                 return null;
             }
 
@@ -200,7 +223,7 @@ namespace PokeBreedr.Pages
             {
                 if (!parsedLine[6].TryParseEnum<PokemonNatureEnum>(out var pokemonNature))
                 {
-                    errors = "The Nature is not valid";
+                    errors = "Nature: invalid value.";
                     return null;
                 }
 
@@ -213,13 +236,13 @@ namespace PokeBreedr.Pages
                 if (!byte.TryParse(parsedLine[j], out var iv))
                 {
                     Console.WriteLine("falla en ivs?");
-                    errors = "The iVs have to be a number between 0 and 31";
+                    errors = "IVs: must be a number between 0 and 31.";
                     return null;
                 }
                 if (iv < 0 || iv > 31)
                 {
                     Console.WriteLine("falla en ivs 2?");
-                    errors = "The iVs have to be a number between 0 and 31";
+                    errors = "IVs: must be a number between 0 and 31.";
                     return null;
                 }
 
@@ -241,7 +264,7 @@ namespace PokeBreedr.Pages
                 {
                     if(!particle.TryParseEnum<ParticleEnum>(out var particleType))
                     {
-                        errors = "The particle" + particle + "doesn't exist";
+                        errors = $"Particle: '{particle}' does not exist.";
                         return null;
                     }
                     pokemon.Particles.Add(particleType);
