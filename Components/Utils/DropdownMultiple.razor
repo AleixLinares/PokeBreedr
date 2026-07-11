@@ -74,10 +74,21 @@
         if (string.IsNullOrWhiteSpace(TempValue))
             return;
 
-        var converted =
-            (TValue)Convert.ChangeType(TempValue, typeof(TValue));
+        TValue converted;
 
-        if (Values.Any(v => v?.ToString() == converted?.ToString()))
+        if (typeof(TValue).IsEnum)
+        {
+            if (!Enum.TryParse(typeof(TValue), TempValue, true, out var enumValue))
+                return; // o mostrar un error
+
+            converted = (TValue)enumValue;
+        }
+        else
+        {
+            converted = (TValue)Convert.ChangeType(TempValue, typeof(TValue));
+        }
+
+        if (Values.Any(v => EqualityComparer<TValue>.Default.Equals(v, converted)))
         {
             TempValue = "";
             return;
