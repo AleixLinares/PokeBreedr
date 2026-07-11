@@ -49,7 +49,7 @@ namespace PokeBreedr.Services
                 pokemons = pokemons.Where(i => !i.IsAlfa).ToList();
             }
 
-            pokemons = this.FilterPokemnsForEggGroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2);
+            pokemons = this.FilterPokemnsForEggGroups(pokemons, configuration.OnlyEggGroup1, configuration.OnlyEggGroup2, false);
 
             return pokemons;
 
@@ -78,7 +78,7 @@ namespace PokeBreedr.Services
             }
         }
 
-        private List<PokemonInfoDto> FilterPokemnsForEggGroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2)
+        private List<PokemonInfoDto> FilterPokemnsForEggGroups(List<PokemonInfoDto> pokemons, string? eggGroup1, string? eggGroup2, bool throwError = true)
         {
             if (eggGroup1 != null && eggGroup1 != string.Empty)
             {
@@ -89,8 +89,12 @@ namespace PokeBreedr.Services
                 else
                 {
                     pokemons = pokemons.Where(i => i.EggGroup1 == eggGroup1 || i.EggGroup2 == eggGroup1 || i.EggGroup1 == "Ditto").ToList();
-                }                    
+                }
+
+                return pokemons;
             }
+
+            if (throwError)  throw new Exception("Something went wrong when filtering Egg Groups");
 
             return pokemons;
         }

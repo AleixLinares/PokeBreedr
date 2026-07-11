@@ -102,6 +102,9 @@ namespace PokeBreedr.Pages
                     continue;
                 }
 
+                pokemon.EggGroup1 = pokemonInfo.EggGroup1;
+                pokemon.EggGroup2 = pokemonInfo.EggGroup2;
+
                 if(pokemon.Pokemon == "Ditto")
                 {
                     pokemon.Gender = PokemonGenderEnum.Ditto;
