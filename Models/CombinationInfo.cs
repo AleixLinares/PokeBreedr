@@ -145,7 +145,7 @@ namespace PokeBreedr.Models
 
         public PokemonNatureEnum? Nature { get; set; }
 
-        public List<string> Particles { get; set; } = new();
+        public List<ParticleEnum> Particles { get; set; } = new();
 
         public byte HpIv1 { get; set; }
         public byte HpIv2 { get; set; }

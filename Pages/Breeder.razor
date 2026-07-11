@@ -1,14 +1,13 @@
 ﻿@page "/configurations"
-@using PokeBreedr.Components
 @using PokeBreedr.Components.Cards
 
 <PageTitle>Configurations</PageTitle>
 
 @if (isLoading)
 {
-	<p>Loading...</p>
+    <p>Loading...</p>
 }
 else
 {
-	<ConfigCardList Items=cards />
+    <ConfigCardList Items=cards />
 }

@@ -61,6 +61,16 @@
     margin: 5px;
 }
 
+    .add-btn:hover {
+        background-color: #5a6268;
+    }
+
+    .add-btn:disabled {
+        background: #6c757d;
+        color: #f8f9fa;
+        cursor: default;
+        opacity: 0.6;
+    }
 .daycare-selector .dropdown-options {
     text-align: left !important;
 }

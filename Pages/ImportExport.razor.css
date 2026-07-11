@@ -1,0 +1,50 @@
+.import-export-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.import-export-title {
+    text-align: center;
+}
+
+.status-success {
+    color: green;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.status-error {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+::deep input[type="file"]::file-selector-button {
+    padding: 10px 12px;
+    border: 1px solid #6c757d;
+    border-radius: 6px;
+    background-color: #6c757d;
+    color: #f8f9fa;
+    font-size: 14px;
+}
+
+::deep input[type="file"]::file-selector-button:hover {
+    background-color: #5a6268;
+}
+
+::deep input[type="file"]::file-selector-button:disabled {
+    background: #6c757d;
+    color: #f8f9fa;
+    cursor: default;
+    opacity: 0.6;
+}
+
+.import-button-row {
+    display: flex;
+    gap: 10px; 
+    align-items: center;
+    flex-direction: column;
+}
