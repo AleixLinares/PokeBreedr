@@ -41,7 +41,7 @@
                     <label>Parent 1</label>
                     <DropdownSearch2 @ref="Parent1Dropdown"
                                      Options="Parents1"
-                                     ValueChanged="OnParent1Selected" />
+                                     ValueChanged="OnParent1Selected"/>
                 </div>
 
                 <div class="daycare-parent-element">
@@ -49,7 +49,7 @@
                     <DropdownSearch2 @ref="Parent2Dropdown"
                                      Options="Parents2"
                                      isDisabled="@(string.IsNullOrEmpty(SelectedParent1))"
-                                     ValueChanged="OnParent2Selected" />
+                                     ValueChanged="OnParent2Selected"/>
                 </div>
             </div>
             <div style="width:30%" class="dropdown-row">
@@ -58,6 +58,24 @@
                     ValueChanged="OnSearchChanged">
                 </DropdownSearch>
             </div>
+
+            <div class="dropdown-row">
+                <div class="daycare-parent-element">
+                    <label>Egg Group 1</label>
+                    <DropdownSearch2 @ref="EggGroup1Dropdown"
+                                     Options="EggGroupOptions"
+                                     ValueChanged="OnEggGroup1Selected" />
+                </div>
+
+                <div class="daycare-parent-element">
+                    <label>Egg Group 2</label>
+                    <DropdownSearch2 @ref="EggGroup2Dropdown"
+                                     Options="EggGroupOptions"
+                                     isDisabled="@(string.IsNullOrEmpty(SelectedEggGroup1))"
+                                     ValueChanged="OnEggGroup2Selected"/>
+                </div>
+            </div>
+
             <div>
                 Showing <strong>@CombinedPokemonsShow.Count()</strong> Pokemons
             </div>
@@ -109,6 +127,30 @@
     public string? SelectedParent2 { get; set; } = null;
     private DropdownSearch2? Parent1Dropdown;
     private DropdownSearch2? Parent2Dropdown;
+
+    public string? SelectedEggGroup1 { get; set; } = null;
+    public string? SelectedEggGroup2 { get; set; } = null;
+    private DropdownSearch2? EggGroup1Dropdown;
+    private DropdownSearch2? EggGroup2Dropdown;
+
+    private List<DropdownOption> EggGroupOptions = new()
+    {
+        new() { Value = "Monster", Label = "Monster" },
+        new() { Value = "Dragon", Label = "Dragon" },
+        new() { Value = "Water A", Label = "Water A" },
+        new() { Value = "Water B", Label = "Water B" },
+        new() { Value = "Water C", Label = "Water C" },
+        new() { Value = "Bug", Label = "Bug" },
+        new() { Value = "Flying", Label = "Flying" },
+        new() { Value = "Field", Label = "Field" },
+        new() { Value = "Fairy", Label = "Fairy" },
+        new() { Value = "Grass", Label = "Grass" },
+        new() { Value = "Humanoid", Label = "Humanoid" },
+        new() { Value = "Mineral", Label = "Mineral" },
+        new() { Value = "Chaos", Label = "Chaos" },
+        new() { Value = "Ditto", Label = "Ditto" },
+        new() { Value = "Genderless", Label = "Genderless" }
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -350,6 +392,19 @@
 
         }
 
+        if (!string.IsNullOrEmpty(SelectedEggGroup1))
+        {
+            if (!string.IsNullOrEmpty(SelectedEggGroup2))
+            {
+                query = query.Where(i => (i.EggGroup1 == SelectedEggGroup1 && i.EggGroup2 == SelectedEggGroup2) || (i.EggGroup1 == SelectedEggGroup2 && i.EggGroup2 == SelectedEggGroup1));
+            }
+            else
+            {
+                query = query.Where(i => i.EggGroup1 == SelectedEggGroup1 || i.EggGroup2 == SelectedEggGroup1);
+            }
+
+        }
+
         CombinedPokemonsShow = query.ToList();
     }
 
@@ -378,6 +433,44 @@
         SearchPokemon = value;
         ApplyFilters();
         ApplyOrdering();
+        StateHasChanged();
+    }
+
+    private void OnEggGroup1Selected(string? selectedEggGroup)
+    {
+        bool exists = EggGroupOptions.Any(x => x.Value == selectedEggGroup);
+        if (exists)
+        {
+            SelectedEggGroup1 = selectedEggGroup;
+        }
+        else
+        {
+            EggGroup2Dropdown?.EmptySearchSyting();
+            SelectedEggGroup2 = string.Empty;
+            SelectedEggGroup1 = string.Empty;
+        }
+
+        ApplyFilters();
+        ApplyOrdering();
+
+        StateHasChanged();
+    }
+
+    private void OnEggGroup2Selected(string? selectedEggGroup)
+    {
+        bool exists = EggGroupOptions.Any(x => x.Value == selectedEggGroup);
+        if (exists)
+        {
+            SelectedEggGroup2 = selectedEggGroup;
+        }
+        else
+        {
+            SelectedEggGroup2 = string.Empty;
+        }
+
+        ApplyFilters();
+        ApplyOrdering();
+
         StateHasChanged();
     }
 }
