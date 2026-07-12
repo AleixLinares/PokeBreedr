@@ -16,26 +16,38 @@ namespace PokeBreedr.Models
             {
                 this.Pokemon = pokemon2.Pokemon;
                 this.HasHiddenAbility = pokemon2.HasHiddenAbility;
+                this.EggGroup1 = pokemon2.EggGroup1;
+                this.EggGroup2 = pokemon2.EggGroup2;
             }
             else if (pokemon2.EggGroup1 == "Ditto")
             {
                 this.Pokemon = pokemon1.Pokemon;
                 this.HasHiddenAbility = pokemon1.HasHiddenAbility;
+                this.EggGroup1 = pokemon1.EggGroup1;
+                this.EggGroup2 = pokemon1.EggGroup2;
             }
             else if (pokemon1.EggGroup1 == "Genderless")
             {
                 this.Pokemon = pokemon1.Pokemon;
                 this.HasHiddenAbility = pokemon1.HasHiddenAbility || pokemon2.HasHiddenAbility;
+                this.EggGroup1 = pokemon1.EggGroup1;
+                this.EggGroup2 = pokemon1.EggGroup2;
             }
             else if (pokemon1.Gender == PokemonGenderEnum.Female)
             {
                 this.Pokemon = pokemon1.Pokemon;
                 this.HasHiddenAbility = pokemon1.HasHiddenAbility;
+
+                this.EggGroup1 = pokemon1.EggGroup1;
+                this.EggGroup2 = pokemon1.EggGroup2;
             }
             else
             {
                 this.Pokemon = pokemon2.Pokemon;
                 this.HasHiddenAbility = pokemon2.HasHiddenAbility;
+
+                this.EggGroup1 = pokemon2.EggGroup1;
+                this.EggGroup2 = pokemon2.EggGroup2;
             }
 
             this.Parent1 = pokemon1.Guid;
@@ -146,6 +158,10 @@ namespace PokeBreedr.Models
         public PokemonNatureEnum? Nature { get; set; }
 
         public List<ParticleEnum> Particles { get; set; } = new();
+
+        public string? EggGroup1 { get; set; } = string.Empty;
+
+        public string? EggGroup2 { get; set; } = string.Empty;
 
         public byte HpIv1 { get; set; }
         public byte HpIv2 { get; set; }
