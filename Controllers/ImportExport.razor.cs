@@ -81,7 +81,6 @@ namespace PokeBreedr.Pages
                 {
                     string resultLine = "row: " + i + "," + line + "," + "Error: " + error + "\n";
                     resultCsv += resultLine;
-                    Console.WriteLine(resultLine);
                     continue;
                 }
 
@@ -238,13 +237,11 @@ namespace PokeBreedr.Pages
             {
                 if (!byte.TryParse(parsedLine[j], out var iv))
                 {
-                    Console.WriteLine("falla en ivs?");
                     errors = "IVs: must be a number between 0 and 31.";
                     return null;
                 }
                 if (iv < 0 || iv > 31)
                 {
-                    Console.WriteLine("falla en ivs 2?");
                     errors = "IVs: must be a number between 0 and 31.";
                     return null;
                 }

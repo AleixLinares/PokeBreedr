@@ -14,7 +14,6 @@ namespace PokeBreedr.Utils
             if (int.TryParse(value, out int number) &&
                 Enum.IsDefined(typeof(TEnum), number))
             {
-                Console.WriteLine(number);
                 result = (TEnum)Enum.ToObject(typeof(TEnum), number);
                 return true;
             }
