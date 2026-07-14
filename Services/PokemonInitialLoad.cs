@@ -81,5 +81,13 @@ namespace PokeBreedr.Services
                     $"The pokemon with name '{pokemonName}' doesn't exist."
                 );
         }
+
+        public async Task<Dictionary<string, PokemonCSVData>> GetAllPokemonsInfo()
+        {
+            // Espera a que termine la carga inicial
+            await InitializeAsync();
+
+            return Pokemons;
+        }
     }
 }
