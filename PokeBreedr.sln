@@ -4,6 +4,8 @@ VisualStudioVersion = 18.4.11626.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeBreedr", "PokeBreedr.csproj", "{7B8784AC-445B-D748-00E0-564B780F4D97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeBreedr.Tests", "PokeBreedr.Tests\PokeBreedr.Tests.csproj", "{322F775F-B672-4B2E-879A-5B189FAC1A06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,10 @@ Global
 		{7B8784AC-445B-D748-00E0-564B780F4D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B8784AC-445B-D748-00E0-564B780F4D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B8784AC-445B-D748-00E0-564B780F4D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{322F775F-B672-4B2E-879A-5B189FAC1A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{322F775F-B672-4B2E-879A-5B189FAC1A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{322F775F-B672-4B2E-879A-5B189FAC1A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{322F775F-B672-4B2E-879A-5B189FAC1A06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,4 +16,10 @@
     <Folder Include="wwwroot\assets\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Remove="PokeBreedr.Tests\**" />
+		<Content Remove="PokeBreedr.Tests\**" />
+		<None Remove="PokeBreedr.Tests\**" />
+	</ItemGroup>
+
 </Project>
