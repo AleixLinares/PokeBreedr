@@ -2,7 +2,7 @@
 
 namespace PokeBreedr.Services
 {
-    public class PokemonInitialLoad
+    public class PokemonInitialLoad : IPokemonInitialLoad
     {
         private Task? _loadTask;
 

@@ -9,18 +9,18 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<IPokemonInitialLoad, PokemonInitialLoad>();
 builder.Services.AddScoped<IPokemonPersistenceService, PokemonLocalStorageService>();
 builder.Services.AddScoped<IBreedConfigPersistenceService, BreedConfigLocalStorageService>();
 builder.Services.AddScoped<IImportExportPokemonService, ImportExportPokemonService>();
 
-builder.Services.AddScoped<PokemonInitialLoad>();
 builder.Services.AddScoped<BreederService>();
 
 builder.Services.AddSingleton<ToastService>();
 
 var host = builder.Build();
 
-var store = host.Services.GetRequiredService<PokemonInitialLoad>();
+var store = host.Services.GetRequiredService<IPokemonInitialLoad>();
 await store.InitializeAsync();
 
 await host.RunAsync();

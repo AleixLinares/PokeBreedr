@@ -7,9 +7,9 @@ namespace PokeBreedr.Services
 {
     public class BreederService
     {
-        private readonly PokemonInitialLoad PokemonInitialLoad;
+        private readonly IPokemonInitialLoad PokemonInitialLoad;
 
-        public BreederService(PokemonInitialLoad pokemonInitialLoad)
+        public BreederService(IPokemonInitialLoad pokemonInitialLoad)
         {
             this.PokemonInitialLoad = pokemonInitialLoad;
         }

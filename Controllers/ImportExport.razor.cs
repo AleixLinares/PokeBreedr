@@ -19,7 +19,7 @@ namespace PokeBreedr.Pages
         private IPokemonPersistenceService PokemonPersistenceService { get; set; } = default!;
 
         [Inject]
-        private PokemonInitialLoad PokemonInitialLoad { get; set; } = default!;
+        private IPokemonInitialLoad PokemonInitialLoad { get; set; } = default!;
 
         [Inject]
         private IImportExportPokemonService ImportExportPokemonService { get; set; } = default!;
